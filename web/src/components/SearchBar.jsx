@@ -1,113 +1,89 @@
-// import { useState } from "react";
-// // import { useSearchContext } from "../contexts/SearchContext";
-// // import { MdTravelExplore } from "react-icons/md";
-// import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
-// import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHotel } from "@fortawesome/free-solid-svg-icons";
+import { Formik, Form, Field } from "formik";
+import { useNavigate } from "react-router-dom";
 
-// const SearchBar = () => {
-//   const navigate = useNavigate();
-//   const search = useSearchContext();
+const SearchBar = () => {
+  const navigate = useNavigate();
 
-//   const [destination, setDestination] = useState < string > search.destination;
-//   const [checkIn, setCheckIn] = useState < Date > search.checkIn;
-//   const [checkOut, setCheckOut] = useState < Date > search.checkOut;
-//   const [adultCount, setAdultCount] = useState < number > search.adultCount;
-//   const [childCount, setChildCount] = useState < number > search.childCount;
+  const handleSubmit = (values, { resetForm }) => {
+    console.log("Form values:", values);
+    navigate("/");
+  };
 
-//   const handleSubmit = (event) => {
-//     event.preventDefault();
-//     search.saveSearchValues(
-//       destination,
-//       checkIn,
-//       checkOut,
-//       adultCount,
-//       childCount
-//     );
-//     navigate("/search");
-//   };
+  return (
+    <Formik
+      initialValues={{
+        destination: "",
+        checkIn: "",
+        checkOut: "",
+        adultCount: "",
+        childCount: "",
+      }}
+      onSubmit={handleSubmit}
+    >
+      {({ values, handleChange, handleBlur }) => (
+        <Form className="mt-6 p-3 rounded-xl bg-slate-100 border border-brand shadow-md grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4 mx-10 align-middle">
+          {/* Destination Input */}
+          <div className="flex flex-row items-center flex-1 bg-white p-2">
+            <FontAwesomeIcon icon={faHotel} className="mr-2 text-slate-500" />
+            <Field
+              type="text"
+              name="destination"
+              placeholder="Where are you going?"
+              className="md:text-md text-xs w-full focus:outline-none "
+            />
+          </div>
 
-//   const minDate = new Date();
-//   const maxDate = new Date();
-//   maxDate.setFullYear(maxDate.getFullYear() + 1);
+          {/* Adult and Child Count Inputs */}
+          <div className="flex bg-white px-2 py-1 gap-2">
+            <label className="items-center flex md:text-md text-xs">
+              Guests:
+            </label>
+            <Field
+              type="number"
+              name="guests"
+              className="w-full p-1 focus:outline-none font-bold"
+              min={1}
+              max={6}
+            />
+          </div>
 
-//   return (
-//     <form
-//       onSubmit={handleSubmit}
-//       className="-mt-8 p-3 bg-orange-400 rounded shadow-md grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4"
-//     >
-//       <div className="flex flex-row items-center flex-1 bg-white p-2">
-//         <MdTravelExplore size={25} className="mr-2" />
-//         <input
-//           placeholder="Where are you going?"
-//           className="text-md w-full focus:outline-none"
-//           value={destination}
-//           onChange={(event) => setDestination(event.target.value)}
-//         />
-//       </div>
+          {/* Check-in Date Input */}
+          <div className="md:text-md text-xs">
+            <label className="block font-medium text-gray-700">
+              Check-in Date
+            </label>
+            <Field
+              type="date"
+              name="checkIn"
+              className="min-w-full bg-white p-2 focus:outline-none"
+            />
+          </div>
 
-//       <div className="flex bg-white px-2 py-1 gap-2">
-//         <label className="items-center flex">
-//           Adults:
-//           <input
-//             className="w-full p-1 focus:outline-none font-bold"
-//             type="number"
-//             min={1}
-//             max={20}
-//             value={adultCount}
-//             onChange={(event) => setAdultCount(parseInt(event.target.value))}
-//           />
-//         </label>
-//         <label className="items-center flex">
-//           Children:
-//           <input
-//             className="w-full p-1 focus:outline-none font-bold"
-//             type="number"
-//             min={0}
-//             max={20}
-//             value={childCount}
-//             onChange={(event) => setChildCount(parseInt(event.target.value))}
-//           />
-//         </label>
-//       </div>
-//       <div>
-//         <DatePicker
-//           selected={checkIn}
-//           onChange={(date) => setCheckIn(date)}
-//           selectsStart
-//           startDate={checkIn}
-//           endDate={checkOut}
-//           minDate={minDate}
-//           maxDate={maxDate}
-//           placeholderText="Check-in Date"
-//           className="min-w-full bg-white p-2 focus:outline-none"
-//           wrapperClassName="min-w-full"
-//         />
-//       </div>
-//       <div>
-//         <DatePicker
-//           selected={checkOut}
-//           onChange={(date) => setCheckOut(date)}
-//           selectsStart
-//           startDate={checkIn}
-//           endDate={checkOut}
-//           minDate={minDate}
-//           maxDate={maxDate}
-//           placeholderText="Check-out Date"
-//           className="min-w-full bg-white p-2 focus:outline-none"
-//           wrapperClassName="min-w-full"
-//         />
-//       </div>
-//       <div className="flex gap-1">
-//         <button className="w-2/3 bg-blue-600 text-white h-full p-2 font-bold text-xl hover:bg-blue-500">
-//           Search
-//         </button>
-//         <button className="w-1/3 bg-red-600 text-white h-full p-2 font-bold text-xl hover:bg-red-500">
-//           Clear
-//         </button>
-//       </div>
-//     </form>
-//   );
-// };
+          {/* Check-out Date Input */}
+          <div className="md:text-md text-xs">
+            <label className="block md:text-md text-xs font-medium text-gray-700">
+              Check-out Date
+            </label>
+            <Field
+              type="date"
+              name="checkOut"
+              className="min-w-full bg-white p-2 focus:outline-none "
+            />
+          </div>
 
-// export default SearchBar;
+          {/* Search */}
+          <button
+            type="submit"
+            className="bg-brand text-white p-2 font-bold text-sm hover:bg-orange-100 rounded-lg"
+          >
+            Search
+          </button>
+        </Form>
+      )}
+    </Formik>
+  );
+};
+
+export default SearchBar;

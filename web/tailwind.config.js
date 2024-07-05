@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        'brand': '#FFBD59',
+      },
       fontFamily: {
         montserrat: ['Montserrat', 'sans-serif'],
       },
