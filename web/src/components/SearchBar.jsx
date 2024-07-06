@@ -23,27 +23,29 @@ const SearchBar = () => {
       onSubmit={handleSubmit}
     >
       {({ values, handleChange, handleBlur }) => (
-        <Form className="mt-6 p-3 rounded-xl bg-slate-100 border border-brand shadow-md grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4 mx-10 align-middle">
+        <Form className="mt-2 p-3 md:-mt-10 md:z-0 rounded-xl bg-slate-100 border border-brand shadow-md grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4 mx-10 align-middle">
           {/* Destination Input */}
-          <div className="flex flex-row items-center flex-1 bg-white p-2">
-            <FontAwesomeIcon icon={faHotel} className="mr-2 text-slate-500" />
+          <div className="md:text-md text-xs">
+            <label className="block text-slate-500 font-bold mb-1">
+              Location
+            </label>
             <Field
               type="text"
               name="destination"
-              placeholder="Where are you going?"
-              className="md:text-md text-xs w-full focus:outline-none "
+              placeholder="Where are you going to?"
+              className="w-full bg-white p-2 focus:outline-none text-slate-500 rounded-lg"
             />
           </div>
 
-          {/* Adult and Child Count Inputs */}
-          <div className="flex bg-white px-2 py-1 gap-2">
-            <label className="items-center flex md:text-md text-xs">
-              Guests:
+          <div className="md:text-md text-xs">
+            <label className="block text-slate-500 font-bold mb-1">
+              Guests
             </label>
             <Field
               type="number"
               name="guests"
-              className="w-full p-1 focus:outline-none font-bold"
+              placeholder="Guests"
+              className="w-full bg-white p-2 focus:outline-none text-slate-500 rounded-lg"
               min={1}
               max={6}
             />
@@ -51,32 +53,32 @@ const SearchBar = () => {
 
           {/* Check-in Date Input */}
           <div className="md:text-md text-xs">
-            <label className="block font-medium text-gray-700">
+            <label className="block text-slate-500 font-bold mb-1">
               Check-in Date
             </label>
             <Field
               type="date"
               name="checkIn"
-              className="min-w-full bg-white p-2 focus:outline-none"
+              className="min-w-full bg-white p-2 focus:outline-none  text-slate-500 rounded-lg"
             />
           </div>
 
           {/* Check-out Date Input */}
           <div className="md:text-md text-xs">
-            <label className="block md:text-md text-xs font-medium text-gray-700">
+            <label className="block md:text-md text-xs text-slate-500 font-bold mb-1">
               Check-out Date
             </label>
             <Field
               type="date"
               name="checkOut"
-              className="min-w-full bg-white p-2 focus:outline-none "
+              className="min-w-full bg-white p-2 focus:outline-none  text-slate-500 rounded-lg"
             />
           </div>
 
           {/* Search */}
           <button
             type="submit"
-            className="bg-brand text-white p-2 font-bold text-sm hover:bg-orange-100 rounded-lg"
+            className="bg-brand text-white p-2 mt-4 text-sm hover:bg-[#f2b23d] rounded-lg font-bold transition"
           >
             Search
           </button>

@@ -11,12 +11,12 @@ const Header = () => {
   return (
     <div>
       <div
-        className="bg-brand h-32 md:hidden" // Solid color for small screens
+        className="bg-brand md:hidden" // Solid color for small screens
       >
         <Navbar />
       </div>
       <div
-        className="hidden md:block relative bg-cover bg-center py-6 h-96 m-2 rounded-xl" // Background image for medium screens and up
+        className="hidden md:block relative bg-cover bg-center py-6 lg:h-96 md:h-64 m-1 rounded-xl" // Background image for medium screens and up
         style={{
           backgroundSize: "cover",
           backgroundPosition: "center",
