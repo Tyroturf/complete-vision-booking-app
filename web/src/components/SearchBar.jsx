@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHotel } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +21,7 @@ const SearchBar = () => {
       onSubmit={handleSubmit}
     >
       {({ values, handleChange, handleBlur }) => (
-        <Form className="mt-2 p-3 md:-mt-10 md:z-0 rounded-xl bg-slate-100 border border-brand shadow-md grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4 mx-10 align-middle">
+        <Form className="z-0 mt-2 p-3 md:-mt-10 md:z-0 rounded-xl bg-slate-100 border border-brand shadow-md grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4 mx-10 align-middle">
           {/* Destination Input */}
           <div className="md:text-md text-xs">
             <label className="block text-slate-500 font-bold mb-1">
@@ -78,7 +76,7 @@ const SearchBar = () => {
           {/* Search */}
           <button
             type="submit"
-            className="bg-brand text-white p-2 mt-4 text-sm hover:bg-[#f2b23d] rounded-lg font-bold transition"
+            className="bg-brand text-white p-2 mt-4 text-sm hover:bg-[#f2b23d] rounded-lg font-bold transition hover:scale-105"
           >
             Search
           </button>
