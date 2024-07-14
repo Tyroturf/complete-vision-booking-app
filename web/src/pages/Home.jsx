@@ -139,6 +139,9 @@ const Home = () => {
         <span className="text-xs md:text-base lg:text-xl font-bold">
           Latest Destinations
         </span>
+        <button className="border border-brand ml-8 w-24 lg:w-36 text-xs rounded-md hover:scale-105 mt-2 md:mt-0 md:justify-end transition py-1">
+          See All
+        </button>
         <div className="flex gap-1 md:gap-2 lg:gap-3 overflow-x-auto py-2">
           {cities.map((city) => (
             <LatestDestinationCard key={city.id} city={city} />
@@ -157,7 +160,7 @@ const Home = () => {
             or somewhere to roam, we’ve got the travel tools to get you to your
             destination.
           </p>
-          <button className="border border-brand w-24 lg:w-36 text-xs rounded-sm hover:scale-105 md:ml-10 mt-2 md:mt-0 md:justify-end transition py-1">
+          <button className="border border-brand w-24 lg:w-36 text-xs rounded-md hover:scale-105 md:ml-10 mt-2 md:mt-0 md:justify-end transition py-1">
             See All
           </button>
         </div>

@@ -16,6 +16,13 @@ import Layout from "./layouts/Layout";
 // import Booking from "./pages/Booking";
 // import MyBookings from "./pages/MyBookings";
 import Home from "./pages/Home";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
+import SearchResults from "./pages/SearchResults";
+import PlaceDetail from "./pages/PlaceDetail";
+import "leaflet/dist/leaflet.css";
+import FindPlaces from "./pages/FindPlaces";
+import CarRentals from "./pages/CarRentals";
 
 const App = () => {
   // const { isLoggedIn } = useAppContext();
@@ -30,40 +37,42 @@ const App = () => {
             </Layout>
           }
         />
-        {/* <Route
+        <Route
           path="/search"
           element={
             <Layout>
-              <Search />
+              <SearchResults />
             </Layout>
           }
         />
         <Route
-          path="/detail/:hotelId"
+          path="/hotel/"
           element={
             <Layout>
-              <Detail />
+              <PlaceDetail />
             </Layout>
           }
         />
         <Route
-          path="/register"
+          path="/places/"
           element={
             <Layout>
-              <Register />
+              <FindPlaces />
             </Layout>
           }
         />
         <Route
-          path="/sign-in"
+          path="/cars/"
           element={
             <Layout>
-              <SignIn />
+              <CarRentals />
             </Layout>
           }
         />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
 
-        {isLoggedIn && (
+        {/* {isLoggedIn && (
           <>
             <Route
               path="/hotel/:hotelId/booking"
