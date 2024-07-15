@@ -3,9 +3,10 @@ import porshe from "../assets/porshe.avif";
 import { RatingSummary } from "../components/Review";
 import { faCar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const PlaceCard = ({ place }) => {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col md:flex-row bg-white shadow-sm mb-7">
       <img
@@ -31,7 +32,10 @@ const PlaceCard = ({ place }) => {
           </div>
         </div>
         <div className="flex my-5">
-          <button className="bg-brand p-3 px-6 text-white font-medium rounded-sm text-xs w-full">
+          <button
+            className="bg-brand p-3 px-6 text-white font-medium rounded-sm text-xs w-full"
+            onClick={() => navigate("/hotel")}
+          >
             View
           </button>
         </div>

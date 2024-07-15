@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const LatestDestinationCard = ({ city }) => {
   return (
     <Link
-      to={`/detail/${city.id}`}
+      to={`/hotel`}
       className="flex-shrink-0 w-36 md:w-48 lg:w-64 cursor-pointer overflow-hidden rounded-md transform transition-transform duration-300 hover:scale-105"
     >
       <div className="relative flex items-center">
