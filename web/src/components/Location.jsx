@@ -1,8 +1,16 @@
 import React from "react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { APIProvider, Map } from "@vis.gl/react-google-maps";
+
+const center = { lat: 5.5544395, lng: -0.1978991 };
 
 const Location = () => {
-  const center = { lat: 37.7749, lng: -122.4194 }; // Example coordinates (San Francisco)
+  if (loadError) {
+    return <div>Error loading maps</div>;
+  }
+
+  if (!isLoaded) {
+    return <div>Loading maps</div>;
+  }
 
   return (
     <div className="hidden md:flex flex-col gap-2 bg-white rounded-lg px-4 shadow-md">
@@ -13,15 +21,23 @@ const Location = () => {
         </button>
       </div>
       <div className="h-64 w-full rounded-md">
-        <LoadScript googleMapsApiKey="YOUR_API_KEY">
-          <GoogleMap
-            mapContainerStyle={{ height: "100%", width: "100%" }}
-            center={center}
-            zoom={12}
-          >
-            <Marker position={center} />
-          </GoogleMap>
-        </LoadScript>
+        <APIProvider
+          apiKey={"AIzaSyD4x5-0tcmI-q0tz7VmA7PkNaJ6yp52ur8"}
+          onLoad={() => console.log("Maps API has loaded.")}
+        >
+          <Map
+            defaultZoom={13}
+            defaultCenter={center}
+            onCameraChanged={(ev) =>
+              console.log(
+                "camera changed:",
+                ev.detail.center,
+                "zoom:",
+                ev.detail.zoom
+              )
+            }
+          ></Map>
+        </APIProvider>
       </div>
     </div>
   );

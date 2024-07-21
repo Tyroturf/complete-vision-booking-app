@@ -41,7 +41,7 @@ const Hero = ({ imageUrl }) => {
         <h1 className="lg:text-2xl md:text-2xl text-white font-bold uppercase">
           The perfect home base <br /> for your special trip
         </h1>
-        <div className="lg:text-lg md:text-xs text-[#FFBD59] lg:my-6 md:my-2 font-medium flex items-center gap-2">
+        <div className="lg:text-lg md:text-xs text-[#FFBD59] lg:my-6 md:my-2 font-bold flex items-center gap-2">
           <span ref={el} />
         </div>
       </div>

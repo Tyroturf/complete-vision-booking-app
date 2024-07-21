@@ -1,19 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
-import { useNavigate } from "react-router-dom";
+import { useSearch } from "../contexts/SearchContext";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format } from "date-fns";
+import "../customDatePickerWidth.css";
 
-const SearchBar = ({ initialValues, onSubmit }) => {
-  const navigate = useNavigate();
+const SearchBar = ({ initialValues }) => {
+  const { updateSearchParams } = useSearch();
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(null);
+
+  const onChange = (dates) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+  };
 
   const handleSubmit = (values, { resetForm }) => {
-    onSubmit(values);
-    navigate("/search");
+    updateSearchParams({
+      ...values,
+      startDate,
+      endDate,
+    });
+    resetForm();
   };
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-      {({ values }) => (
-        <Form className="mt-2 p-3 rounded-xl border border-brand shadow-md grid grid-cols-2 md:grid-cols-5 items-center gap-4 mx-10 align-middle">
+      {() => (
+        <Form className="p-3 rounded-xl border border-brand shadow-md grid grid-cols-2 md:grid-cols-4 items-center gap-4 mx-10 xl:mx-52 align-middle">
           {/* Destination Input */}
           <div className="relative">
             <Field
@@ -27,7 +43,7 @@ const SearchBar = ({ initialValues, onSubmit }) => {
             </label>
           </div>
 
-          {/* Guests Input */}
+          {/* Number of Guests Input */}
           <div className="relative">
             <Field
               type="number"
@@ -41,30 +57,18 @@ const SearchBar = ({ initialValues, onSubmit }) => {
               Guests
             </label>
           </div>
-
-          {/* Check-in Date Input */}
-          <div className="relative">
-            <Field
-              type="date"
-              name="checkIn"
-              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-              placeholder=" "
+          <div className="relative col-span-2 md:col-span-1">
+            <DatePicker
+              selected={startDate}
+              onChange={onChange}
+              startDate={startDate}
+              endDate={endDate}
+              selectsRange
+              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-xs text-center sm:text-left"
+              wrapperClassName="customDatePickerWidth"
             />
             <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
-              Check-in Date
-            </label>
-          </div>
-
-          {/* Check-out Date Input */}
-          <div className="relative">
-            <Field
-              type="date"
-              name="checkOut"
-              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-              placeholder=" "
-            />
-            <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
-              Check-out Date
+              Select Date
             </label>
           </div>
 

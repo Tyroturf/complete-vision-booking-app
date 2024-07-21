@@ -42,7 +42,7 @@ export const Navbar = () => {
             <FontAwesomeIcon icon={faCar} />
             <span>Car Rentals</span>
           </Link>
-          <Link className={linkClass} to="/hotel">
+          <Link className={linkClass} to="/tours">
             <FontAwesomeIcon icon={faCar} />
             <span>Book Tour</span>
           </Link>
@@ -76,7 +76,7 @@ export const Navbar = () => {
           <Link className={linkClass} to="/cars">
             <span className="text-base font-bold">Car Rentals</span>
           </Link>
-          <Link className={linkClass} to="/hotel">
+          <Link className={linkClass} to="/tours">
             <span className="text-base font-bold">Book Tour</span>
           </Link>
           <Link className={linkClass} to="/login">

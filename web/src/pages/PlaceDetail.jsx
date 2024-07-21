@@ -12,16 +12,16 @@ import porshe from "../assets/porshe.avif";
 import sport from "../assets/sport.avif";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
 import { Review, RatingSummary } from "../components/Review";
 import ImageGallery from "../components/ImageGallery";
+import { APIProvider, Map } from "@vis.gl/react-google-maps";
 
 const PlaceDetail = () => {
   const images = [city, wheel, tall, hall, scrape];
 
   return (
-    <div className="container max-w-full p-2 mt-16 mx-auto">
-      <div className="hidden lg:flex justify-between items-center px-5 pt-20">
+    <div className="container max-w-full mx-auto mt-20">
+      <div className="hidden lg:flex justify-between items-center px-5">
         <div className="flex-col items-center justify-center">
           <span className="font-bold text-xl">Exodus Apartments</span>
           <RatingSummary />
@@ -84,7 +84,7 @@ const PlaceDetail = () => {
           <RatingSummary />
         </div>
 
-        <div className="border border-gray-50 w-2/3 mx-auto md:my-10 my-5"></div>
+        <div className="border border-gray-30 w-2/3 mx-auto my-5"></div>
 
         <div className="flex flex-col md:gap-2  bg-transparent rounded-lg p-4">
           <span className="text-base font-bold">Available Rooms</span>
@@ -100,7 +100,7 @@ const PlaceDetail = () => {
               <span className="text-sm font-bold">
                 $600 USD <span className="font-thin">/ night</span>
               </span>
-              <button className="bg-brand p-1 px-3 text-white font-bold rounded-md md:text-sm text-xs">
+              <button className="bg-brand p-1 px-3 text-white font-bold rounded-md text-xs">
                 Book now
               </button>
             </div>
@@ -116,7 +116,7 @@ const PlaceDetail = () => {
               <span className="text-sm font-bold">
                 $600 USD <span className="font-thin">/ night</span>
               </span>
-              <button className="bg-brand p-1 px-3 text-white font-bold rounded-md md:text-sm text-xs">
+              <button className="bg-brand p-1 px-3 text-white font-bold rounded-md text-xs">
                 Book now
               </button>
             </div>
@@ -132,7 +132,7 @@ const PlaceDetail = () => {
               <span className="text-sm font-bold">
                 $600 USD <span className="font-thin">/ night</span>
               </span>
-              <button className="bg-brand p-1 px-3 text-white font-bold rounded-md md:text-sm text-xs">
+              <button className="bg-brand p-1 px-3 text-white font-bold rounded-md text-xs">
                 Book now
               </button>
             </div>
@@ -150,13 +150,6 @@ const PlaceDetail = () => {
             <span className="text-xs ml-3">Great Location</span>
           </Link>
         </div>
-
-        {/* <div className="flex bg-white rounded-lg px-4 ">
-          <Link to="/my-hotels" className="p-2">
-            <FontAwesomeIcon icon={faCar} />
-            <span className="text-xs ml-3">Great Location</span>
-          </Link>
-        </div> */}
 
         <div className="border border-gray-30 w-2/3 mx-auto md:my-10 my-5"></div>
 
@@ -182,9 +175,6 @@ const PlaceDetail = () => {
             Show all 20 amenities
           </button>
         </div>
-
-        <Review />
-        <Review />
       </div>
     </div>
   );
