@@ -24,7 +24,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
           </div>
         </div>
 
-        <div className="bg-[#bcfff6] rounded-b-lg w-full mt-auto">
+        <div className="bg-brand-sm rounded-b-lg w-full mt-auto">
           <div className="flex justify-between items-center p-6 text-gray-700">
             <span className="font-medium text-sm">Total</span>
             <span className="text-xl font-bold">$ 403</span>

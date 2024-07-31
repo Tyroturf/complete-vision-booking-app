@@ -213,9 +213,9 @@ const Home = () => {
       </div>
 
       {/* Book Tour */}
-      <div className="flex bg-brand rounded-md flex-col p-2 md:p-4 lg:p-7 my-10 shadow-md gap-y-3">
+      <div className="flex bg-brand-5xl rounded-md flex-col p-2 md:p-4 lg:p-7 my-10 shadow-md gap-y-3">
         <div className="flex justify-between items-center">
-          <p className="font-bold text-base md:text:xl text-slate-700">
+          <p className="font-bold text-base md:text:xl text-white">
             Let's Tour Together
           </p>
           <div className="bg-white w-10 h-10 rounded-lg flex flex-col items-center justify-center text-xs px-6 text-slate-600">
@@ -223,7 +223,7 @@ const Home = () => {
             <p className="font-bold">$100</p>
           </div>
         </div>
-        <p className="text-xs md:text-sm text-slate-700">
+        <p className="text-xs md:text-sm text-white font-medium">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo
           optio alias unde nulla voluptatem aspernatur, sapiente labore
           exercitationem assumenda voluptas vitae. Reiciendis culpa explicabo

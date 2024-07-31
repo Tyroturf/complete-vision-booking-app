@@ -1,3 +1,6 @@
+import React, { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCar,
   faHotel,
@@ -5,20 +8,17 @@ import {
   faTimes,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+
+const baseLinkClasses =
+  "text-xs lg:text-sm font-medium lg:px-3 md:px-1 py-2 rounded-md transition flex items-center space-x-2 mx-1";
+const defaultLinkClasses =
+  "text-gray-800 hover:bg-white hover:bg-opacity-15 hover:backdrop-blur-md active:bg-white active:bg-opacity-30";
+const activeLinkClasses = "text-brand bg-white bg-opacity-15 backdrop-blur-md";
 
 const SubNav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout } = useAuth();
-
-  const linkClass =
-    "text-gray-800 text-xs lg:text-sm font-medium lg:px-3 md:px-1 py-2 rounded-md transition flex items-center space-x-2 hover:bg-white hover:bg-opacity-15 hover:backdrop-blur-md active:bg-white active:bg-opacity-30 mx-1";
-
-  const activeLinkClass =
-    "text-orange-500 bg-white bg-opacity-15 backdrop-blur-md";
 
   const handleLinkClick = () => {
     setMenuOpen(false);
@@ -45,7 +45,9 @@ const SubNav = () => {
           <div className="hidden lg:flex space-x-4 items-center ml-auto">
             <NavLink
               className={({ isActive }) =>
-                isActive ? `${linkClass} ${activeLinkClass}` : linkClass
+                `${baseLinkClasses} ${
+                  isActive ? activeLinkClasses : defaultLinkClasses
+                }`
               }
               to="/places"
             >
@@ -54,7 +56,9 @@ const SubNav = () => {
             </NavLink>
             <NavLink
               className={({ isActive }) =>
-                isActive ? `${linkClass} ${activeLinkClass}` : linkClass
+                `${baseLinkClasses} ${
+                  isActive ? activeLinkClasses : defaultLinkClasses
+                }`
               }
               to="/cars"
             >
@@ -63,7 +67,9 @@ const SubNav = () => {
             </NavLink>
             <NavLink
               className={({ isActive }) =>
-                isActive ? `${linkClass} ${activeLinkClass}` : linkClass
+                `${baseLinkClasses} ${
+                  isActive ? activeLinkClasses : defaultLinkClasses
+                }`
               }
               to="/tours"
             >
@@ -75,7 +81,9 @@ const SubNav = () => {
               <>
                 <NavLink
                   className={({ isActive }) =>
-                    isActive ? `${linkClass} ${activeLinkClass}` : linkClass
+                    `${baseLinkClasses} ${
+                      isActive ? activeLinkClasses : defaultLinkClasses
+                    }`
                   }
                   to="/profile"
                 >
@@ -84,7 +92,7 @@ const SubNav = () => {
                 </NavLink>
                 <button
                   onClick={logout}
-                  className="text-gray-800 text-xs lg:text-sm font-medium lg:px-3 md:px-1 py-2 rounded-md transition flex items-center space-x-2 hover:bg-white hover:bg-opacity-15 hover:backdrop-blur-md active:bg-white active:bg-opacity-30 mx-1"
+                  className={`${baseLinkClasses} ${defaultLinkClasses}`}
                 >
                   Logout
                 </button>
@@ -93,7 +101,9 @@ const SubNav = () => {
               <>
                 <NavLink
                   className={({ isActive }) =>
-                    isActive ? `${linkClass} ${activeLinkClass}` : linkClass
+                    `${baseLinkClasses} ${
+                      isActive ? activeLinkClasses : defaultLinkClasses
+                    }`
                   }
                   to="/login"
                 >
@@ -101,7 +111,9 @@ const SubNav = () => {
                 </NavLink>
                 <NavLink
                   className={({ isActive }) =>
-                    isActive ? `${linkClass} ${activeLinkClass}` : linkClass
+                    `${baseLinkClasses} ${
+                      isActive ? activeLinkClasses : defaultLinkClasses
+                    }`
                   }
                   to="/register"
                 >

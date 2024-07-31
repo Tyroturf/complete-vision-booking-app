@@ -75,7 +75,7 @@ const SearchBar = ({ initialValues }) => {
           {/* Search Button */}
           <button
             type="submit"
-            className="bg-brand text-white p-1 col-span-2 md:col-span-1 text-sm hover:bg-[#f2b23d] rounded-lg font-bold transition hover:scale-105"
+            className="bg-brand text-white p-1 col-span-2 md:col-span-1 text-sm hover:bg-brand-3xl rounded-lg font-bold transition hover:scale-105"
           >
             Search
           </button>

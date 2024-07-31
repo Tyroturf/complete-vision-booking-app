@@ -146,7 +146,7 @@ const FormComponent = ({
         </div>
         <button
           onClick={handleGoogleLogin}
-          className="mt-4 w-full bg-white border border-gray-300 text-gray-700 py-2 rounded-md flex justify-center items-center hover:bg-gray-100 transition text-xs"
+          className="mt-4 w-full bg-[white] border border-gray-300 text-gray-700 py-2 rounded-md flex justify-center items-center hover:bg-gray-100 transition text-xs"
         >
           <FontAwesomeIcon icon={faGoogle} className="mr-2" />
           Continue with Google
