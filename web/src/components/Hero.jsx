@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import Typed from "typed.js";
+import { Navbar } from "./Navbar";
 
-const Hero = () => {
+const Hero = ({ imageUrl }) => {
   const el = useRef(null);
 
   useEffect(() => {
@@ -25,16 +26,22 @@ const Hero = () => {
 
   return (
     <motion.div
-      className="pb-16 my-20 hidden md:block"
+      className="relative bg-cover bg-center py-6 lg:h-80 md:h-64 m-1 rounded-xl hidden md:block"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
+      style={{
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0)), url(${imageUrl})`,
+      }}
     >
-      <div className="container mx-auto flex flex-col gap-2 px-6">
-        <h1 className="text-4xl text-white font-bold uppercase">
+      <Navbar />
+      <div className="container mx-auto flex flex-col gap-2 px-6 lg:mt-16 md:mt-10">
+        <h1 className="lg:text-2xl md:text-2xl text-white font-bold uppercase">
           The perfect home base <br /> for your special trip
         </h1>
-        <div className="text-2xl text-brand my-6 font-medium flex items-center gap-2">
+        <div className="lg:text-lg md:text-xs text-[#FFBD59] lg:my-6 md:my-2 font-bold flex items-center gap-2">
           <span ref={el} />
         </div>
       </div>

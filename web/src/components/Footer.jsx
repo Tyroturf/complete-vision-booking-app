@@ -9,26 +9,26 @@ import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
 const Footer = () => {
   return (
-    <div className="bg-brand py-5">
+    <div className="bg-brand py-20 md:px-20">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
         {/* Company Info */}
-        <div className="text-center md:text-left">
-          <span className="md:text-2xl text-lg text-white font-bold tracking-tight">
+        <div className="text-center">
+          <span className="lg:text-lg text-sm text-white font-bold tracking-tight">
             Complete Vision
           </span>
-          <p className="md:text-md text-xs text-white pt-3">
+          <p className="text-xs text-white pt-3">
             © 2024 Complete Vision. All rights reserved.
           </p>
         </div>
 
-        <div className="flex flex-col items-center md:items-end space-y-2">
-          <a href="#" className="md:text-sm text-xs text-white hover:underline">
+        <div className="flex flex-col items-center space-y-2">
+          <a href="#" className="text-xs text-white hover:underline">
             Privacy Policy
           </a>
-          <a href="#" className="md:text-sm text-xs text-white hover:underline">
+          <a href="#" className="text-xs text-white hover:underline">
             Terms of Service
           </a>
-          <a href="#" className="md:text-sm text-xs text-white hover:underline">
+          <a href="#" className="text-xs text-white hover:underline">
             Contact Us
           </a>
         </div>

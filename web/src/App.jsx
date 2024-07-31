@@ -1,3 +1,4 @@
+import React from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -5,112 +6,95 @@ import {
   Navigate,
 } from "react-router-dom";
 import Layout from "./layouts/Layout";
-// import Register from "./pages/Register";
-// import SignIn from "./pages/SignIn";
-// import AddHotel from "./pages/AddHotel";
-// import { useAppContext } from "./contexts/AppContext";
-// import MyHotels from "./pages/MyHotels";
-// import EditHotel from "./pages/EditHotel";
-// import Search from "./pages/Search";
-// import Detail from "./pages/Detail";
-// import Booking from "./pages/Booking";
-// import MyBookings from "./pages/MyBookings";
 import Home from "./pages/Home";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
+import PlaceDetail from "./pages/PlaceDetail";
+import FindPlaces from "./pages/FindPlaces";
+import CarRentals from "./pages/CarRentals";
+import BookTours from "./pages/BookTours";
+import { AuthProvider } from "./contexts/AuthContext";
+import PrivateRoute from "./components/PrivateRoute";
+import { ToastContainer } from "react-toastify";
+import { SearchProvider } from "./contexts/SearchContext";
+import Reservation from "./pages/Reservation";
+import Confirmation from "./pages/Confirmation";
+// import PrivateRoute from "./PrivateRoute";
 
 const App = () => {
-  // const { isLoggedIn } = useAppContext();
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Layout>
-              <Home />
-            </Layout>
-          }
-        />
-        {/* <Route
-          path="/search"
-          element={
-            <Layout>
-              <Search />
-            </Layout>
-          }
-        />
-        <Route
-          path="/detail/:hotelId"
-          element={
-            <Layout>
-              <Detail />
-            </Layout>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <Layout>
-              <Register />
-            </Layout>
-          }
-        />
-        <Route
-          path="/sign-in"
-          element={
-            <Layout>
-              <SignIn />
-            </Layout>
-          }
-        />
-
-        {isLoggedIn && (
-          <>
+    <AuthProvider>
+      <SearchProvider>
+        <Router>
+          <Routes>
             <Route
-              path="/hotel/:hotelId/booking"
+              path="/"
               element={
                 <Layout>
-                  <Booking />
-                </Layout>
-              }
-            />
-
-            <Route
-              path="/add-hotel"
-              element={
-                <Layout>
-                  <AddHotel />
+                  <Home />
                 </Layout>
               }
             />
             <Route
-              path="/edit-hotel/:hotelId"
+              path="/place/:id"
               element={
                 <Layout>
-                  <EditHotel />
+                  <PlaceDetail />
                 </Layout>
               }
             />
             <Route
-              path="/my-hotels"
+              path="/places"
               element={
                 <Layout>
-                  <MyHotels />
+                  <FindPlaces />
                 </Layout>
               }
             />
             <Route
-              path="/my-bookings"
+              path="/cars"
               element={
                 <Layout>
-                  <MyBookings />
+                  <CarRentals />
                 </Layout>
               }
             />
-          </>
-        )} */}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </Router>
+            <Route
+              path="/tours"
+              element={
+                <Layout>
+                  <BookTours />
+                </Layout>
+              }
+            />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/reserve"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <Reservation />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/confirmation"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <Confirmation />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+          <ToastContainer />
+        </Router>
+      </SearchProvider>
+    </AuthProvider>
   );
 };
 

@@ -11,97 +11,79 @@ import { useState } from "react";
 export const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const linkClass =
-    "text-white text-sm font-medium px-3 py-2 rounded-md transition flex items-center space-x-2 hover:bg-white hover:bg-opacity-20 hover:backdrop-blur-md active:bg-gray-100 active:text-brand";
+    "text-white text-xs lg:text-sm font-medium lg:px-3 md:px-2 py-2 rounded-md transition flex items-center space-x-2 hover:bg-white hover:bg-opacity-15 hover:backdrop-blur-md active:bg-white active:bg-opacity-30";
 
   return (
     <nav className="container mx-auto px-6 py-4">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center gap-5">
         {/* Logo */}
-        <p className="text-white font-bold text-xl sm:text-xl">
+        <Link className="text-white font-bold text-sm md:text-lg" to={"/"}>
           Complete Vision
-        </p>
+        </Link>
 
         {/* Hamburger menu for small screens */}
         <button
-          className="md:hidden text-white text-2xl"
+          className="md:hidden text-white lg:text-2xl md:text-lg"
           onClick={() => setMenuOpen(!menuOpen)}
         >
-          <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
+          <FontAwesomeIcon icon={faBars} />
         </button>
 
         {/* Links for larger screens */}
         <div className="hidden md:flex space-x-4 items-center ml-auto">
-          <Link
-            className={`${linkClass} mr-2`}
-            to="/my-bookings"
-            onClick={() => setMenuOpen(false)}
-          >
+          <Link className={linkClass} to="/places">
             <FontAwesomeIcon icon={faHotel} />
             <span>Find Stays</span>
           </Link>
-          <Link
-            className={linkClass}
-            to="/my-hotels"
-            onClick={() => setMenuOpen(false)}
-          >
+          <Link className={linkClass} to="/cars">
             <FontAwesomeIcon icon={faCar} />
             <span>Car Rentals</span>
           </Link>
-          <Link
-            className={`${linkClass} mr-2`}
-            to="/login"
-            onClick={() => setMenuOpen(false)}
-          >
+          <Link className={linkClass} to="/tours">
+            <FontAwesomeIcon icon={faCar} />
+            <span>Book Tour</span>
+          </Link>
+          <span className="h-5 border-l border-gray-400"></span>
+
+          <Link className={`${linkClass}`} to="/login">
             Login
           </Link>
-          <Link
-            className={linkClass}
-            to="/sign-up"
-            onClick={() => setMenuOpen(false)}
-          >
+          <Link className={linkClass} to="/register">
             Sign up
           </Link>
         </div>
       </div>
 
-      <div className="md:hidden flex mt-6">
-        <Link
-          className={`${linkClass} mr-2`}
-          to="/my-bookings"
+      {/* Responsive drawer for smaller screens */}
+      <div
+        className={`fixed inset-0 bg-black bg-opacity-40 backdrop-filter backdrop-blur-lg transform transition-transform duration-300 md:hidden z-50 ${
+          menuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <button
+          className="absolute top-5 right-5 text-white text-2xl"
           onClick={() => setMenuOpen(false)}
         >
-          <FontAwesomeIcon icon={faHotel} />
-          <span>Find Stays</span>
-        </Link>
-        <Link
-          className={linkClass}
-          to="/my-hotels"
-          onClick={() => setMenuOpen(false)}
-        >
-          <FontAwesomeIcon icon={faCar} />
-          <span>Car Rentals</span>
-        </Link>
-      </div>
-
-      {/* Responsive menu for smaller screens */}
-      {menuOpen && (
-        <div className="absolute left-1/3 right-0 top-20 bg-brand flex flex-col items-center md:hidden space-y-2 py-4">
-          <Link
-            className={linkClass}
-            to="/login"
-            onClick={() => setMenuOpen(false)}
-          >
-            Login
+          <FontAwesomeIcon icon={faTimes} />
+        </button>
+        <div className="flex flex-col items-center justify-center h-full gap-y-3">
+          <Link className={linkClass} to="/places">
+            <span className="text-base font-bold">Find Stays</span>
           </Link>
-          <Link
-            className={linkClass}
-            to="/sign-up"
-            onClick={() => setMenuOpen(false)}
-          >
-            Sign up
+          <Link className={linkClass} to="/cars">
+            <span className="text-base font-bold">Car Rentals</span>
+          </Link>
+          <Link className={linkClass} to="/tours">
+            <span className="text-base font-bold">Book Tour</span>
+          </Link>
+          <Link className={linkClass} to="/login">
+            <span className="text-base font-bold">Login</span>
+          </Link>
+          <Link className={linkClass} to="/register">
+            <span className="text-base font-bold">Sign</span>
           </Link>
         </div>
-      )}
+      </div>
     </nav>
   );
 };
