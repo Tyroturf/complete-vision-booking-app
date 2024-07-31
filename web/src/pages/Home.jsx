@@ -16,12 +16,14 @@ import CarRentalCard from "../components/CarRentalCard";
 //   fetchCities as apiFetchCities,
 // } from "../api";
 import { showErrorToast } from "../utils/toast";
+import { useNavigate } from "react-router";
 
 const Home = () => {
   // const [cities, setCities] = useState([]);
   // const [cars, setCars] = useState([]);
   // const [loadingCities, setLoadingCities] = useState(true);
   // const [loadingCars, setLoadingCars] = useState(true);
+  const navigate = useNavigate();
 
   const cities = [
     {
@@ -160,8 +162,7 @@ const Home = () => {
   // }, []);
 
   const handleClick = () => {
-    showErrorToast("error: ");
-    console.log("first");
+    navigate("/cars");
   };
 
   return (
@@ -172,7 +173,10 @@ const Home = () => {
           <span className="text-xs md:text-base font-bold text-slate-600">
             Latest Destinations
           </span>
-          <button className="border border-brand ml-8 w-24 lg:w-36 text-xs rounded-md hover:scale-105 mt-2 md:mt-0 md:justify-end transition py-1">
+          <button
+            className="border border-brand ml-8 w-24 lg:w-36 text-xs rounded-md hover:scale-105 mt-2 md:mt-0 md:justify-end transition py-1"
+            onClick={() => navigate("/places")}
+          >
             See All
           </button>
         </div>
@@ -230,7 +234,10 @@ const Home = () => {
           laboriosam? Quam, dicta iste.
         </p>
 
-        <button className="text-xs lg:text-sm w-full sm:w-48 p-2 bg-white rounded-md font-medium hover:scale-105 transition text-slate-600">
+        <button
+          className="text-xs lg:text-sm w-full sm:w-48 p-2 bg-white rounded-md font-medium hover:scale-105 transition text-slate-600"
+          onClick={() => navigate("/tours")}
+        >
           Book a Tour
         </button>
       </div>

@@ -1,4 +1,3 @@
-// components/SearchResultCard.js
 import React from "react";
 
 const SearchResultCard = ({ item }) => {

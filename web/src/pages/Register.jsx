@@ -36,7 +36,7 @@ export const Register = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100 p-4">
-      <div className="w-full max-w-md md:max-w-4xl bg-white shadow-md rounded-lg flex flex-col md:flex-row overflow-hidden">
+      <div className="w-full max-w-md md:max-w-3xl lg:max-w-4xl bg-white shadow-md rounded-lg flex flex-col md:flex-row overflow-hidden">
         {/* Form Section */}
         <FormComponent
           title="Register"

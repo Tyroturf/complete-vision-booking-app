@@ -7,7 +7,7 @@ const Card = ({ item }) => {
   return (
     <div
       className="max-w-sm mx-auto bg-white rounded-lg shadow-md overflow-hidden w-full hover:scale-105 transition cursor-pointer"
-      onClick={() => navigate(`/place/${item.id}`)}
+      onClick={() => navigate("/reserve")}
     >
       <div className="flex flex-col items-center w-full">
         <img

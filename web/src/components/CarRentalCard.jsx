@@ -4,7 +4,7 @@ const CarRentalCard = ({ car }) => {
   if (!car) return null;
   return (
     <Link
-      to={`/detail/${car.id}`}
+      to={"/cars"}
       className="flex-shrink-0 w-40 md:w-52 lg:w-64 cursor-pointer overflow-hidden rounded-md transform transition-transform duration-300 hover:scale-105"
     >
       <div className="relative w-36 h-52 md:w-52 md:h-80 lg:w-60 lg:h-96 overflow-hidden rounded-lg">
