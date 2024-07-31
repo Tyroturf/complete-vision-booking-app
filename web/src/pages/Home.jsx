@@ -213,7 +213,7 @@ const Home = () => {
       </div>
 
       {/* Book Tour */}
-      <div className="flex bg-brand-5xl rounded-md flex-col p-2 md:p-4 lg:p-7 my-10 shadow-md gap-y-3">
+      <div className="flex bg-brand-5xl rounded-md flex-col p-4 md:p-7 my-10 shadow-md gap-y-3">
         <div className="flex justify-between items-center">
           <p className="font-bold text-base md:text:xl text-white">
             Let's Tour Together
@@ -235,7 +235,7 @@ const Home = () => {
         </p>
 
         <button
-          className="text-xs lg:text-sm w-full sm:w-48 p-2 bg-white rounded-md font-medium hover:scale-105 transition text-slate-600"
+          className="text-xs lg:text-sm w-full sm:w-48 p-2 bg-white rounded-md font-bold hover:scale-105 transition text-slate-600"
           onClick={() => navigate("/tours")}
         >
           Book a Tour
