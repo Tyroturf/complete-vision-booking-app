@@ -1,6 +1,5 @@
 import hero from "../assets/hero.jpeg";
 import Hero from "./Hero";
-import { Navbar } from "./Navbar";
 import SubNav from "./SubNav";
 
 const Header = () => {

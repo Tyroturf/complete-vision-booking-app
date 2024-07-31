@@ -8,11 +8,11 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext"; // Import the useAuth hook
+import { useAuth } from "../contexts/AuthContext";
 
 const SubNav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, logout } = useAuth(); // Destructure user and logout from the useAuth hook
+  const { user, logout } = useAuth();
 
   const linkClass =
     "text-gray-800 text-xs lg:text-sm font-medium lg:px-3 md:px-1 py-2 rounded-md transition flex items-center space-x-2 hover:bg-white hover:bg-opacity-15 hover:backdrop-blur-md active:bg-white active:bg-opacity-30 mx-1";

@@ -17,10 +17,7 @@ export const Navbar = () => {
     <nav className="container mx-auto px-6 py-4">
       <div className="flex justify-between items-center gap-5">
         {/* Logo */}
-        <Link
-          className="text-white font-bold text-sm md:text-xl lg:text-2xl"
-          to={"/"}
-        >
+        <Link className="text-white font-bold text-sm md:text-lg" to={"/"}>
           Complete Vision
         </Link>
 

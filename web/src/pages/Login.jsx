@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-// Validation schema for login
 const validationSchema = Yup.object({
   email: Yup.string()
     .email("Invalid email address")
@@ -22,7 +21,7 @@ export const Login = () => {
   const handleSubmit = async (values) => {
     try {
       await login(values.email, values.password);
-      navigate("/"); // Redirect to home after successful login
+      navigate("/");
     } catch (error) {
       console.error("Failed to log in", error);
       // Display error message to user

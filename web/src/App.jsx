@@ -17,6 +17,8 @@ import { AuthProvider } from "./contexts/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import { ToastContainer } from "react-toastify";
 import { SearchProvider } from "./contexts/SearchContext";
+import Reservation from "./pages/Reservation";
+import Confirmation from "./pages/Confirmation";
 // import PrivateRoute from "./PrivateRoute";
 
 const App = () => {
@@ -68,11 +70,21 @@ const App = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route
-              path="/protected-route-2"
+              path="/reserve"
               element={
                 <PrivateRoute>
                   <Layout>
-                    <BookTours />
+                    <Reservation />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/confirmation"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <Confirmation />
                   </Layout>
                 </PrivateRoute>
               }

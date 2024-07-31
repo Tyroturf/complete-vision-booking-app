@@ -53,7 +53,7 @@ export const RatingSummary = ({
       stars.push(
         <svg
           key={i}
-          className={`w-4 h-4 fill-current ${
+          className={`w-3 h-3 fill-current ${
             i <= rating ? "text-yellow-400" : "text-gray-300"
           }`}
           xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +74,7 @@ export const RatingSummary = ({
         reviews)
       </div>
       <div
-        className={`text-sm font-semibold ${
+        className={`text-xs font-semibold ${
           rating >= 4
             ? "text-green-500"
             : rating >= 2

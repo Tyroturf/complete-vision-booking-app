@@ -4,7 +4,6 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import SearchBar from "../components/SearchBar";
 import SubNav from "../components/SubNav";
-import { Navbar } from "../components/Navbar";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -41,7 +40,7 @@ const Layout = ({ children }) => {
           />
         </div>
       )}
-      <div className="flex-grow flex justify-center">
+      <div className="flex-grow flex justify-center my-5">
         <div className="w-full max-w-6xl p-4">{children}</div>
       </div>
       <Footer />

@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-// Validation schema for registration
 const validationSchema = Yup.object({
   username: Yup.string()
     .min(3, "Username must be at least 3 characters")
@@ -29,10 +28,9 @@ export const Register = () => {
   const handleSubmit = async (values) => {
     try {
       await register(values.email, values.password);
-      navigate("/"); // Redirect to home after successful registration
+      navigate("/");
     } catch (error) {
       console.error("Failed to register", error);
-      // Display error message to user
     }
   };
 
