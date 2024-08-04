@@ -10,11 +10,6 @@ import porshe from "../assets/porshe.avif";
 import sport from "../assets/sport.avif";
 
 import CarRentalCard from "../components/CarRentalCard";
-// import { useEffect } from "react";
-// import {
-//   fetchCars as apiFetchCars,
-//   fetchCities as apiFetchCities,
-// } from "../api";
 import { showErrorToast } from "../utils/toast";
 import { useNavigate } from "react-router";
 

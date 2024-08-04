@@ -1,50 +1,65 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
 
-const Confirmation = () => {
-  const location = useLocation();
-  const { bookingDetails } = location.state;
-
-  if (!location.state || !location.state.bookingDetails) {
+const Confirmation = ({ bookingDetails, onSubmit }) => {
+  if (!bookingDetails) {
     return <div>Error: No booking details available.</div>;
   }
 
   return (
-    <div className="container mx-auto mt-20 p-4">
-      <h1 className="text-2xl font-bold mb-5">Booking Confirmation</h1>
-      <div className="space-y-4">
+    <div className="space-y-4 text-gray-600">
+      <h1 className="text-md md:text-lg font-bold mb-4">
+        Booking Confirmation
+      </h1>
+      <div className="space-y-6">
         <div>
-          <h2 className="text-xl font-medium">Guest Information</h2>
-          <p>
+          <h2 className="text-xs md:text-sm font-bold">Guest Information</h2>
+          <p className="text-xs md:text-sm">
             {bookingDetails.firstName} {bookingDetails.lastName}
           </p>
-          <p>{bookingDetails.email}</p>
-          <p>{bookingDetails.phoneNumber}</p>
+          <p className="text-xs md:text-sm font-">{bookingDetails.email}</p>
+          <p className="text-xs md:text-sm">{bookingDetails.phoneNumber}</p>
         </div>
         <div>
-          <h2 className="text-xl font-medium">Booking Details</h2>
-          <p>Guests: {bookingDetails.guests}</p>
-          <p>
-            Dates: {bookingDetails.startDate} - {bookingDetails.endDate}
+          <h2 className="text-xs md:text-sm font-bold">Booking Details</h2>
+          <p className="text-xs md:text-sm">
+            {" "}
+            <span className="font-medium">Guests: </span>
+            {bookingDetails.guests}
+          </p>
+          <p className="text-xs md:text-sm">
+            <span className="font-medium">Dates: </span>
+            {bookingDetails.startDate} - {bookingDetails.endDate}
           </p>
         </div>
         {bookingDetails.interestedInCar && (
           <div>
-            <h2 className="text-xl font-medium">Car Rental Details</h2>
-            <p>Car Type: {bookingDetails.carType}</p>
-            <p>
-              Driving Option:{" "}
+            <h2 className="text-xs md:text-sm font-bold">Car Rental Details</h2>
+            <p className="text-xs md:text-sm">
+              <span className="font-medium">Car Type: </span>
+              {bookingDetails.carType}
+            </p>
+            <p className="text-xs md:text-sm">
+              <span className="font-medium">Driving Option: </span>
               {bookingDetails.chauffeur ? "Chauffeur" : "Self-driving"}
             </p>
           </div>
         )}
         {bookingDetails.interestedInTour && (
           <div>
-            <h2 className="text-xl font-medium">Tour Details</h2>
-            <p>Tour Type: {bookingDetails.tourType}</p>
+            <h2 className="text-xs md:text-sm font-bold">Tour Details</h2>
+            <p className="text-xs md:text-sm">
+              <span className="font-medium">Tour Type: </span>
+              {bookingDetails.tourType}
+            </p>
           </div>
         )}
       </div>
+      <button
+        onClick={onSubmit}
+        className="bg-brand text-xs font-bold text-white px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition"
+      >
+        Confirm Booking
+      </button>
     </div>
   );
 };

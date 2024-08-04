@@ -5,11 +5,21 @@ import {
   faCar,
   faBars,
   faTimes,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { ProfileDropdown } from "./SubNav";
 
 export const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { user, logout } = useAuth();
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
   const linkClass =
     "text-white text-xs lg:text-sm font-medium lg:px-3 md:px-2 py-2 rounded-md transition flex items-center space-x-2 hover:bg-white hover:bg-opacity-15 hover:backdrop-blur-md active:bg-white active:bg-opacity-30";
 
@@ -45,12 +55,25 @@ export const Navbar = () => {
           </Link>
           <span className="h-5 border-l border-gray-400"></span>
 
-          <Link className={`${linkClass}`} to="/login">
-            Login
-          </Link>
-          <Link className={linkClass} to="/register">
-            Sign up
-          </Link>
+          {user ? (
+            <div className="relative">
+              <button className={linkClass} onClick={toggleDropdown}>
+                <FontAwesomeIcon icon={faUser} />
+              </button>
+              {dropdownOpen && (
+                <ProfileDropdown toggleDropdown={toggleDropdown} />
+              )}
+            </div>
+          ) : (
+            <>
+              <Link className={linkClass} to="/login">
+                <span className="text-base font-bold">Login</span>
+              </Link>
+              <Link className={linkClass} to="/register">
+                <span className="text-base font-bold">Sign</span>
+              </Link>
+            </>
+          )}
         </div>
       </div>
 

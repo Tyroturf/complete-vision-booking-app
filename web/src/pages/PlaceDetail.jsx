@@ -1,23 +1,20 @@
 import { faCar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import wheel from "../assets/wheel.webp";
 import city from "../assets/city.webp";
 import scrape from "../assets/scrape.webp";
 import hall from "../assets/hall.webp";
-import fnj from "../assets/fnj.jpeg";
 import tall from "../assets/tall.webp";
-import benz from "../assets/benz.avif";
-import porshe from "../assets/porshe.avif";
-import sport from "../assets/sport.avif";
+
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Review, RatingSummary } from "../components/Review";
+import { RatingSummary } from "../components/Review";
 import ImageGallery from "../components/ImageGallery";
-import { APIProvider, Map } from "@vis.gl/react-google-maps";
 
 const PlaceDetail = () => {
   const images = [city, wheel, tall, hall, scrape];
+  const navigate = useNavigate();
 
   return (
     <div className="container max-w-full mx-auto mt-20">
@@ -33,7 +30,10 @@ const PlaceDetail = () => {
               $400 <span className="font-thin text-base">/ night</span>
             </span>
           </div>
-          <button className="bg-brand p-4 px-6 text-white font-bold rounded-md">
+          <button
+            className="bg-brand p-4 px-6 text-white font-bold rounded-md"
+            onClick={() => navigate("/confirmation")}
+          >
             Reserve
           </button>
         </div>
@@ -54,7 +54,10 @@ const PlaceDetail = () => {
                 $400 <span className="font-thin text-xs">/ night</span>
               </span>
             </div>
-            <button className="bg-brand p-1 px-2 text-white font-medium rounded-md text-xs">
+            <button
+              className="bg-brand p-2 text-white font-medium rounded-md text-xs"
+              onClick={() => navigate("/reserve")}
+            >
               Reserve
             </button>
           </div>
@@ -139,7 +142,7 @@ const PlaceDetail = () => {
           </div>
         </div>
 
-        <div className="border border-gray-30 w-2/3 mx-auto md:my-10 my-5"></div>
+        <div className="hidden md:border border-gray-30 w-2/3 mx-auto md:my-10 my-5"></div>
 
         <div className="hidden md:flex flex-col gap-2 bg-transparent rounded-lg p-4">
           <div className="flex">
@@ -151,7 +154,7 @@ const PlaceDetail = () => {
           </Link>
         </div>
 
-        <div className="border border-gray-30 w-2/3 mx-auto md:my-10 my-5"></div>
+        <div className="hidden md:border border-gray-30 w-2/3 mx-auto md:my-10 my-5"></div>
 
         <div className="flex flex-col bg-transparent rounded-lg p-4">
           <span className="text-base font-bold">What this place offers</span>

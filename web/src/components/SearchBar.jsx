@@ -3,7 +3,6 @@ import { Formik, Form, Field } from "formik";
 import { useSearch } from "../contexts/SearchContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format } from "date-fns";
 import "../customDatePickerWidth.css";
 
 const SearchBar = ({ initialValues }) => {

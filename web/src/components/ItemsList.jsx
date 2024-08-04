@@ -15,9 +15,7 @@ const ItemList = ({ items, renderItem, itemsPerPage = 3 }) => {
 
   return (
     <div className="my-10 mx-auto">
-      <div className="grid gap-5 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-        {currentItems.map(renderItem)}
-      </div>
+      <div className="flex flex-col">{currentItems.map(renderItem)}</div>
       <div className="flex justify-center mt-6 gap-x-4 items-center">
         <button
           onClick={() => handlePageChange(currentPage - 1)}

@@ -6,13 +6,16 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
+    // const user = localStorage.getItem("user");
+    const user = { name: "stunna", age: "4" };
+
     if (user) {
-      setCurrentUser(JSON.parse(user));
+      // setUser(JSON.parse(user));
+      setUser(user);
     }
     setLoading(false);
   }, []);
@@ -20,24 +23,24 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const response = await apiLogin(email, password);
     const user = response.data;
-    setCurrentUser(user);
+    setUser(user);
     localStorage.setItem("user", JSON.stringify(user));
   };
 
   const register = async (email, password) => {
     const response = await apiRegister(email, password);
     const user = response.data;
-    setCurrentUser(user);
+    setUser(user);
     localStorage.setItem("user", JSON.stringify(user));
   };
 
   const logout = () => {
-    setCurrentUser(null);
+    setUser(null);
     localStorage.removeItem("user");
   };
 
   const value = {
-    currentUser,
+    user,
     login,
     register,
     logout,

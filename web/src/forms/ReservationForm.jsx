@@ -313,7 +313,7 @@ const ReservationForm = ({ initialValues, onSubmit }) => {
           <div className="col-span-1 md:col-span-2 w-full flex justify-center">
             <button
               type="submit"
-              className="bg-brand w-full text-white text-xs font-bold p-4 rounded mt-4 hover:scale-105 transition"
+              className="bg-brand-5xl w-full text-white text-xs font-bold p-4 rounded mt-4 hover:scale-105 transition"
               disabled={isSubmitting}
             >
               Submit Reservation

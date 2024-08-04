@@ -1,4 +1,3 @@
-// pages/CarRentals.js
 import React, { useEffect } from "react";
 import carImage from "../assets/benz.avif";
 import { RatingSummary } from "../components/Review";

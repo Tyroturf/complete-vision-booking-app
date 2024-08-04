@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
   const [specialRequests, setSpecialRequests] = useState("");
+  const policy = `We understand that plans can change. If you need to cancel your reservation, please let us know at least 24 hours in advance for a full refund. 
+    Cancellations made within 24 hours of the check-in date will incur a one-night charge. No-shows will be charged the full amount of the reservation`;
 
   return (
     <div className="flex flex-col">
@@ -33,18 +35,13 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
       </div>
 
       {/* New Cancellation Policy Section */}
-      <div className="mt-8 md:p-6 md:border border-brand rounded-lg space-y-5">
+      <div className="mt-8 p-3 py-6 md:p-6 rounded-lg space-y-2 bg-brand-4xl text-white">
         <span className="font-bold text-sm">Cancellation Policy</span>
-        <p className="text-xs">
-          {showFullPolicy
-            ? "We understand that plans can change. If you need to cancel your reservation, please let us know at least 24 hours in advance for a full refund. Cancellations made within 24 hours of the check-in date will incur a one-night charge. No-shows will be charged the full amount of the reservation."
-            : "We understand that plans can change. If you need to cancel your reservation, please let us know at least 24 hours in advance for a full refund. Cancellations made within 24 hours of the check-in date will incur a one-night charge. No-shows will be charged the full amount of the reservation.".slice(
-                0,
-                100
-              ) + "..."}
+        <p className="text-xs font-medium">
+          {showFullPolicy ? policy : policy.slice(0, 100) + "..."}
           <button
             onClick={togglePolicy}
-            className="text-gray-500 hover:underline text-xs underline underline-offset-4 md:ml-2"
+            className="hover:underline text-xs underline underline-offset-4 md:ml-2"
           >
             {showFullPolicy ? "Show Less" : "Learn More"}
           </button>

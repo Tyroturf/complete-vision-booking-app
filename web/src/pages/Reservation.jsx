@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ReservationForm from "../forms/ReservationForm";
 import { RatingSummary } from "../components/Review";
 import wheel from "../assets/wheel.webp";
-import Divider from "../components/Divider";
 import BookingSummary from "../components/BookingSummary";
+import Modal from "../components/Modal";
+import Confirmation from "../pages/Confirmation";
 
 const initialValues = {
   firstName: "",
@@ -15,22 +15,27 @@ const initialValues = {
 };
 
 const Reservation = () => {
-  const navigate = useNavigate();
   const [showFullPolicy, setShowFullPolicy] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [bookingDetails, setBookingDetails] = useState(null);
 
   const handleSubmit = async (values) => {
     try {
       console.log("Reservation details:", values);
-      navigate("/confirmation", { state: { bookingDetails: values } });
+      setBookingDetails(values);
+      setShowConfirmation(true);
     } catch (error) {
       console.error("Failed to reserve room", error);
-    } finally {
-      //   setSubmitting(false);
     }
   };
 
   const togglePolicy = () => {
     setShowFullPolicy(!showFullPolicy);
+  };
+
+  const closeConfirmation = () => {
+    setShowConfirmation(false);
+    setBookingDetails(null);
   };
 
   return (
@@ -84,6 +89,10 @@ const Reservation = () => {
           />
         </div>
       </div>
+
+      <Modal isOpen={showConfirmation} onClose={closeConfirmation}>
+        <Confirmation bookingDetails={bookingDetails} />
+      </Modal>
     </div>
   );
 };
