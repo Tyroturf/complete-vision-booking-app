@@ -32,7 +32,7 @@ const PlaceDetail = () => {
           </div>
           <button
             className="bg-brand p-4 px-6 text-white font-bold rounded-md"
-            onClick={() => navigate("/confirmation")}
+            onClick={() => navigate("/reserve")}
           >
             Reserve
           </button>
