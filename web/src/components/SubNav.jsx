@@ -188,7 +188,7 @@ const SubNav = () => {
                 <>
                   <Link
                     className="text-white my-3"
-                    to="/profile"
+                    to="/dashboard"
                     onClick={handleLinkClick}
                   >
                     <span className="text-base font-bold">Profile</span>

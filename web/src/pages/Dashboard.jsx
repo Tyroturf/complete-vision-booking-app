@@ -10,6 +10,38 @@ import {
 } from "recharts";
 import hero from "../assets/g.jpg";
 import "../styles.css";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import CountUp from "react-countup";
+import { useInView } from "react-intersection-observer";
+import { motion } from "framer-motion";
+
+const TotalBookings = ({ totalBookings }) => {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.3,
+  });
+
+  return (
+    <motion.div
+      ref={ref}
+      className="bg-white p-4 rounded-lg shadow-md"
+      initial={{ opacity: 0 }}
+      animate={inView ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.6 }}
+    >
+      <h3 className="text:sm md:text-lg font-semibold my-2">Total Bookings</h3>
+      <div className="md:mt-24">
+        <p className="text-3xl font-bold">
+          {inView && <CountUp start={1} end={totalBookings} duration={3} />} +
+        </p>
+        <p className="text-sm text-gray-600">
+          As of {new Date().toDateString()}
+        </p>
+      </div>
+    </motion.div>
+  );
+};
 
 const Home = () => {
   const [totalBookings, setTotalBookings] = useState(0);
@@ -35,17 +67,7 @@ const Home = () => {
       <h2 className="text:lg md:text-2xl font-bold mb-4">Dashboard</h2>
 
       <div className="grid md:grid-cols-2 gap-6 mt-10">
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h3 className="text:sm md:text-lg font-semibold my-2">
-            Total Bookings
-          </h3>
-          <div className="md:mt-24">
-            <p className="text-3xl font-bold">{totalBookings}</p>
-            <p className="text-sm text-gray-600">
-              As of {new Date().toDateString()}
-            </p>
-          </div>
-        </div>
+        <TotalBookings totalBookings={100} />
 
         <div className="bg-white p-4 rounded-lg shadow-md">
           <h3 className="text:sm md:text-lg font-semibold my-2">
@@ -90,7 +112,6 @@ const Home = () => {
   );
 };
 
-// Card component to display booking details
 const BookingCard = ({ booking }) => (
   <div className="bg-white shadow-md p-4 rounded-md mb-4 flex justify-between items-center">
     <div>
@@ -186,7 +207,164 @@ const Bookings = () => {
   );
 };
 
-const Account = () => <div>Edit account information...</div>;
+const Account = () => {
+  const initialValues = {
+    username: "currentUsername",
+    email: "currentEmail@example.com",
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  };
+
+  const validationSchema = Yup.object({
+    username: Yup.string().required("Username is required"),
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    currentPassword: Yup.string().required("Current password is required"),
+    newPassword: Yup.string().min(
+      6,
+      "Password should be at least 6 characters"
+    ),
+    confirmNewPassword: Yup.string()
+      .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
+      .when("newPassword", {
+        is: (val) => val && val.length > 0,
+        then: Yup.string().required("Please confirm your new password"),
+      }),
+  });
+
+  const handleSubmit = (values, { setSubmitting }) => {
+    console.log("Account details updated", values);
+    setSubmitting(false);
+  };
+
+  return (
+    <div className="w-full md:w-1/2 p-8 flex flex-col justify-center mx-auto">
+      <h3 className="text-base md:text-lg font-semibold mb-4 text-slate-500">
+        Edit Account Information
+      </h3>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting }) => (
+          <Form className="space-y-4">
+            <div className="relative">
+              <Field
+                type="text"
+                name="username"
+                id="username"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                placeholder=" "
+              />
+              <label
+                htmlFor="username"
+                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+              >
+                Username
+              </label>
+              <ErrorMessage
+                name="username"
+                component="div"
+                className="text-red-500 text-xs mt-1"
+              />
+            </div>
+            <div className="relative">
+              <Field
+                type="email"
+                name="email"
+                id="email"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                placeholder=" "
+              />
+              <label
+                htmlFor="email"
+                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+              >
+                Email
+              </label>
+              <ErrorMessage
+                name="email"
+                component="div"
+                className="text-red-500 text-xs mt-1"
+              />
+            </div>
+            <div className="relative">
+              <Field
+                type="password"
+                name="currentPassword"
+                id="currentPassword"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                placeholder=" "
+              />
+              <label
+                htmlFor="currentPassword"
+                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+              >
+                Current Password
+              </label>
+              <ErrorMessage
+                name="currentPassword"
+                component="div"
+                className="text-red-500 text-xs mt-1"
+              />
+            </div>
+            <div className="relative">
+              <Field
+                type="password"
+                name="newPassword"
+                id="newPassword"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                placeholder=" "
+              />
+              <label
+                htmlFor="newPassword"
+                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+              >
+                New Password
+              </label>
+              <ErrorMessage
+                name="newPassword"
+                component="div"
+                className="text-red-500 text-xs mt-1"
+              />
+            </div>
+            <div className="relative">
+              <Field
+                type="password"
+                name="confirmNewPassword"
+                id="confirmNewPassword"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                placeholder=" "
+              />
+              <label
+                htmlFor="confirmNewPassword"
+                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+              >
+                Confirm New Password
+              </label>
+              <ErrorMessage
+                name="confirmNewPassword"
+                component="div"
+                className="text-red-500 text-xs mt-1"
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-brand text-white py-2 rounded-md font-bold hover:scale-105 transition-transform duration-200 text-xs"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Updating..." : "Update Account"}
+            </button>
+          </Form>
+        )}
+      </Formik>
+    </div>
+  );
+};
+
 const Payment = () => <div>Manage payment information...</div>;
 
 const Navbar = ({
@@ -195,7 +373,7 @@ const Navbar = ({
   sections = ["home", "bookings", "account", "payment"],
 }) => {
   return (
-    <div className="flex justify-around items-center p-4 mt-4 relative">
+    <div className="flex justify-around items-center p-4 mt-4 relative shadow-sm">
       {sections.map((section, index) => (
         <React.Fragment key={section}>
           <button
