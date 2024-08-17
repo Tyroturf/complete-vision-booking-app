@@ -1,0 +1,36 @@
+.nav-button {
+    position: relative;
+    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: inline-block; /* Ensure button size adjusts to text */
+}
+  
+.nav-button::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; /* Adjust as needed to position the border below the text */
+    left: 50%; /* Start from the middle of the button */
+    height: 2px; /* Border thickness */
+    background: #d08c4d;
+    width: 0; /* Start with zero width */
+    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
+    transform: translateX(-50%); /* Center the border */
+    display: block; /* Ensure the pseudo-element takes up space */
+}
+  
+.nav-button-active::after {
+    width: 50%;
+}
+  
+.section-content {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    transition: opacity 0.3s ease-in-out;
+}
+  
+.section-content-active {
+    opacity: 1;
+}

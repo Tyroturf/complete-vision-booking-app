@@ -30,28 +30,8 @@ export const ProfileDropdown = ({ toggleDropdown }) => {
     >
       <ul className="space-y-1 text-sm font-medium my-2">
         <li className={profileLink}>
-          <Link to="/manage-account" className="text-gray-600">
-            Manage Account
-          </Link>
-        </li>
-        <li className={profileLink}>
           <Link to="/dashboard" className="text-gray-600">
             Dashboard
-          </Link>
-        </li>
-        <li className={profileLink}>
-          <Link to="/past-bookings" className="text-gray-600">
-            Past Bookings
-          </Link>
-        </li>
-        <li className={profileLink}>
-          <Link to="/past-rides" className="text-gray-600">
-            Past Rides
-          </Link>
-        </li>
-        <li className={profileLink}>
-          <Link to="/past-tours" className="text-gray-600">
-            Past Tours
           </Link>
         </li>
         <li className={profileLink}>

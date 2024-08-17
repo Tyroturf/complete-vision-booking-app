@@ -19,6 +19,7 @@ import { ToastContainer } from "react-toastify";
 import { SearchProvider } from "./contexts/SearchContext";
 import Reservation from "./pages/Reservation";
 import Confirmation from "./pages/Confirmation";
+import { Dashboard } from "./pages/Dashboard";
 // import PrivateRoute from "./PrivateRoute";
 
 const App = () => {
@@ -85,6 +86,16 @@ const App = () => {
                 <PrivateRoute>
                   <Layout>
                     <Confirmation />
+                  </Layout>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Layout>
+                    <Dashboard />
                   </Layout>
                 </PrivateRoute>
               }
