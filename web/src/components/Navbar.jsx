@@ -70,7 +70,10 @@ export const Navbar = () => {
                 <span className="text-base font-bold">Login</span>
               </Link>
               <Link className={linkClass} to="/register">
-                <span className="text-base font-bold">Sign</span>
+                <span className="text-base font-bold">Sign Up</span>
+              </Link>
+              <Link className={linkClass} to="/register">
+                <span className="text-base font-bold">Become a Host</span>
               </Link>
             </>
           )}
@@ -103,7 +106,10 @@ export const Navbar = () => {
             <span className="text-base font-bold">Login</span>
           </Link>
           <Link className={linkClass} to="/register">
-            <span className="text-base font-bold">Sign</span>
+            <span className="text-base font-bold">Sign Up</span>
+          </Link>
+          <Link className={linkClass} to="/register">
+            <span className="text-base font-bold">Become a Host</span>
           </Link>
         </div>
       </div>

@@ -15,6 +15,14 @@ import * as Yup from "yup";
 import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { RatingSummary } from "../components/Review";
+import wheel from "../assets/wheel.webp";
+import city from "../assets/city.webp";
+import scrape from "../assets/scrape.webp";
+import hall from "../assets/hall.webp";
+import fnj from "../assets/fnj.jpeg";
+import tall from "../assets/tall.webp";
 
 const TotalBookings = ({ totalBookings }) => {
   const { ref, inView } = useInView({
@@ -112,28 +120,57 @@ const Home = () => {
   );
 };
 
-const BookingCard = ({ booking }) => (
-  <div className="bg-white shadow-md p-4 rounded-md mb-4 flex justify-between items-center">
-    <div>
+const BookingCard = ({ booking }) => {
+  const navigate = useNavigate();
+
+  return (
+    <div
+      className="flex flex-col md:flex-row bg-white shadow-sm mb-7"
+      onClick={() => navigate("/booking-details")}
+    >
       <img
-        src={hero}
-        alt={"booking"}
-        className="w-32 h-24 object-cover rounded-lg"
+        src={booking.image}
+        alt={booking.title}
+        className="w-full h-52 md:w-96 md:h-72 lg:h-72 object-cover rounded-t-lg md:rounded-r-none md:rounded-l-lg"
       />
+      <div className="flex flex-col md:m-5 mt-5 justify-center w-auto md:w-full">
+        <div className="flex justify-between">
+          <div className="flex flex-col gap-y-3">
+            <span className="font-bold">{booking.title}</span>
+            <span className="font-thin text-xs">Date: {booking.date}</span>
+            <span className="font-thin text-xs">
+              Location: {booking.location}
+            </span>
+            <div className="flex gap-2 bg-white rounded-lg pr-4">
+              <ul className="flex gap-x-2">
+                {booking.amenities?.map((am, index) => (
+                  <li key={index} className="text-xs font-medium">
+                    {am}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <RatingSummary rating={booking.rating} />
+          </div>
+          <div className="flex">
+            <span className="text-brand font-bold text-base">
+              ${booking.amount}{" "}
+              <span className="font-thin text-xs">/ booking</span>
+            </span>
+          </div>
+        </div>
+        <div className="flex my-5">
+          <button
+            className="bg-brand p-3 px-6 text-white font-medium rounded-sm text-xs w-full"
+            onClick={() => navigate("/booking-details")} // Adjust the path as needed
+          >
+            View
+          </button>
+        </div>
+      </div>
     </div>
-
-    <div className="text-xs text-gray-600">
-      <h4 className="text-sm font-semibold">{booking.title}</h4>
-      <p className="text-gray-600">Date: {booking.date}</p>
-      <p className="text-gray-600">Location: {booking.location}</p>
-      <p className="text-gray-600">Amount: ${booking.amount}</p>
-    </div>
-
-    <button className="bg-brand-3xl rounded-sm hover:scale-105 transition text-xs text-white px-8 py-3 font-bold">
-      View
-    </button>
-  </div>
-);
+  );
+};
 
 const Bookings = () => {
   const [activeTab, setActiveTab] = useState("Past Stays");
@@ -145,12 +182,14 @@ const Bookings = () => {
         date: "2024-01-10",
         location: "New York, NY",
         amount: 200,
+        image: wheel,
         status: "Completed",
       },
       {
         title: "Stay in Paris",
         date: "2024-02-15",
         location: "Paris, France",
+        image: hall,
         amount: 300,
         status: "Cancelled",
       },
@@ -160,6 +199,7 @@ const Bookings = () => {
         title: "Car Rental in LA",
         date: "2024-03-12",
         location: "Los Angeles, CA",
+        image: tall,
         amount: 150,
         status: "Completed",
       },
@@ -167,6 +207,7 @@ const Bookings = () => {
         title: "Car Rental in Tokyo",
         date: "2024-04-18",
         location: "Tokyo, Japan",
+        image: scrape,
         amount: 250,
         status: "Cancelled",
       },
@@ -177,12 +218,14 @@ const Bookings = () => {
         date: "2024-05-10",
         location: "Rome, Italy",
         amount: 100,
+        image: city,
         status: "Completed",
       },
       {
         title: "Tour of London",
         date: "2024-06-22",
         location: "London, UK",
+        image: tall,
         amount: 120,
         status: "Cancelled",
       },

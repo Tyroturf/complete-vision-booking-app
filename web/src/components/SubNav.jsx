@@ -145,6 +145,16 @@ const SubNav = () => {
                   >
                     Sign Up
                   </NavLink>
+                  <NavLink
+                    className={({ isActive }) =>
+                      `${baseLinkClasses} ${
+                        isActive ? activeLinkClasses : defaultLinkClasses
+                      }`
+                    }
+                    to="/host"
+                  >
+                    Become a host
+                  </NavLink>
                 </>
               )}
             </div>
