@@ -16,6 +16,7 @@ const FormComponent = ({
     // Placeholder for Google login functionality
     console.log("Google login clicked");
   };
+
   return (
     <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
       <Link
@@ -35,26 +36,91 @@ const FormComponent = ({
         {({ isSubmitting }) => (
           <Form className="space-y-4">
             {isRegister && (
-              <div className="relative">
-                <Field
-                  type="text"
-                  name="username"
-                  id="username"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor="username"
-                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
-                >
-                  Username
-                </label>
-                <ErrorMessage
-                  name="username"
-                  component="div"
-                  className="text-red-500 text-xs mt-1"
-                />
-              </div>
+              <>
+                <div className="relative">
+                  <Field
+                    type="text"
+                    name="firstName"
+                    id="firstName"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm"
+                    placeholder=" "
+                  />
+                  <label
+                    htmlFor="firstName"
+                    className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                  >
+                    First Name
+                  </label>
+                  <ErrorMessage
+                    name="firstName"
+                    component="div"
+                    className="text-red-500 text-xs mt-1"
+                  />
+                </div>
+
+                <div className="relative">
+                  <Field
+                    type="text"
+                    name="lastName"
+                    id="lastName"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm"
+                    placeholder=" "
+                  />
+                  <label
+                    htmlFor="lastName"
+                    className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                  >
+                    Last Name
+                  </label>
+                  <ErrorMessage
+                    name="lastName"
+                    component="div"
+                    className="text-red-500 text-xs mt-1"
+                  />
+                </div>
+
+                <div className="relative">
+                  <Field
+                    type="text"
+                    name="contact"
+                    id="contact"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm"
+                    placeholder=" "
+                  />
+                  <label
+                    htmlFor="contact"
+                    className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                  >
+                    Contact
+                  </label>
+                  <ErrorMessage
+                    name="contact"
+                    component="div"
+                    className="text-red-500 text-xs mt-1"
+                  />
+                </div>
+
+                {/* <div className="relative">
+                  <Field
+                    type="text"
+                    name="username"
+                    id="username"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm"
+                    placeholder=" "
+                  />
+                  <label
+                    htmlFor="username"
+                    className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                  >
+                    Username
+                  </label>
+                  <ErrorMessage
+                    name="username"
+                    component="div"
+                    className="text-red-500 text-xs mt-1"
+                  />
+                </div> */}
+              </>
             )}
             <div className="relative">
               <Field
@@ -96,7 +162,7 @@ const FormComponent = ({
                 className="text-red-500 text-xs mt-1"
               />
             </div>
-            {isRegister && (
+            {/* {isRegister && (
               <div className="relative">
                 <Field
                   type="password"
@@ -117,7 +183,7 @@ const FormComponent = ({
                   className="text-red-500 text-xs mt-1"
                 />
               </div>
-            )}
+            )} */}
             <button
               type="submit"
               className="w-full bg-brand text-white py-2 rounded-md font-bold hover:scale-105 transition-transform duration-200 text-xs"

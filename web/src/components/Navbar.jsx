@@ -20,6 +20,12 @@ export const Navbar = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
+  const handleLogout = () => {
+    logout();
+    showSuccessToast("Logged out successfully");
+    navigate("/login");
+  };
+
   const linkClass =
     "text-white text-xs lg:text-sm font-medium lg:px-3 md:px-2 py-2 rounded-md transition flex items-center space-x-2 hover:bg-white hover:bg-opacity-15 hover:backdrop-blur-md active:bg-white active:bg-opacity-30";
 
@@ -61,19 +67,22 @@ export const Navbar = () => {
                 <FontAwesomeIcon icon={faUser} />
               </button>
               {dropdownOpen && (
-                <ProfileDropdown toggleDropdown={toggleDropdown} />
+                <ProfileDropdown
+                  toggleDropdown={toggleDropdown}
+                  handleLogout={handleLogout}
+                />
               )}
             </div>
           ) : (
             <>
               <Link className={linkClass} to="/login">
-                <span className="text-base font-bold">Login</span>
+                <span>Login</span>
               </Link>
               <Link className={linkClass} to="/register">
-                <span className="text-base font-bold">Sign Up</span>
+                <span>Sign Up</span>
               </Link>
               <Link className={linkClass} to="/register">
-                <span className="text-base font-bold">Become a Host</span>
+                <span>Become a Host</span>
               </Link>
             </>
           )}

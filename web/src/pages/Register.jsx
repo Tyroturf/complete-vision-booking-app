@@ -6,19 +6,22 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 const validationSchema = Yup.object({
-  username: Yup.string()
-    .min(3, "Username must be at least 3 characters")
-    .max(15, "Username must be 15 characters or less")
-    .required("Username is required"),
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
+  contact: Yup.string().required("Contact is required"),
+  // username: Yup.string()
+  //   .min(3, "Username must be at least 3 characters")
+  //   .max(15, "Username must be 15 characters or less")
+  //   .required("Username is required"),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
   password: Yup.string()
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Confirm password is required"),
+  // confirmPassword: Yup.string()
+  //   .oneOf([Yup.ref("password"), null], "Passwords must match")
+  //   .required("Confirm password is required"),
 });
 
 export const Register = () => {
@@ -27,7 +30,17 @@ export const Register = () => {
 
   const handleSubmit = async (values) => {
     try {
-      await register(values.email, values.password);
+      const { firstName, lastName, contact, email, password } = values;
+      const role = "G"; // default role
+      await register({
+        firstName,
+        lastName,
+        contact,
+        email,
+        password,
+        role,
+      });
+      showSuccessToast("Sign up successful");
       navigate("/");
     } catch (error) {
       console.error("Failed to register", error);
@@ -37,14 +50,14 @@ export const Register = () => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100 p-4">
       <div className="w-full max-w-md md:max-w-3xl lg:max-w-4xl bg-white shadow-md rounded-lg flex flex-col md:flex-row overflow-hidden">
-        {/* Form Section */}
         <FormComponent
           title="Register"
           initialValues={{
+            firstName: "",
+            lastName: "",
+            contact: "",
             username: "",
-            email: "",
             password: "",
-            confirmPassword: "",
           }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}

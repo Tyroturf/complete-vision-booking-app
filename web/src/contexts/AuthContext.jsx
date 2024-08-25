@@ -10,12 +10,10 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // const user = localStorage.getItem("user");
-    const user = { name: "stunna", age: "4" };
+    const user = localStorage.getItem("user");
 
     if (user) {
-      // setUser(JSON.parse(user));
-      setUser(user);
+      setUser(JSON.parse(user));
     }
     setLoading(false);
   }, []);
@@ -25,10 +23,12 @@ export const AuthProvider = ({ children }) => {
     const user = response.data;
     setUser(user);
     localStorage.setItem("user", JSON.stringify(user));
+    return response;
   };
 
   const register = async (email, password) => {
     const response = await apiRegister(email, password);
+    console.log(response);
     const user = response.data;
     setUser(user);
     localStorage.setItem("user", JSON.stringify(user));

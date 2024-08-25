@@ -73,6 +73,7 @@ export const SearchProvider = ({ children }) => {
   }, [currentPage, carRentalsParams, findPlacesParams, bookToursParams]);
 
   const updateSearchParams = (params) => {
+    console.log("update", params);
     switch (currentPage) {
       case "cars":
         setCarRentalsParams(params);

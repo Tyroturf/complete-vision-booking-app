@@ -6,3 +6,9 @@ export const showErrorToast = (message) => {
     position: "top-right",
   });
 };
+
+export const showSuccessToast = (message) => {
+  toast.success(message, {
+    position: "top-right"
+  })
+}

@@ -4,6 +4,7 @@ import tall from "../assets/tall.webp";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { showErrorToast, showSuccessToast } from "../utils/toast";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -20,18 +21,26 @@ export const Login = () => {
 
   const handleSubmit = async (values) => {
     try {
-      await login(values.email, values.password);
-      navigate("/");
+      const { email, password } = values;
+
+      const response = await login(email, password);
+      console.log(response);
+
+      if (response.data.status === "Success") {
+        navigate("/");
+        showSuccessToast("Login successful");
+      } else {
+        console.error("Failed to log in: Invalid credentials or response");
+        showErrorToast("Failed to login. Please try again");
+      }
     } catch (error) {
       console.error("Failed to log in", error);
-      // Display error message to user
     }
   };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100 p-4">
       <div className="w-full max-w-md md:max-w-3xl lg:max-w-4xl bg-white shadow-md rounded-lg flex flex-col md:flex-row overflow-hidden">
-        {/* Form Section */}
         <FormComponent
           title="Login"
           initialValues={{ email: "", password: "" }}

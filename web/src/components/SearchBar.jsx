@@ -4,6 +4,7 @@ import { useSearch } from "../contexts/SearchContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../customDatePickerWidth.css";
+import { searchPlaces } from "../api";
 
 const SearchBar = ({ initialValues }) => {
   const { updateSearchParams } = useSearch();
@@ -16,12 +17,25 @@ const SearchBar = ({ initialValues }) => {
     setEndDate(end);
   };
 
-  const handleSubmit = (values, { resetForm }) => {
-    updateSearchParams({
-      ...values,
-      startDate,
-      endDate,
-    });
+  const handleSubmit = async (values, { resetForm }) => {
+    const searchParams = {
+      p_check_in: startDate,
+      p_check_out: endDate,
+      p_num_guests: values.guests,
+      p_search: values.destination,
+    };
+
+    updateSearchParams(searchParams);
+
+    const listings = await searchPlaces(
+      searchParams.p_check_in,
+      searchParams.p_check_out,
+      searchParams.p_num_guests,
+      searchParams.p_search
+    );
+
+    console.log("Listings:", listings);
+
     resetForm();
   };
 
@@ -56,6 +70,8 @@ const SearchBar = ({ initialValues }) => {
               Guests
             </label>
           </div>
+
+          {/* Date Range Picker */}
           <div className="relative col-span-2 md:col-span-1">
             <DatePicker
               selected={startDate}

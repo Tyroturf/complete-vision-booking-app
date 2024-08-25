@@ -1,100 +1,36 @@
-import React from "react";
-import wheel from "../assets/wheel.webp";
+import React, { useState, useEffect } from "react";
 import Card from "../components/Card";
-import city from "../assets/city.webp";
-import scrape from "../assets/scrape.webp";
-import hall from "../assets/hall.webp";
-import fnj from "../assets/fnj.jpeg";
-import tall from "../assets/tall.webp";
 import ItemList from "../components/ItemsList";
-// import { useSearch } from "../contexts/SearchContext";
-
-const mockPlaces = [
-  {
-    id: 1,
-    name: "Skyline Apartments",
-    location: "East Legon",
-    image: wheel,
-    price: 1500,
-    bedrooms: 2,
-    amenities: ["Pool", "Gym", "WiFi"],
-    checkIn: "2024-08-01",
-    checkOut: "2024-08-15",
-    guests: 2,
-  },
-  {
-    id: 2,
-    name: "Lakeside Residency",
-    location: "Tema",
-    image: hall,
-    price: 1800,
-    bedrooms: 3,
-    amenities: ["Parking", "WiFi", "Air Conditioning"],
-    checkIn: "2024-08-01",
-    checkOut: "2024-08-15",
-    guests: 4,
-  },
-  {
-    id: 3,
-    name: "Green View Apartments",
-    location: "East Legon",
-    image: tall,
-    price: 1200,
-    bedrooms: 1,
-    amenities: ["WiFi", "Gym"],
-    checkIn: "2024-08-01",
-    checkOut: "2024-08-15",
-    guests: 1,
-  },
-  {
-    id: 4,
-    name: "City Lights Apartments",
-    location: "Tema",
-    image: scrape,
-    price: 1700,
-    bedrooms: 2,
-    amenities: ["Pool", "WiFi", "Air Conditioning"],
-    checkIn: "2024-08-01",
-    checkOut: "2024-08-15",
-    guests: 3,
-  },
-  {
-    id: 5,
-    name: "Urban Oasis",
-    location: "East Legon",
-    image: city,
-    price: 1600,
-    bedrooms: 2,
-    amenities: ["Gym", "WiFi", "Parking"],
-    checkIn: "2024-08-01",
-    checkOut: "2024-08-15",
-    guests: 2,
-  },
-  {
-    id: 6,
-    name: "Harbor View Apartments",
-    location: "Tema",
-    image: fnj,
-    price: 2000,
-    bedrooms: 3,
-    amenities: ["Pool", "Gym", "WiFi", "Parking"],
-    checkIn: "2024-08-01",
-    checkOut: "2024-08-15",
-    guests: 4,
-  },
-];
+import { searchPlaces } from "../api";
 
 const FindPlaces = () => {
-  //   const { setCurrentPage, places } = useSearch();
+  const [places, setPlaces] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  //   useEffect(() => {
-  //     setCurrentPage("places");
-  //   }, [setCurrentPage]);
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
+        const response = await searchPlaces();
+        console.log(response);
+        setPlaces(response.data.listings);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchPlaces();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error fetching data: {error.message}</p>;
+  console.log("places", places);
   return (
     <ItemList
-      items={mockPlaces}
-      renderItem={(place) => <Card key={place.id} item={place} />}
+      items={places}
+      renderItem={(place) => <Card key={place.LISTING_ID} item={place} />}
       itemsPerPage={3}
     />
   );

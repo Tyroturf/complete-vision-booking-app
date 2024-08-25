@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCar,
@@ -10,6 +10,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../contexts/AuthContext";
+import { showSuccessToast } from "../utils/toast";
 
 const baseLinkClasses =
   "text-xs lg:text-sm font-medium lg:px-3 md:px-1 py-2 rounded-md transition flex items-center space-x-2 mx-1";
@@ -17,9 +18,8 @@ const defaultLinkClasses =
   "text-gray-800 hover:bg-white hover:bg-opacity-15 hover:backdrop-blur-md active:bg-white active:bg-opacity-30";
 const activeLinkClasses = "text-brand bg-white bg-opacity-15 backdrop-blur-md";
 
-export const ProfileDropdown = ({ toggleDropdown }) => {
+export const ProfileDropdown = ({ toggleDropdown, handleLogout }) => {
   const profileLink = "hover:bg-gray-100 w-full p-2 px-6";
-
   return (
     <motion.div
       className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50"
@@ -35,16 +35,24 @@ export const ProfileDropdown = ({ toggleDropdown }) => {
           </Link>
         </li>
         <li className={profileLink}>
-          <button>Logout</button>
+          <button onClick={handleLogout}>Logout</button>
         </li>
       </ul>
     </motion.div>
   );
 };
+
 const SubNav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    showSuccessToast("Logged out successfully");
+    navigate("/login");
+  };
 
   const handleLinkClick = () => {
     setMenuOpen(false);
@@ -120,7 +128,10 @@ const SubNav = () => {
                     <FontAwesomeIcon icon={faUser} />
                   </button>
                   {dropdownOpen && (
-                    <ProfileDropdown toggleDropdown={toggleDropdown} />
+                    <ProfileDropdown
+                      toggleDropdown={toggleDropdown}
+                      handleLogout={handleLogout}
+                    />
                   )}
                 </div>
               ) : (
@@ -205,8 +216,7 @@ const SubNav = () => {
                   </Link>
                   <button
                     onClick={() => {
-                      handleLinkClick();
-                      logout();
+                      handleLogout();
                     }}
                     className="text-white my-3"
                   >
