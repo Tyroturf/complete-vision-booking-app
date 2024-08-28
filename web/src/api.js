@@ -10,14 +10,20 @@ export const login = (email, password) => {
 };
 
 export const register = ({ firstName, lastName, contact, email, password, role }) => {
-  return api.get("/register/new_user", {
+  console.log({ firstName, lastName, contact, email, password, role });
+
+  const queryString = new URLSearchParams({
     first_name: firstName,
     last_name: lastName,
     contact,
     username: email,
     password,
     role,
-  });
+  }).toString();
+
+  const url = `/register/new_user?${queryString}`;
+
+  return api.get(url);
 };
 
 
