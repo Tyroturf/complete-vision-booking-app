@@ -36,9 +36,9 @@ export const searchPlaces = (params) => {
 };
 
 export const searchCars = (params) => {
-  return api.get("/search/cars", { params });
+  return api.get("/vehicle/rental", { params });
 };
 
 export const searchTours = (params) => {
-  return api.get("/search/tours", { params });
+  return api.get("/tour/tours", { params });
 };

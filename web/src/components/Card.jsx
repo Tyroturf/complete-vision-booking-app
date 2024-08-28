@@ -5,12 +5,11 @@ import { RatingSummary } from "./Review";
 const Card = ({ item }) => {
   const navigate = useNavigate();
 
-  const imageUrl = `/images/${item.FILETYPE}`;
   console.log(item);
   return (
     <div className="flex flex-col md:flex-row bg-white shadow-sm mb-7">
       <img
-        src={imageUrl}
+        src={item.IMAGE_URL}
         alt={item.LIST_NAME}
         className="w-full h-52 md:w-96 md:h-72 lg:h-72 object-cover rounded-t-lg md:rounded-r-none md:rounded-l-lg"
       />
