@@ -39,7 +39,7 @@ export const Register = () => {
       });
 
       if (res.data.error) {
-        showErrorToast(res.data.error);
+        showErrorToast("An account with this email already exists");
         return;
       }
 

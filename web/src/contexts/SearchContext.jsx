@@ -61,6 +61,7 @@ export const SearchProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     if (currentPage === "cars") {
       searchCars(carRentalsParams);
@@ -101,6 +102,7 @@ export const SearchProvider = ({ children }) => {
     searchPlaces,
     searchCars,
     searchTours,
+    setFindPlacesParams,
   };
 
   return (

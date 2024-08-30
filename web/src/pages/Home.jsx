@@ -10,7 +10,6 @@ import porshe from "../assets/porshe.avif";
 import sport from "../assets/sport.avif";
 
 import CarRentalCard from "../components/CarRentalCard";
-import { showErrorToast } from "../utils/toast";
 import { useNavigate } from "react-router";
 
 const Home = () => {

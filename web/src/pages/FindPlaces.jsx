@@ -4,15 +4,27 @@ import ItemList from "../components/ItemsList";
 import { useSearch } from "../contexts/SearchContext";
 
 const FindPlaces = () => {
-  const { places, loading, error, searchPlaces } = useSearch();
+  const {
+    places,
+    loading,
+    error,
+    searchPlaces,
+    setCurrentPage,
+    findPlacesParams,
+  } = useSearch();
 
   useEffect(() => {
-    searchPlaces();
+    if (findPlacesParams) {
+      searchPlaces(findPlacesParams);
+    } else {
+      searchPlaces();
+    }
+    setCurrentPage("places");
   }, []);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error fetching data: {error.message}</p>;
-  console.log("places", places);
+
   return (
     <ItemList
       items={places}

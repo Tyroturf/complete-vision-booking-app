@@ -5,11 +5,14 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../customDatePickerWidth.css";
 import { formatDate } from "../utils/helpers";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const SearchBar = ({ initialValues }) => {
-  const { updateSearchParams, setCurrentPage, searchPlaces } = useSearch();
+  const { updateSearchParams, searchPlaces, setFindPlacesParams } = useSearch();
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const onChange = (dates) => {
     const [start, end] = dates;
@@ -26,8 +29,12 @@ const SearchBar = ({ initialValues }) => {
     };
 
     updateSearchParams(searchParams);
-    setCurrentPage("places");
     await searchPlaces(searchParams);
+
+    if (location.pathname === "/") {
+      setFindPlacesParams(searchParams);
+      navigate("/places");
+    }
   };
 
   return (

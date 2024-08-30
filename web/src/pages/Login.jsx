@@ -30,7 +30,6 @@ export const Login = () => {
         navigate("/");
         showSuccessToast("Login successful");
       } else {
-        console.error("Failed to log in: Invalid credentials or response");
         showErrorToast("Failed to login. Please try again");
       }
     } catch (error) {
