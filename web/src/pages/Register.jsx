@@ -40,6 +40,7 @@ export const Register = () => {
 
       if (res.data.error) {
         showErrorToast(res.data.error);
+        return;
       }
 
       showSuccessToast("Sign up successful");
