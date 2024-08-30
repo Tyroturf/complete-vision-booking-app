@@ -1,5 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { login as apiLogin, register as apiRegister } from "../api";
+import {
+  login as apiLogin,
+  register as apiRegister,
+  logout as apiLogout,
+} from "../api";
 
 const AuthContext = createContext();
 
@@ -10,12 +14,18 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
-
-    if (user) {
-      setUser(JSON.parse(user));
+    try {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      console.error("Failed to parse user from localStorage", error);
+      localStorage.removeItem("user");
+      localStorage.removeItem("session_id");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const login = async (email, password) => {
@@ -28,7 +38,6 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (email, password) => {
     const response = await apiRegister(email, password);
-    console.log(response);
     const user = response.data;
     setUser(user);
     localStorage.setItem("user", JSON.stringify(user));
@@ -36,7 +45,9 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+    apiLogout();
     localStorage.removeItem("user");
+    localStorage.removeItem("session_id");
   };
 
   const value = {

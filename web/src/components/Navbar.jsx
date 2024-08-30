@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { ProfileDropdown } from "./SubNav";
+import { showSuccessToast } from "../utils/toast";
 
 export const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -23,7 +24,6 @@ export const Navbar = () => {
   const handleLogout = () => {
     logout();
     showSuccessToast("Logged out successfully");
-    navigate("/login");
   };
 
   const linkClass =
