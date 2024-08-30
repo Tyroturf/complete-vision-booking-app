@@ -4,15 +4,12 @@ import wheel from "../assets/wheel.webp";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { showSuccessToast } from "../utils/toast";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First name is required"),
   lastName: Yup.string().required("Last name is required"),
   contact: Yup.string().required("Contact is required"),
-  // username: Yup.string()
-  //   .min(3, "Username must be at least 3 characters")
-  //   .max(15, "Username must be 15 characters or less")
-  //   .required("Username is required"),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
@@ -41,7 +38,7 @@ export const Register = () => {
         role,
       });
       showSuccessToast("Sign up successful");
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       console.error("Failed to register", error);
     }

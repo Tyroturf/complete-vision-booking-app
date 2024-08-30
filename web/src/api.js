@@ -56,7 +56,7 @@ export const fetchCars = () => {
 };
 
 export const searchPlaces = (params) => {
-  return api.get("/listing/listings", { params });
+  return api.get('/listing/listings', { params });
 };
 
 export const searchCars = (params) => {

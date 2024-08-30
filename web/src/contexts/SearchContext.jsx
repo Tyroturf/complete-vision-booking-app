@@ -26,7 +26,7 @@ export const SearchProvider = ({ children }) => {
 
     try {
       const response = await apiSearchPlaces(params);
-      setPlaces(response.data);
+      setPlaces(response.data.listings);
     } catch (err) {
       showErrorToast("Failed to fetch places", err);
     } finally {
@@ -61,7 +61,6 @@ export const SearchProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     if (currentPage === "cars") {
       searchCars(carRentalsParams);
@@ -73,7 +72,6 @@ export const SearchProvider = ({ children }) => {
   }, [currentPage, carRentalsParams, findPlacesParams, bookToursParams]);
 
   const updateSearchParams = (params) => {
-    console.log("update", params);
     switch (currentPage) {
       case "cars":
         setCarRentalsParams(params);
@@ -100,6 +98,9 @@ export const SearchProvider = ({ children }) => {
     tours,
     error,
     loading,
+    searchPlaces,
+    searchCars,
+    searchTours,
   };
 
   return (

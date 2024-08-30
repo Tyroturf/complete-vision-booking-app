@@ -5,7 +5,6 @@ import { RatingSummary } from "./Review";
 const Card = ({ item }) => {
   const navigate = useNavigate();
 
-  console.log(item);
   return (
     <div className="flex flex-col md:flex-row bg-white shadow-sm mb-7">
       <img
@@ -16,15 +15,20 @@ const Card = ({ item }) => {
       <div className="flex flex-col m-5 justify-center w-auto md:w-full">
         <div className="flex justify-between">
           <div className="flex flex-col gap-y-3">
-            <span className="font-bold">{item.LIST_NAME}</span>
+            <span className="font-bold text-sm md:text-base text-gray-700">
+              {item.LIST_NAME}
+            </span>
             <span className="font-thin text-xs">{item.LOCATION}</span>
             <div className="flex gap-2 bg-white rounded-lg pr-4">
-              <p>{item.AMENITIES}</p>
+              <p className="text-xs">{item.AMENITIES}</p>
             </div>
             <RatingSummary rating={item.rating} />
           </div>
           <div className="flex">
-            <span className="text-brand font-bold text-base">{item.PRICE}</span>
+            <span className="text-brand font-bold text-base">
+              {item.PRICE}{" "}
+              <span className="font-thin text-xs md:text-sm">/ night</span>
+            </span>
           </div>
         </div>
         <div className="flex my-5">

@@ -4,10 +4,10 @@ import { useSearch } from "../contexts/SearchContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../customDatePickerWidth.css";
-import { searchPlaces } from "../api";
+import { formatDate } from "../utils/helpers";
 
 const SearchBar = ({ initialValues }) => {
-  const { updateSearchParams } = useSearch();
+  const { updateSearchParams, setCurrentPage, searchPlaces } = useSearch();
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(null);
 
@@ -17,26 +17,17 @@ const SearchBar = ({ initialValues }) => {
     setEndDate(end);
   };
 
-  const handleSubmit = async (values, { resetForm }) => {
+  const handleSubmit = async (values) => {
     const searchParams = {
-      p_check_in: startDate,
-      p_check_out: endDate,
+      p_check_in: formatDate(startDate),
+      p_check_out: formatDate(endDate),
       p_num_guests: values.guests,
       p_search: values.destination,
     };
 
     updateSearchParams(searchParams);
-
-    const listings = await searchPlaces(
-      searchParams.p_check_in,
-      searchParams.p_check_out,
-      searchParams.p_num_guests,
-      searchParams.p_search
-    );
-
-    console.log("Listings:", listings);
-
-    resetForm();
+    setCurrentPage("places");
+    await searchPlaces(searchParams);
   };
 
   return (

@@ -1,27 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Card from "../components/Card";
 import ItemList from "../components/ItemsList";
-import { searchPlaces } from "../api";
+import { useSearch } from "../contexts/SearchContext";
 
 const FindPlaces = () => {
-  const [places, setPlaces] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { places, loading, error, searchPlaces } = useSearch();
 
   useEffect(() => {
-    const fetchPlaces = async () => {
-      try {
-        const response = await searchPlaces();
-        console.log(response);
-        setPlaces(response.data.listings);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPlaces();
+    searchPlaces();
   }, []);
 
   if (loading) return <p>Loading...</p>;
