@@ -4,7 +4,7 @@ import wheel from "../assets/wheel.webp";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { showSuccessToast } from "../utils/toast";
+import { showErrorToast, showSuccessToast } from "../utils/toast";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First name is required"),
@@ -29,7 +29,7 @@ export const Register = () => {
     try {
       const { firstName, lastName, contact, email, password } = values;
       const role = "G"; // default role
-      await register({
+      const res = await register({
         firstName,
         lastName,
         contact,
@@ -37,10 +37,15 @@ export const Register = () => {
         password,
         role,
       });
+
+      if (res.data.error) {
+        showErrorToast(res.data.error);
+      }
+
       showSuccessToast("Sign up successful");
       navigate("/login");
     } catch (error) {
-      console.error("Failed to register", error);
+      showErrorToast(error);
     }
   };
 
@@ -53,7 +58,7 @@ export const Register = () => {
             firstName: "",
             lastName: "",
             contact: "",
-            username: "",
+            email: "",
             password: "",
           }}
           validationSchema={validationSchema}
