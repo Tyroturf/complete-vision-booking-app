@@ -1,27 +1,19 @@
 import React, { useState, useEffect } from "react";
 import Card from "../components/Card";
 import ItemList from "../components/ItemsList";
-import { searchCars } from "../api";
+import { useSearch } from "../contexts/SearchContext";
 
 const CarRentals = () => {
-  const [cars, setCars] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { cars, loading, error, searchCars, setCurrentPage, carRentalsParams } =
+    useSearch();
 
   useEffect(() => {
-    const fetchCars = async () => {
-      try {
-        const response = await searchCars();
-        console.log(response);
-        setCars(response.data.car_rentals);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCars();
+    if (carRentalsParams) {
+      searchCars(carRentalsParams);
+    } else {
+      searchCars();
+    }
+    setCurrentPage("cars");
   }, []);
 
   if (loading) return <p>Loading...</p>;
@@ -31,7 +23,7 @@ const CarRentals = () => {
   return (
     <ItemList
       items={cars}
-      renderItem={(car) => <Card key={car.id} item={car} />}
+      renderItem={(car) => <Card key={car.ID} item={car} />}
       itemsPerPage={3}
     />
   );

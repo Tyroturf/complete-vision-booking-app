@@ -1,23 +1,59 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReservationForm from "../forms/ReservationForm";
 import { RatingSummary } from "../components/Review";
-import wheel from "../assets/wheel.webp";
 import BookingSummary from "../components/BookingSummary";
 import Modal from "../components/Modal";
 import Confirmation from "../pages/Confirmation";
+import { useAuth } from "../contexts/AuthContext";
+import { useParams } from "react-router-dom";
+import {
+  fetchPlace,
+  fetchCar,
+  // fetchTour
+} from "../api";
 
-const initialValues = {
-  firstName: "",
-  lastName: "",
-  guests: 1,
-  phoneNumber: "",
-  email: "",
-};
-
-const Reservation = () => {
+const Reservation = ({ type }) => {
   const [showFullPolicy, setShowFullPolicy] = useState(false);
+  const [data, setData] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [bookingDetails, setBookingDetails] = useState(null);
+  const { id } = useParams();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    console.log(type);
+    const fetchData = async () => {
+      try {
+        let response;
+        if (type === "place") {
+          response = await fetchPlace(id);
+          setData(response.data.listings[0]);
+        } else if (type === "car_rentals") {
+          response = await fetchCar(id);
+          setData(response.data.car_rentals[0]);
+          console.log(response);
+        }
+        // else if (type === "tour") {
+        //   response = await fetchTour(id);
+        //   setData(response.data.tours[0]);
+        // }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    if (id) {
+      fetchData();
+    }
+  }, [id, type]);
+
+  const initialValues = {
+    firstName: user.first_name,
+    lastName: user.last_name,
+    guests: 1,
+    phoneNumber: user.contact,
+    email: "",
+  };
 
   const handleSubmit = async (values) => {
     try {
@@ -25,7 +61,7 @@ const Reservation = () => {
       setBookingDetails(values);
       setShowConfirmation(true);
     } catch (error) {
-      console.error("Failed to reserve room", error);
+      console.error("Failed to reserve", error);
     }
   };
 
@@ -44,14 +80,14 @@ const Reservation = () => {
         <div className="space-y-5 md:border border-brand md:p-6 rounded-lg">
           <div className="flex justify-between gap-x-3">
             <img
-              src={wheel}
+              src={data.IMAGE1_URL}
               className="w-1/2 h-28 lg:h-56 object-cover rounded-lg"
-              alt="icon"
+              alt={data.LIST_NAME || "icon"}
             />
             <div className="flex flex-col justify-center gap-y-1">
-              <span className="font-medium text-xs">Hotel Name</span>
+              <span className="font-medium text-xs">{data.LIST_NAME}</span>
               <RatingSummary />
-              <span className="font-thin text-xs">Location</span>
+              <span className="font-thin text-xs">{data.LOCATION}</span>
             </div>
           </div>
 
@@ -81,7 +117,6 @@ const Reservation = () => {
           </div>
         </div>
 
-        {/* Use the BookingSummary component */}
         <div className="flex items-center">
           <BookingSummary
             showFullPolicy={showFullPolicy}

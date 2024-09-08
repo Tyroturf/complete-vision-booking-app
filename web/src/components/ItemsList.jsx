@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const ItemList = ({ items, renderItem, itemsPerPage = 3 }) => {
+const ItemList = ({ items = [], renderItem, itemsPerPage = 3 }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(items.length / itemsPerPage);

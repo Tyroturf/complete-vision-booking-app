@@ -72,3 +72,9 @@ export const fetchPlace = (id) => {
   
   return api.get(`/listing/listings?${queryString}`);
 };
+
+export const fetchCar = (id) => {
+  const queryString = new URLSearchParams({ p_rental_id: id }).toString();
+  
+  return api.get(`/vehicle/rental?${queryString}`);
+};

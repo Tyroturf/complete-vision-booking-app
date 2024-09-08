@@ -40,7 +40,7 @@ export const SearchProvider = ({ children }) => {
 
     try {
       const response = await apiSearchCars(params);
-      setCars(response.data);
+      setCars(response.data.car_rentals);
     } catch (err) {
       showErrorToast("Failed to fetch cars", err);
     } finally {

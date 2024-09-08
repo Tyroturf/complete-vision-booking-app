@@ -161,11 +161,35 @@ const Home = () => {
 
   return (
     <>
+      {/* Book Tour */}
+      <div className="flex bg-brand-5xl rounded-md flex-col p-4 md:p-7 my-10 shadow-md gap-y-3">
+        <div className="flex justify-between items-center">
+          <p className="font-bold text-base md:text:xl text-white">
+            Let's Tour Together
+          </p>
+          <div className="bg-white w-10 h-10 rounded-lg flex flex-col items-center justify-center text-xs px-6 text-slate-600">
+            <p>From</p>
+            <p className="font-bold">$100</p>
+          </div>
+        </div>
+        <p className="text-xs md:text-sm text-white font-medium">
+          Embark on your dream vacation with exclusive 24/7 car service with a
+          personal chauffeur, complemented by a private tour.
+        </p>
+
+        <button
+          className="text-xs lg:text-sm w-full sm:w-48 p-2 bg-white rounded-md font-bold hover:scale-105 transition text-slate-500"
+          onClick={() => navigate("/tours")}
+        >
+          Book a Tour
+        </button>
+      </div>
+
       {/* Latest Destination Section */}
       <div className="space-y-3 m-1 pt-5  md:pt-10 rounded-lg shadow-md p-2 md:p-4 lg:p-7">
         <div className="flex justify-between">
           <span className="text-xs md:text-base font-bold text-slate-600">
-            Latest Destinations
+            Find Places
           </span>
           <button
             className="border border-brand ml-8 w-24 lg:w-36 text-xs rounded-md hover:scale-105 mt-2 md:mt-0 md:justify-end transition py-1"
@@ -204,36 +228,6 @@ const Home = () => {
             <CarRentalCard key={car.id} car={car} />
           ))}
         </div>
-      </div>
-
-      {/* Book Tour */}
-      <div className="flex bg-brand-5xl rounded-md flex-col p-4 md:p-7 my-10 shadow-md gap-y-3">
-        <div className="flex justify-between items-center">
-          <p className="font-bold text-base md:text:xl text-white">
-            Let's Tour Together
-          </p>
-          <div className="bg-white w-10 h-10 rounded-lg flex flex-col items-center justify-center text-xs px-6 text-slate-600">
-            <p>From</p>
-            <p className="font-bold">$100</p>
-          </div>
-        </div>
-        <p className="text-xs md:text-sm text-white font-medium">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Explicabo
-          optio alias unde nulla voluptatem aspernatur, sapiente labore
-          exercitationem assumenda voluptas vitae. Reiciendis culpa explicabo
-          doloremque illum laboriosam? Quam, dicta iste. Lorem ipsum dolor sit
-          amet consectetur adipisicing elit. Explicabo optio alias unde nulla
-          voluptatem aspernatur, sapiente labore exercitationem assumenda
-          voluptas vitae. Reiciendis culpa explicabo doloremque illum
-          laboriosam? Quam, dicta iste.
-        </p>
-
-        <button
-          className="text-xs lg:text-sm w-full sm:w-48 p-2 bg-white rounded-md font-bold hover:scale-105 transition text-slate-600"
-          onClick={() => navigate("/tours")}
-        >
-          Book a Tour
-        </button>
       </div>
     </>
   );

@@ -1,9 +1,23 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { RatingSummary } from "./Review";
 
 const Card = ({ item }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isPlacesPage = location.pathname.includes("places");
+  const isCarsPage = location.pathname.includes("cars");
+
+  const handleNavigate = () => {
+    if (isPlacesPage) {
+      navigate(`/places/${item.ID}`);
+    } else if (isCarsPage) {
+      navigate(`/cars/${item.ID}`);
+    } else {
+      navigate(`/place/${item.ID}`);
+    }
+  };
 
   return (
     <div className="flex flex-col md:flex-row bg-white shadow-sm mb-7">
@@ -34,7 +48,7 @@ const Card = ({ item }) => {
         <div className="flex my-5">
           <button
             className="bg-brand p-3 px-6 text-white font-medium rounded-sm text-xs w-full"
-            onClick={() => navigate(`/place/${item.LISTING_ID}`)}
+            onClick={handleNavigate}
           >
             View
           </button>

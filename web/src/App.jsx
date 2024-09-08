@@ -20,7 +20,8 @@ import { SearchProvider } from "./contexts/SearchContext";
 import Reservation from "./pages/Reservation";
 import Confirmation from "./pages/Confirmation";
 import { Dashboard } from "./pages/Dashboard";
-// import PrivateRoute from "./PrivateRoute";
+import CarDetail from "./pages/CarDetail";
+import ReservationWrapper from "./components/ReservationWrapper";
 
 const App = () => {
   return (
@@ -28,6 +29,8 @@ const App = () => {
       <SearchProvider>
         <Router>
           <Routes>
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
             <Route
               path="/"
               element={
@@ -37,10 +40,18 @@ const App = () => {
               }
             />
             <Route
-              path="/place/:id"
+              path="/places/:id"
               element={
                 <Layout>
                   <PlaceDetail />
+                </Layout>
+              }
+            />
+            <Route
+              path="/cars/:id"
+              element={
+                <Layout>
+                  <CarDetail />
                 </Layout>
               }
             />
@@ -68,14 +79,12 @@ const App = () => {
                 </Layout>
               }
             />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
             <Route
-              path="/reserve"
+              path="/reservation/:type/:id"
               element={
                 <PrivateRoute>
                   <Layout>
-                    <Reservation />
+                    <ReservationWrapper />
                   </Layout>
                 </PrivateRoute>
               }

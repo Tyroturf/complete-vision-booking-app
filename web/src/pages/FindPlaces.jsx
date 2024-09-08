@@ -28,7 +28,7 @@ const FindPlaces = () => {
   return (
     <ItemList
       items={places}
-      renderItem={(place) => <Card key={place.LISTING_ID} item={place} />}
+      renderItem={(place) => <Card key={place.ID} item={place} />}
       itemsPerPage={3}
     />
   );
