@@ -15,7 +15,7 @@ const Card = ({ item }) => {
     } else if (isCarsPage) {
       navigate(`/cars/${item.ID}`);
     } else {
-      navigate(`/place/${item.ID}`);
+      navigate(`/tours/${item.ID}`);
     }
   };
 

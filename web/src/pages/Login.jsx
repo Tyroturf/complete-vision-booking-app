@@ -24,7 +24,6 @@ export const Login = () => {
       const { email, password } = values;
 
       const response = await login(email, password);
-      console.log(response);
 
       if (response.data.status === "Success") {
         navigate("/");

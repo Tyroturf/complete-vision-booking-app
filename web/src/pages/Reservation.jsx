@@ -6,11 +6,7 @@ import Modal from "../components/Modal";
 import Confirmation from "../pages/Confirmation";
 import { useAuth } from "../contexts/AuthContext";
 import { useParams } from "react-router-dom";
-import {
-  fetchPlace,
-  fetchCar,
-  // fetchTour
-} from "../api";
+import { fetchPlace, fetchCar, fetchTour } from "../api";
 
 const Reservation = ({ type }) => {
   const [showFullPolicy, setShowFullPolicy] = useState(false);
@@ -21,7 +17,6 @@ const Reservation = ({ type }) => {
   const { user } = useAuth();
 
   useEffect(() => {
-    console.log(type);
     const fetchData = async () => {
       try {
         let response;
@@ -32,11 +27,10 @@ const Reservation = ({ type }) => {
           response = await fetchCar(id);
           setData(response.data.car_rentals[0]);
           console.log(response);
+        } else if (type === "tour") {
+          response = await fetchTour(id);
+          setData(response.data.tours[0]);
         }
-        // else if (type === "tour") {
-        //   response = await fetchTour(id);
-        //   setData(response.data.tours[0]);
-        // }
       } catch (err) {
         console.log(err);
       }
@@ -52,7 +46,7 @@ const Reservation = ({ type }) => {
     lastName: user.last_name,
     guests: 1,
     phoneNumber: user.contact,
-    email: "",
+    email: user.email,
   };
 
   const handleSubmit = async (values) => {

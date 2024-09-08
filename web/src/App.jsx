@@ -22,6 +22,7 @@ import Confirmation from "./pages/Confirmation";
 import { Dashboard } from "./pages/Dashboard";
 import CarDetail from "./pages/CarDetail";
 import ReservationWrapper from "./components/ReservationWrapper";
+import TourDetail from "./pages/TourDetail";
 
 const App = () => {
   return (
@@ -52,6 +53,14 @@ const App = () => {
               element={
                 <Layout>
                   <CarDetail />
+                </Layout>
+              }
+            />
+            <Route
+              path="/tours/:id"
+              element={
+                <Layout>
+                  <TourDetail />
                 </Layout>
               }
             />

@@ -12,7 +12,6 @@ const BookTours = () => {
     const fetchTours = async () => {
       try {
         const response = await searchTours();
-        console.log(response);
         setTours(response.data.tours);
       } catch (err) {
         setError(err);

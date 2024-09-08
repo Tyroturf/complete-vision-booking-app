@@ -19,7 +19,6 @@ const CarRentals = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error fetching data: {error.message}</p>;
 
-  console.log("cars", cars);
   return (
     <ItemList
       items={cars}
