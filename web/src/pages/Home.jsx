@@ -1,159 +1,52 @@
-import LatestDestinationCard from "../components/LatestDestinationCard";
-import city from "../assets/city.webp";
+import React from "react";
+import { useNavigate } from "react-router";
+import { useSearch } from "../contexts/SearchContext";
+
+import CityCard from "../components/CityCard";
+import CarRentalCard from "../components/CarRentalCard";
+import TourCard from "../components/TourCard";
+
+import suv from "../assets/suv.png";
 import scrape from "../assets/scrape.webp";
 import hall from "../assets/hall.webp";
-import wheel from "../assets/wheel.webp";
-import fnj from "../assets/fnj.jpeg";
-import tall from "../assets/tall.webp";
+import vill from "../assets/vill.png";
+import t1 from "../assets/t1.png";
+import ab from "../assets/ab.png";
 import benz from "../assets/benz.avif";
 import porshe from "../assets/porshe.avif";
-import sport from "../assets/sport.avif";
-
-import CarRentalCard from "../components/CarRentalCard";
-import { useNavigate } from "react-router";
+import beach from "../assets/beach.png";
+import bus from "../assets/bus.png";
+import gall from "../assets/gall.png";
+import hist from "../assets/hist.png";
 
 const Home = () => {
-  // const [cities, setCities] = useState([]);
-  // const [cars, setCars] = useState([]);
-  // const [loadingCities, setLoadingCities] = useState(true);
-  // const [loadingCars, setLoadingCars] = useState(true);
   const navigate = useNavigate();
+  const { setCurrentPage, updateSearchParams } = useSearch();
 
   const cities = [
-    {
-      id: 1,
-      name: "Tema",
-      image: wheel,
-      count: 2,
-    },
-    {
-      id: 2,
-      name: "East Legon",
-      image: scrape,
-      count: 10,
-    },
-    {
-      id: 3,
-      name: "Tema",
-      image: tall,
-      count: 2,
-    },
-    {
-      id: 4,
-      name: "East Legon",
-      image: hall,
-      count: 10,
-    },
-    {
-      id: 5,
-      name: "Tema",
-      image: fnj,
-      count: 2,
-    },
-    {
-      id: 6,
-      name: "East Legon",
-      image: city,
-      count: 10,
-    },
-    {
-      id: 7,
-      name: "Tema",
-      image: wheel,
-      count: 2,
-    },
-    {
-      id: 8,
-      name: "East Legon",
-      image: scrape,
-      count: 10,
-    },
+    { id: 1, name: "Accra", image: vill, count: 2 },
+    { id: 2, name: "Kumasi", image: scrape, count: 10 },
+    { id: 3, name: "Aburi", image: ab, count: 2 },
+    { id: 4, name: "Cape Coast", image: hall, count: 10 },
   ];
 
   const cars = [
-    {
-      id: 1,
-      name: "Mercedes C220",
-      image: benz,
-      price: 2000,
-    },
-    {
-      id: 2,
-      name: "Porshe",
-      image: porshe,
-      price: 1000,
-    },
-    {
-      id: 3,
-      name: "Ferrari",
-      image: sport,
-      price: 21000,
-    },
-    {
-      id: 4,
-      name: "Mercedes C220",
-      image: benz,
-      price: 2000,
-    },
-    {
-      id: 5,
-      name: "Porshe",
-      image: porshe,
-      price: 1000,
-    },
-    {
-      id: 6,
-      name: "Ferrari",
-      image: sport,
-      price: 21000,
-    },
-    {
-      id: 7,
-      name: "Mercedes C220",
-      image: benz,
-      price: 2000,
-    },
-    {
-      id: 8,
-      name: "Porshe",
-      image: porshe,
-      price: 1000,
-    },
-    {
-      id: 9,
-      name: "Ferrari",
-      image: sport,
-      price: 21000,
-    },
+    { id: 1, name: "Sedan", image: benz, price: 2000 },
+    { id: 3, name: "SUV", image: suv, price: 21000 },
+    { id: 4, name: "Bus", image: bus, price: 2000 },
+    { id: 2, name: "Coupe", image: porshe, price: 1000 },
   ];
 
-  // useEffect(() => {
-  //   const fetchCities = async () => {
-  //     try {
-  //       const response = await apiFetchCities();
-  //       setCities(response.data);
-  //     } catch (error) {
-  //       showErrorToast("Error fetching cities: " + error.message);
-  //     } finally {
-  //       setLoadingCities(false);
-  //     }
-  //   };
+  const tours = [
+    { id: 1, name: "Galleria Tour", image: gall, price: 2000 },
+    { id: 2, name: "Historical Tour", image: hist, price: 1000 },
+    { id: 3, name: "Fun Experiences", image: beach, price: 21000 },
+  ];
 
-  //   // Fetch car rentals
-  //   const fetchCars = async () => {
-  //     try {
-  //       const response = await apiFetchCars();
-  //       setCars(response.data);
-  //     } catch (error) {
-  //       showErrorToast("Error fetching cars: " + error.message);
-  //     } finally {
-  //       setLoadingCars(false);
-  //     }
-  //   };
-
-  //   fetchCities();
-  //   fetchCars();
-  // }, []);
+  const handleCityClick = (cityName) => {
+    updateSearchParams({ location: cityName });
+    setCurrentPage("places");
+  };
 
   const handleClick = () => {
     navigate("/cars");
@@ -161,10 +54,18 @@ const Home = () => {
 
   return (
     <>
-      {/* Book Tour */}
-      <div className="flex bg-brand-5xl rounded-md flex-col p-4 md:p-7 my-10 shadow-md gap-y-3">
-        <div className="flex justify-between items-center">
-          <p className="font-bold text-base md:text:xl text-white">
+      {/* Book Tour Section */}
+      <div
+        className="relative flex flex-col p-4 md:p-7 my-10 shadow-md gap-y-3 rounded-md bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${t1})`,
+          backgroundSize: "cover",
+        }}
+      >
+        <div className="absolute inset-0 bg-black opacity-60 rounded-md"></div>
+
+        <div className="relative flex justify-between items-center z-10">
+          <p className="font-bold text-base md:text-xl text-white">
             Let's Tour Together
           </p>
           <div className="bg-white w-10 h-10 rounded-lg flex flex-col items-center justify-center text-xs px-6 text-slate-600">
@@ -172,13 +73,14 @@ const Home = () => {
             <p className="font-bold">$100</p>
           </div>
         </div>
-        <p className="text-xs md:text-sm text-white font-medium">
+
+        <p className="relative text-xs md:text-sm text-white font-medium z-10">
           Embark on your dream vacation with exclusive 24/7 car service with a
           personal chauffeur, complemented by a private tour.
         </p>
 
         <button
-          className="text-xs lg:text-sm w-full sm:w-48 p-2 bg-white rounded-md font-bold hover:scale-105 transition text-slate-500"
+          className="relative text-xs lg:text-sm w-full sm:w-48 p-2 bg-white rounded-md font-bold hover:scale-105 transition text-slate-500 z-10"
           onClick={() => navigate("/tours")}
         >
           Book a Tour
@@ -200,7 +102,11 @@ const Home = () => {
         </div>
         <div className="flex gap-1 md:gap-2 lg:gap-3 overflow-x-auto py-2">
           {cities.map((city) => (
-            <LatestDestinationCard key={city.id} city={city} />
+            <CityCard
+              key={city.id}
+              city={city}
+              onClick={() => handleCityClick(city.name)}
+            />
           ))}
         </div>
       </div>
@@ -226,6 +132,30 @@ const Home = () => {
         <div className="flex gap-1 md:gap-2 lg:gap-3 overflow-x-auto py-2">
           {cars.map((car) => (
             <CarRentalCard key={car.id} car={car} />
+          ))}
+        </div>
+      </div>
+
+      {/* Tours Section */}
+      <div className="space-y-3 m-1 pt-5 mt-2 md:mt-3 md:pt-10 shadow-md p-2 md:p-4 lg:p-7">
+        <span className="text-xs md:text-base font-bold text-slate-600">
+          Popular Tours
+        </span>
+        <div className="flex flex-col md:flex-row">
+          <p className="text-xs font-medium text-slate-600 lg:text-sm">
+            Explore our range of tours and make the most out of your journey
+            with exclusive offers.
+          </p>
+          <button
+            className="border border-brand w-24 lg:w-36 text-xs rounded-md hover:scale-105 md:ml-10 mt-2 md:mt-0 md:justify-end transition py-1"
+            onClick={() => navigate("/tours")}
+          >
+            See All
+          </button>
+        </div>
+        <div className="flex gap-1 md:gap-2 lg:gap-3 overflow-x-auto py-2">
+          {tours.map((tour) => (
+            <TourCard key={tour.id} item={tour} />
           ))}
         </div>
       </div>

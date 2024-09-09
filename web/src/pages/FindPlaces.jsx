@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Card from "../components/Card";
 import ItemList from "../components/ItemsList";
 import { useSearch } from "../contexts/SearchContext";
@@ -10,17 +11,36 @@ const FindPlaces = () => {
     error,
     searchPlaces,
     setCurrentPage,
-    findPlacesParams,
+    setFindPlacesParams,
   } = useSearch();
 
+  const location = useLocation();
+
+  const getQueryParams = (queryString) => {
+    return queryString
+      .slice(1)
+      .split("&")
+      .reduce((params, param) => {
+        const [key, value] = param.split("=");
+        params[key] = decodeURIComponent(value);
+        return params;
+      }, {});
+  };
+
   useEffect(() => {
-    if (findPlacesParams) {
-      searchPlaces(findPlacesParams);
+    setCurrentPage("places");
+
+    // Extract query string from URL
+    const queryParams = getQueryParams(location.search);
+
+    // If there are query parameters, set the search params accordingly
+    if (queryParams) {
+      setFindPlacesParams(queryParams);
+      searchPlaces(queryParams);
     } else {
       searchPlaces();
     }
-    setCurrentPage("places");
-  }, []);
+  }, [location.search]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error fetching data: {error.message}</p>;

@@ -18,7 +18,7 @@ export const SearchProvider = ({ children }) => {
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(null); // 'cars', 'places', or 'tours'
+  const [currentPage, setCurrentPage] = useState(null);
 
   const searchPlaces = async (params) => {
     setLoading(true);

@@ -20,7 +20,7 @@ const Reservation = ({ type }) => {
     const fetchData = async () => {
       try {
         let response;
-        if (type === "place") {
+        if (type === "listings") {
           response = await fetchPlace(id);
           setData(response.data.listings[0]);
         } else if (type === "car_rentals") {
@@ -74,12 +74,12 @@ const Reservation = ({ type }) => {
         <div className="space-y-5 md:border border-brand md:p-6 rounded-lg">
           <div className="flex justify-between gap-x-3">
             <img
-              src={data.IMAGE1_URL}
+              src={data.IMAGE_URL}
               className="w-1/2 h-28 lg:h-56 object-cover rounded-lg"
               alt={data.LIST_NAME || "icon"}
             />
             <div className="flex flex-col justify-center gap-y-1">
-              <span className="font-medium text-xs">{data.LIST_NAME}</span>
+              <span className="font-medium text-sm">{data.LIST_NAME}</span>
               <RatingSummary />
               <span className="font-thin text-xs">{data.LOCATION}</span>
             </div>

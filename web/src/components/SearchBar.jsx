@@ -29,11 +29,14 @@ const SearchBar = ({ initialValues }) => {
     };
 
     updateSearchParams(searchParams);
-    await searchPlaces(searchParams);
+
+    const queryString = new URLSearchParams(searchParams).toString();
 
     if (location.pathname === "/") {
       setFindPlacesParams(searchParams);
-      navigate("/places");
+      navigate(`/places?${queryString}`);
+    } else {
+      await searchPlaces(searchParams);
     }
   };
 
