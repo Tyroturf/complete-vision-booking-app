@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Card from "../components/Card";
 import ItemList from "../components/ItemsList";
-import { searchTours } from "../api";
+import { useSearch } from "../contexts/SearchContext";
 
 const BookTours = () => {
-  const [tours, setTours] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const {
+    tours,
+    loading,
+    error,
+    searchTours,
+    setCurrentPage,
+    bookToursParams,
+  } = useSearch();
 
   useEffect(() => {
-    const fetchTours = async () => {
-      try {
-        const response = await searchTours();
-        setTours(response.data.tours);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTours();
+    if (bookToursParams) {
+      searchTours(bookToursParams);
+    } else {
+      searchTours();
+    }
+    setCurrentPage("tours");
   }, []);
 
   if (loading) return <p>Loading...</p>;
@@ -29,7 +28,7 @@ const BookTours = () => {
   return (
     <ItemList
       items={tours}
-      renderItem={(tour) => <Card key={tour.id} item={tour} />}
+      renderItem={(tour) => <Card key={tour.ID} item={tour} />}
       itemsPerPage={3}
     />
   );

@@ -26,8 +26,12 @@ export const Login = () => {
       const response = await login(email, password);
 
       if (response.data.status === "Success") {
-        navigate("/");
         showSuccessToast("Login successful");
+
+        const redirectPath =
+          sessionStorage.getItem("redirectAfterLogin") || "/";
+        sessionStorage.removeItem("redirectAfterLogin");
+        navigate(redirectPath);
       } else {
         showErrorToast("Failed to login. Please try again");
       }

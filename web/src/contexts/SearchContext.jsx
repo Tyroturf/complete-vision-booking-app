@@ -54,7 +54,7 @@ export const SearchProvider = ({ children }) => {
 
     try {
       const response = await apiSearchTours(params);
-      setTours(response.data);
+      setTours(response.data.tours);
     } catch (err) {
       showErrorToast("Failed to fetch tours", err);
     } finally {

@@ -30,10 +30,8 @@ const FindPlaces = () => {
   useEffect(() => {
     setCurrentPage("places");
 
-    // Extract query string from URL
     const queryParams = getQueryParams(location.search);
 
-    // If there are query parameters, set the search params accordingly
     if (queryParams) {
       setFindPlacesParams(queryParams);
       searchPlaces(queryParams);

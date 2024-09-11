@@ -5,3 +5,14 @@ export const formatDate = (date) => {
     const year = date.getFullYear();
     return `${month}/${day}/${year}`;
   };
+
+export const getQueryParams = (queryString) => {
+  return queryString
+    .slice(1)
+    .split("&")
+    .reduce((params, param) => {
+      const [key, value] = param.split("=");
+      params[key] = decodeURIComponent(value);
+      return params;
+    }, {});
+};

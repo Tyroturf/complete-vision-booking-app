@@ -26,8 +26,7 @@ const Reservation = ({ type }) => {
         } else if (type === "car_rentals") {
           response = await fetchCar(id);
           setData(response.data.car_rentals[0]);
-          console.log(response);
-        } else if (type === "tour") {
+        } else if (type === "tours") {
           response = await fetchTour(id);
           setData(response.data.tours[0]);
         }

@@ -4,7 +4,13 @@ import { useAuth } from "../contexts/AuthContext";
 
 const PrivateRoute = ({ children }) => {
   const { user } = useAuth();
-  return user ? children : <Navigate to="/login" />;
+
+  if (!user) {
+    sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
+    return <Navigate to="/login" />;
+  }
+
+  return children;
 };
 
 export default PrivateRoute;
