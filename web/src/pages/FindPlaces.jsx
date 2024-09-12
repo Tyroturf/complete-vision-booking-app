@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import Card from "../components/Card";
 import ItemList from "../components/ItemsList";
 import { useSearch } from "../contexts/SearchContext";
+import { formatDate } from "../utils/helpers";
 
 const FindPlaces = () => {
   const {
@@ -17,12 +18,18 @@ const FindPlaces = () => {
   const location = useLocation();
 
   const getQueryParams = (queryString) => {
+    if (!queryString) {
+      return {};
+    }
+
     return queryString
       .slice(1)
       .split("&")
       .reduce((params, param) => {
         const [key, value] = param.split("=");
-        params[key] = decodeURIComponent(value);
+        if (key) {
+          params[key] = decodeURIComponent(value);
+        }
         return params;
       }, {});
   };
@@ -32,11 +39,21 @@ const FindPlaces = () => {
 
     const queryParams = getQueryParams(location.search);
 
-    if (queryParams) {
+    if (Object.keys(queryParams).length > 0) {
       setFindPlacesParams(queryParams);
       searchPlaces(queryParams);
     } else {
-      searchPlaces();
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+
+      const defaultSearchParams = {
+        p_check_in: formatDate(today),
+        p_check_out: formatDate(tomorrow),
+      };
+
+      setFindPlacesParams(defaultSearchParams);
+      searchPlaces(defaultSearchParams);
     }
   }, [location.search]);
 
