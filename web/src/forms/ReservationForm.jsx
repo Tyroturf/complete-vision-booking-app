@@ -69,7 +69,6 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
   }, [interestedInTour]);
 
   useEffect(() => {
-    console.log(chauffeur);
     if (chauffeur) {
       setDropoffLocation(listing.LIST_NAME);
     } else {
