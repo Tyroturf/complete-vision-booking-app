@@ -68,6 +68,15 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
     }
   }, [interestedInTour]);
 
+  useEffect(() => {
+    console.log(chauffeur);
+    if (chauffeur) {
+      setDropoffLocation(listing.LIST_NAME);
+    } else {
+      setDropoffLocation("");
+    }
+  }, [chauffeur]);
+
   const onChange = (dates) => {
     const [start, end] = dates;
     setStartDate(start);
@@ -273,20 +282,6 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                     </Field>
                   </div>
 
-                  <div className="relative mt-4">
-                    <Field
-                      type="text"
-                      name="destination"
-                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                      placeholder=" "
-                      value={dropoffLocation}
-                      onChange={(e) => setDropoffLocation(e.target.value)}
-                    />
-                    <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
-                      Drop-off Location
-                    </label>
-                  </div>
-
                   {/* Chauffeur or Self-driving Selection */}
                   <div className="flex flex-col mt-4">
                     <span className="font-bold text-sm my-5">
@@ -311,22 +306,37 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                     </div>
 
                     {chauffeur && (
-                      <div className="relative my-4">
-                        <Field
-                          type="text"
-                          name="pickupLocation"
-                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                          placeholder=" "
-                          value={pickupLocation}
-                          onChange={(e) => setPickupLocation(e.target.value)}
-                        />
-                        <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
-                          Pick-up Location
-                        </label>
-                      </div>
+                      <>
+                        <div className="relative my-4">
+                          <Field
+                            type="text"
+                            name="pickupLocation"
+                            className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                            placeholder="Ex: Home Address"
+                            value={pickupLocation}
+                            onChange={(e) => setPickupLocation(e.target.value)}
+                          />
+                          <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
+                            Pick-up Location
+                          </label>
+                        </div>
+                        <div className="relative my-4">
+                          <Field
+                            type="text"
+                            name="destination"
+                            className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                            placeholder=" "
+                            value={dropoffLocation}
+                            onChange={(e) => setDropoffLocation(e.target.value)}
+                          />
+                          <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
+                            Drop-off Location
+                          </label>
+                        </div>
+                      </>
                     )}
 
-                    <div className="flex items-center mt-2">
+                    <div className="flex items-center mt-4">
                       <input
                         type="radio"
                         id="pickupDropoff"
@@ -345,22 +355,37 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                     </div>
 
                     {!chauffeur && (
-                      <div className="mt-4">
-                        <div className="flex flex-col">
-                          <label
-                            htmlFor="idUpload"
-                            className="text-gray-600 text-xs mb-2"
-                          >
-                            Upload ID
-                          </label>
-                          <input
-                            type="file"
-                            id="idUpload"
-                            name="idUpload"
-                            className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
+                      <>
+                        <div className="relative mt-8">
+                          <Field
+                            type="text"
+                            name="destination"
+                            className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                            placeholder="Ex: Home Address"
+                            value={dropoffLocation}
+                            onChange={(e) => setDropoffLocation(e.target.value)}
                           />
+                          <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
+                            Drop-off Location
+                          </label>
                         </div>
-                      </div>
+                        <div className="mt-4">
+                          <div className="flex flex-col">
+                            <label
+                              htmlFor="idUpload"
+                              className="text-gray-600 text-xs mb-2"
+                            >
+                              Upload ID
+                            </label>
+                            <input
+                              type="file"
+                              id="idUpload"
+                              name="idUpload"
+                              className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
+                            />
+                          </div>
+                        </div>
+                      </>
                     )}
                   </div>
                 </>
