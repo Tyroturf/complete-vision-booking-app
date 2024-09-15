@@ -84,3 +84,45 @@ export const fetchTour = (id) => {
   
   return api.get(`/tour/tours?${queryString}`);
 };
+
+export const bookProperty = (bookingData) => {
+  const queryString = new URLSearchParams({
+    listing_id: bookingData.listing_id,
+    user_id: bookingData.user_id,
+    booking_date: bookingData.booking_date,
+    first_name: bookingData.first_name,
+    last_name: bookingData.last_name,
+    contact: bookingData.contact,
+    email: bookingData.email,
+    num_guests: bookingData.num_guests,
+    car_services: bookingData.car_services ? "Y" : "N",
+    driving_type: bookingData.driving_type,
+    pickup_location: bookingData.pickup_location,
+    dropoff_location: bookingData.dropoff_location,
+    private_tour: bookingData.private_tour ? "Y" : "N",
+    checkin: bookingData.checkin,
+    checkout: bookingData.checkout,
+    listing_price: bookingData.listing_price,
+    ride_price: bookingData.ride_price,
+    tour_price: bookingData.tour_price,
+    no_nights: bookingData.no_nights,
+    total: bookingData.total,
+    tour_type: bookingData.tour_type,
+    car_id: bookingData.car_id,
+    status: bookingData.status,
+    host_id: bookingData.host_id,
+    fee: bookingData.fee,
+    chauffuer_rate: bookingData.chauffuer_rate,
+    sub_total: bookingData.sub_total,
+  }).toString();
+
+  return api.get(`/property/booking?${queryString}`);
+};
+
+export const fetchBookingCars = () => {
+  return api.get("/car/details");
+}
+
+export const fetchTourTypes = async () => {
+  return api.get("/tourtype/type");
+};

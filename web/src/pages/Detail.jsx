@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -11,6 +11,8 @@ const Detail = ({ fetchDetail, type }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = location.search;
 
   useEffect(() => {
     const getDetail = async () => {
@@ -59,7 +61,9 @@ const Detail = ({ fetchDetail, type }) => {
           </div>
           <button
             className="bg-brand p-4 px-6 text-white font-bold rounded-md"
-            onClick={() => navigate(`/reservation/${type}/${item.ID}`)}
+            onClick={() =>
+              navigate(`/reservation/${type}/${item.ID}/${queryParams}`)
+            }
           >
             Reserve
           </button>

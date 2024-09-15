@@ -5,17 +5,18 @@ import { RatingSummary } from "./Review";
 const Card = ({ item }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const queryParams = location.search;
 
   const isPlacesPage = location.pathname.includes("places");
   const isCarsPage = location.pathname.includes("cars");
 
   const handleNavigate = () => {
     if (isPlacesPage) {
-      navigate(`/places/${item.ID}`);
+      navigate(`/places/${item.ID}${queryParams}`);
     } else if (isCarsPage) {
-      navigate(`/cars/${item.ID}`);
+      navigate(`/cars/${item.ID}${queryParams}`);
     } else {
-      navigate(`/tours/${item.ID}`);
+      navigate(`/tours/${item.ID}${queryParams}`);
     }
   };
 

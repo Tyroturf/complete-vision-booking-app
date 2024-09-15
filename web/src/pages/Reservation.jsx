@@ -1,20 +1,33 @@
-import React, { useEffect, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import ReservationForm from "../forms/ReservationForm";
 import { RatingSummary } from "../components/Review";
 import BookingSummary from "../components/BookingSummary";
 import Modal from "../components/Modal";
 import Confirmation from "../pages/Confirmation";
 import { useAuth } from "../contexts/AuthContext";
-import { useParams } from "react-router-dom";
 import { fetchPlace, fetchCar, fetchTour } from "../api";
 
 const Reservation = ({ type }) => {
+  const location = useLocation();
+  const { id } = useParams();
+  const { user } = useAuth();
+  const params = new URLSearchParams(location.search);
+
+  const [initialValues, setInitialValues] = useState({
+    firstName: user.first_name,
+    lastName: user.last_name,
+    guests: params.get("p_num_guests") || 1,
+    phoneNumber: user.contact,
+    email: user.email,
+    checkIn: params.get("p_check_in") || "",
+    checkOut: params.get("p_check_out") || "",
+  });
+
   const [showFullPolicy, setShowFullPolicy] = useState(false);
   const [data, setData] = useState({});
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [bookingDetails, setBookingDetails] = useState(null);
-  const { id } = useParams();
-  const { user } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,14 +52,6 @@ const Reservation = ({ type }) => {
       fetchData();
     }
   }, [id, type]);
-
-  const initialValues = {
-    firstName: user.first_name,
-    lastName: user.last_name,
-    guests: 1,
-    phoneNumber: user.contact,
-    email: user.email,
-  };
 
   const handleSubmit = async (values) => {
     try {
@@ -89,14 +94,16 @@ const Reservation = ({ type }) => {
             <div className="flex justify-between items-center">
               <div className="flex flex-col">
                 <span className="text-xs font-medium">Dates</span>
-                <span className="text-xs">30 Oct - 4 Nov</span>
+                <span className="text-xs">
+                  {initialValues.checkIn} - {initialValues.checkOut}
+                </span>
               </div>
             </div>
 
             <div className="flex justify-between items-center">
               <div className="flex flex-col">
                 <span className="text-xs font-medium">Guests</span>
-                <span className="text-xs">3 Guests</span>
+                <span className="text-xs">{initialValues.guests} Guests</span>
               </div>
             </div>
           </div>
@@ -106,6 +113,7 @@ const Reservation = ({ type }) => {
             <ReservationForm
               initialValues={initialValues}
               onSubmit={handleSubmit}
+              listing={data}
             />
           </div>
         </div>
