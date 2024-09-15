@@ -115,11 +115,6 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
 
   return (
     <>
-      <TripSummary
-        checkIn={startDate ? startDate.toISOString().split("T")[0] : null}
-        checkOut={endDate ? endDate.toISOString().split("T")[0] : null}
-        // guests={guests}
-      />
       <Formik
         initialValues={initialValues}
         validationSchema={reservationSchema}
