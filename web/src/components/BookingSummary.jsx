@@ -77,7 +77,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
           <div className="flex justify-between">
             <span className="text-xs">Listing Price (GHS)</span>
             <span className="text-xs font-medium">
-              GHS {reservationData?.listing?.PRICE || "0"} / night
+              {reservationData?.listing?.PRICE || "0"} / night
             </span>
           </div>
 
