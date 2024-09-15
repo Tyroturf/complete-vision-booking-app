@@ -4,8 +4,9 @@ import DatePicker from "react-datepicker";
 import * as Yup from "yup";
 import "react-datepicker/dist/react-datepicker.css";
 import "../customDatePickerWidth.css";
-import TripSummary from "../components/TripSummary";
-import { bookProperty, fetchBookingCars, fetchTourTypes } from "../api";
+import { fetchBookingCars, fetchTourTypes } from "../api";
+import { useReservation } from "../contexts/ReservationContext";
+import { formatDate } from "../utils/helpers";
 
 const reservationSchema = Yup.object().shape({
   firstName: Yup.string().required("First name is required"),
@@ -31,12 +32,14 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
   const [dropoffLocation, setDropoffLocation] = useState(listing.LIST_NAME);
   const [interestedInTour, setInterestedInTour] = useState(false);
   const [tourTypes, setTourType] = useState("");
+  const [selectedTour, setSelectedTour] = useState("");
   const [startDate, setStartDate] = useState(
     initialValues.checkIn ? new Date(initialValues.checkIn) : new Date()
   );
   const [endDate, setEndDate] = useState(
     initialValues.checkOut ? new Date(initialValues.checkOut) : null
   );
+  const { reservationData, setReservationData } = useReservation();
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -70,57 +73,26 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
 
   useEffect(() => {
     if (chauffeur) {
-      setDropoffLocation(listing.LIST_NAME);
+      setReservationData({
+        ...reservationData,
+        dropoffLocation: listing.LIST_NAME,
+      });
     } else {
-      setDropoffLocation("");
+      setReservationData({
+        ...reservationData,
+        dropoffLocation: "",
+      });
     }
   }, [chauffeur]);
 
-  const onChange = (dates) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-  };
-
   const handleSubmit = (values) => {
+    onSubmit();
     const bookingData = {
       ...values,
-      booking_date: new Date().toISOString().split("T")[0],
-      checkIn: startDate ? startDate.toISOString().split("T")[0] : null,
-      checkOut: endDate ? endDate.toISOString().split("T")[0] : null,
-      num_guests: values.guests,
-      car_services: interestedInCar,
-      driving_type: chauffeur ? 1 : 2,
-      pickup_location: pickupLocation ? values.pickupLocation : "",
-      dropoff_location: dropoffLocation ? values.dropoffLocation : "",
-      private_tour: interestedInTour,
-      tour_type: interestedInTour ? tourTypes : "",
-      listing_id: listing.ID,
-      user_id: 1,
-      listing_price: 150,
-      ride_price: interestedInCar ? 20 : 0,
-      tour_price: interestedInTour ? 50 : 0,
-      no_nights: 5,
-      total: 220,
-      car_id: interestedInCar ? 101 : 0,
-      status: "Confirmed",
-      host_id: listing.HOST_ID,
-      fee: 10,
-      chauffuer_rate: 25,
-      sub_total: 200,
     };
 
-    bookProperty(bookingData);
-    console
-      .log(bookingData)
-      .then((response) => {
-        console.log("Booking Successful", response);
-      })
-      .catch((error) => {
-        console.error("Booking Failed", error);
-      });
+    console.log(bookingData);
   };
-
   return (
     <>
       <Formik
@@ -133,12 +105,20 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
       >
         {({ isSubmitting }) => (
           <Form className="rounded-xl grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* First Name */}
             <div className="relative">
               <Field
                 type="text"
                 name="firstName"
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
                 placeholder=" "
+                value={reservationData.firstName}
+                onChange={(e) =>
+                  setReservationData({
+                    ...reservationData,
+                    firstName: e.target.value,
+                  })
+                }
               />
               <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                 First Name
@@ -156,6 +136,13 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                 name="lastName"
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
                 placeholder=" "
+                value={reservationData.lastName}
+                onChange={(e) =>
+                  setReservationData({
+                    ...reservationData,
+                    lastName: e.target.value,
+                  })
+                }
               />
               <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                 Last Name
@@ -175,6 +162,13 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                 placeholder=" "
                 min={1}
                 max={6}
+                value={reservationData.guests}
+                onChange={(e) =>
+                  setReservationData({
+                    ...reservationData,
+                    guests: e.target.value,
+                  })
+                }
               />
               <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                 Guests
@@ -192,6 +186,13 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                 name="phoneNumber"
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
                 placeholder=" "
+                value={reservationData.phoneNumber}
+                onChange={(e) =>
+                  setReservationData({
+                    ...reservationData,
+                    phoneNumber: e.target.value,
+                  })
+                }
               />
               <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                 Phone Number
@@ -209,6 +210,13 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                 name="email"
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
                 placeholder=" "
+                value={reservationData.email}
+                onChange={(e) =>
+                  setReservationData({
+                    ...reservationData,
+                    email: e.target.value,
+                  })
+                }
               />
               <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                 Email
@@ -220,12 +228,32 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
               />
             </div>
 
+            {/* Date Picker */}
             <div className="relative col-span-1 md:col-span-2">
               <DatePicker
-                selected={startDate}
-                onChange={onChange}
-                startDate={startDate}
-                endDate={endDate}
+                selected={
+                  reservationData.checkIn
+                    ? new Date(reservationData.checkIn)
+                    : null
+                }
+                onChange={(dates) => {
+                  const [start, end] = dates;
+                  setReservationData({
+                    ...reservationData,
+                    checkIn: start ? formatDate(start) : null,
+                    checkOut: end ? formatDate(end) : null,
+                  });
+                }}
+                startDate={
+                  reservationData.checkIn
+                    ? new Date(reservationData.checkIn)
+                    : null
+                }
+                endDate={
+                  reservationData.checkOut
+                    ? new Date(reservationData.checkOut)
+                    : null
+                }
                 selectsRange
                 className="w-full border text-gray-600 border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-xs text-center sm:text-left"
                 wrapperClassName="customDatePickerWidth"
@@ -235,7 +263,6 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
               </label>
             </div>
 
-            {/* Interested in Car Section */}
             <div className="flex flex-col col-span-1 md:col-span-2">
               <span className="font-bold text-sm my-5">Add to your stay</span>
               <div className="flex items-center">
@@ -243,7 +270,13 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                   type="checkbox"
                   id="interestedInCar"
                   checked={interestedInCar}
-                  onChange={() => setInterestedInCar(!interestedInCar)}
+                  onChange={() => {
+                    setInterestedInCar(!interestedInCar);
+                    setReservationData({
+                      ...reservationData,
+                      interestedInCar: !interestedInCar,
+                    });
+                  }}
                   className="mr-2"
                 />
                 <label htmlFor="interestedInCar" className="text-xs">
@@ -251,7 +284,6 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                 </label>
               </div>
 
-              {/* Car Type Selection */}
               {interestedInCar && (
                 <>
                   <div className="mt-4">
@@ -263,10 +295,26 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                       name="selectedCar"
                       value={selectedCar}
                       onChange={(e) => {
-                        setSelectedCar(e.target.value);
+                        const selectedCarId = Number(e.target.value);
+                        const selectedCarObject = carList.find((car) => {
+                          return car.ID === selectedCarId;
+                        });
+
+                        if (selectedCarObject) {
+                          setSelectedCar(selectedCarObject.ID);
+                          setReservationData((prevData) => ({
+                            ...prevData,
+                            selectedCar: selectedCarObject,
+                          }));
+                        } else {
+                          console.error("Selected car not found");
+                        }
                       }}
                       className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
                     >
+                      <option value="" disabled>
+                        Select Car
+                      </option>
                       {carList.length > 0 ? (
                         carList.map((car) => (
                           <option key={car.ID} value={car.ID}>
@@ -281,7 +329,6 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                     </Field>
                   </div>
 
-                  {/* Chauffeur or Self-driving Selection */}
                   <div className="flex flex-col mt-4">
                     <span className="font-bold text-sm my-5">
                       Driving Option
@@ -291,11 +338,15 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                         type="radio"
                         id="chauffeur"
                         name="drivingOption"
-                        value="chauffeur"
+                        value={chauffeur}
                         checked={chauffeur}
                         onChange={() => {
                           setChauffeur(true);
                           setPickupDropoff(false);
+                          setReservationData((prevData) => ({
+                            ...prevData,
+                            chauffeur: true,
+                          }));
                         }}
                         className="mr-2"
                       />
@@ -312,8 +363,13 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                             name="pickupLocation"
                             className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
                             placeholder="Ex: Home Address"
-                            value={pickupLocation}
-                            onChange={(e) => setPickupLocation(e.target.value)}
+                            value={reservationData.pickupLocation}
+                            onChange={(e) =>
+                              setReservationData({
+                                ...reservationData,
+                                pickupLocation: e.target.value,
+                              })
+                            }
                           />
                           <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                             Pick-up Location
@@ -325,8 +381,13 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                             name="destination"
                             className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
                             placeholder=" "
-                            value={dropoffLocation}
-                            onChange={(e) => setDropoffLocation(e.target.value)}
+                            value={reservationData.dropoffLocation}
+                            onChange={(e) =>
+                              setReservationData({
+                                ...reservationData,
+                                dropoffLocation: e.target.value,
+                              })
+                            }
                           />
                           <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                             Drop-off Location
@@ -345,6 +406,10 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                         onChange={() => {
                           setChauffeur(false);
                           setPickupDropoff(true);
+                          setReservationData((prevData) => ({
+                            ...prevData,
+                            chauffeur: false,
+                          }));
                         }}
                         className="mr-2"
                       />
@@ -353,7 +418,7 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                       </label>
                     </div>
 
-                    {!chauffeur && (
+                    {pickupDropoff && (
                       <>
                         <div className="relative mt-8">
                           <Field
@@ -399,7 +464,13 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                   type="checkbox"
                   id="interestedInTour"
                   checked={interestedInTour}
-                  onChange={() => setInterestedInTour(!interestedInTour)}
+                  onChange={() => {
+                    setInterestedInTour(!interestedInTour);
+                    setReservationData((prevData) => ({
+                      ...prevData,
+                      interestedInTour: !interestedInTour,
+                    }));
+                  }}
                   className="mr-2"
                 />
                 <label htmlFor="interestedInTour" className="text-xs">
@@ -415,14 +486,30 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                   </span>
                   <Field
                     as="select"
-                    name="tourTypes"
-                    value={tourTypes}
+                    name="selectedTour"
+                    value={selectedTour}
                     onChange={(e) => {
-                      setSelectedTourType(e.target.value);
-                      setTourType(e.target.value);
+                      const selectedTourId = Number(e.target.value);
+
+                      const selectedTourObject = tourTypes.find((tour) => {
+                        return tour.ID === selectedTourId;
+                      });
+
+                      if (selectedTourObject) {
+                        setSelectedTour(selectedTourObject);
+                        setReservationData((prevData) => ({
+                          ...prevData,
+                          selectedTour: selectedTourObject,
+                        }));
+                      } else {
+                        console.error("Selected tour not found");
+                      }
                     }}
                     className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
                   >
+                    <option value="" disabled>
+                      Select Tour Type
+                    </option>
                     {tourTypes.length > 0 ? (
                       tourTypes.map((tour) => (
                         <option key={tour.ID} value={tour.ID}>

@@ -16,3 +16,15 @@ export const getQueryParams = (queryString) => {
       return params;
     }, {});
 };
+
+export const formatWithCommas = (number) => {
+  return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+
+export const calculateNights = (checkIn, checkOut) => {
+  if (!checkIn || !checkOut) return 0;
+  const start = new Date(checkIn);
+  const end = new Date(checkOut);
+  const timeDiff = Math.abs(end - start);
+  return Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+};

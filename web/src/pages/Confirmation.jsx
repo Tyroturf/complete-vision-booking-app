@@ -16,19 +16,18 @@ const Confirmation = ({ bookingDetails, onSubmit }) => {
           <p className="text-xs md:text-sm">
             {bookingDetails.firstName} {bookingDetails.lastName}
           </p>
-          <p className="text-xs md:text-sm font-">{bookingDetails.email}</p>
+          <p className="text-xs md:text-sm">{bookingDetails.email}</p>
           <p className="text-xs md:text-sm">{bookingDetails.phoneNumber}</p>
         </div>
         <div>
           <h2 className="text-xs md:text-sm font-bold">Booking Details</h2>
           <p className="text-xs md:text-sm">
-            {" "}
             <span className="font-medium">Guests: </span>
             {bookingDetails.guests}
           </p>
           <p className="text-xs md:text-sm">
             <span className="font-medium">Dates: </span>
-            {bookingDetails.startDate} - {bookingDetails.endDate}
+            {bookingDetails.checkIn} - {bookingDetails.checkOut}
           </p>
         </div>
         {bookingDetails.interestedInCar && (

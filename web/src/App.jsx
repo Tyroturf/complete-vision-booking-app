@@ -23,105 +23,108 @@ import { Dashboard } from "./pages/Dashboard";
 import CarDetail from "./pages/CarDetail";
 import ReservationWrapper from "./components/ReservationWrapper";
 import TourDetail from "./pages/TourDetail";
+import { ReservationProvider } from "./contexts/ReservationContext";
 
 const App = () => {
   return (
     <AuthProvider>
       <SearchProvider>
-        <Router>
-          <Routes>
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/"
-              element={
-                <Layout>
-                  <Home />
-                </Layout>
-              }
-            />
-            <Route
-              path="/places/:id"
-              element={
-                <Layout>
-                  <PlaceDetail />
-                </Layout>
-              }
-            />
-            <Route
-              path="/cars/:id"
-              element={
-                <Layout>
-                  <CarDetail />
-                </Layout>
-              }
-            />
-            <Route
-              path="/tours/:id"
-              element={
-                <Layout>
-                  <TourDetail />
-                </Layout>
-              }
-            />
-            <Route
-              path="/places"
-              element={
-                <Layout>
-                  <FindPlaces />
-                </Layout>
-              }
-            />
-            <Route
-              path="/cars"
-              element={
-                <Layout>
-                  <CarRentals />
-                </Layout>
-              }
-            />
-            <Route
-              path="/tours"
-              element={
-                <Layout>
-                  <BookTours />
-                </Layout>
-              }
-            />
-            <Route
-              path="/reservation/:type/:id"
-              element={
-                <PrivateRoute>
+        <ReservationProvider>
+          <Router>
+            <Routes>
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/"
+                element={
                   <Layout>
-                    <ReservationWrapper />
+                    <Home />
                   </Layout>
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/confirmation"
-              element={
-                <PrivateRoute>
+                }
+              />
+              <Route
+                path="/places/:id"
+                element={
                   <Layout>
-                    <Confirmation />
+                    <PlaceDetail />
                   </Layout>
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <PrivateRoute>
+                }
+              />
+              <Route
+                path="/cars/:id"
+                element={
                   <Layout>
-                    <Dashboard />
+                    <CarDetail />
                   </Layout>
-                </PrivateRoute>
-              }
-            />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-          <ToastContainer />
-        </Router>
+                }
+              />
+              <Route
+                path="/tours/:id"
+                element={
+                  <Layout>
+                    <TourDetail />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/places"
+                element={
+                  <Layout>
+                    <FindPlaces />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/cars"
+                element={
+                  <Layout>
+                    <CarRentals />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/tours"
+                element={
+                  <Layout>
+                    <BookTours />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/reservation/:type/:id"
+                element={
+                  <PrivateRoute>
+                    <Layout>
+                      <ReservationWrapper />
+                    </Layout>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/confirmation"
+                element={
+                  <PrivateRoute>
+                    <Layout>
+                      <Confirmation />
+                    </Layout>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <PrivateRoute>
+                    <Layout>
+                      <Dashboard />
+                    </Layout>
+                  </PrivateRoute>
+                }
+              />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+            <ToastContainer />
+          </Router>
+        </ReservationProvider>
       </SearchProvider>
     </AuthProvider>
   );

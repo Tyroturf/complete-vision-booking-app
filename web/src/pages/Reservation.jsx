@@ -7,13 +7,17 @@ import Modal from "../components/Modal";
 import Confirmation from "../pages/Confirmation";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchPlace, fetchCar, fetchTour } from "../api";
+import { useReservation } from "../contexts/ReservationContext";
 
 const Reservation = ({ type }) => {
   const location = useLocation();
   const { id } = useParams();
   const { user } = useAuth();
   const params = new URLSearchParams(location.search);
-
+  const [showFullPolicy, setShowFullPolicy] = useState(false);
+  const [data, setData] = useState({});
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const { reservationData, setReservationData } = useReservation();
   const [initialValues, setInitialValues] = useState({
     firstName: user.first_name,
     lastName: user.last_name,
@@ -24,10 +28,20 @@ const Reservation = ({ type }) => {
     checkOut: params.get("p_check_out") || "",
   });
 
-  const [showFullPolicy, setShowFullPolicy] = useState(false);
-  const [data, setData] = useState({});
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [bookingDetails, setBookingDetails] = useState(null);
+  useEffect(() => {
+    setReservationData((prevData) => ({
+      ...prevData,
+      ...initialValues,
+    }));
+  }, [initialValues, setReservationData]);
+
+  useEffect(() => {
+    if (data)
+      setReservationData((prevData) => ({
+        ...prevData,
+        listing: data,
+      }));
+  }, [data]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,7 +70,6 @@ const Reservation = ({ type }) => {
   const handleSubmit = async (values) => {
     try {
       console.log("Reservation details:", values);
-      setBookingDetails(values);
       setShowConfirmation(true);
     } catch (error) {
       console.error("Failed to reserve", error);
@@ -69,7 +82,6 @@ const Reservation = ({ type }) => {
 
   const closeConfirmation = () => {
     setShowConfirmation(false);
-    setBookingDetails(null);
   };
 
   return (
@@ -86,25 +98,6 @@ const Reservation = ({ type }) => {
               <span className="font-medium text-sm">{data.LIST_NAME}</span>
               <RatingSummary />
               <span className="font-thin text-xs">{data.LOCATION}</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col space-y-2">
-            <span className="text-sm font-bold">Your Trip</span>
-            <div className="flex justify-between items-center">
-              <div className="flex flex-col">
-                <span className="text-xs font-medium">Dates</span>
-                <span className="text-xs">
-                  {initialValues.checkIn} - {initialValues.checkOut}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex justify-between items-center">
-              <div className="flex flex-col">
-                <span className="text-xs font-medium">Guests</span>
-                <span className="text-xs">{initialValues.guests} Guests</span>
-              </div>
             </div>
           </div>
 
@@ -127,7 +120,10 @@ const Reservation = ({ type }) => {
       </div>
 
       <Modal isOpen={showConfirmation} onClose={closeConfirmation}>
-        <Confirmation bookingDetails={bookingDetails} />
+        <Confirmation
+          bookingDetails={reservationData}
+          // onSubmit={confirmBooking}
+        />
       </Modal>
     </div>
   );

@@ -126,3 +126,7 @@ export const fetchBookingCars = () => {
 export const fetchTourTypes = async () => {
   return api.get("/tourtype/type");
 };
+
+export const fetchExchangeRate = async () => {
+  return api.get("/exchangerate/rate");
+};
