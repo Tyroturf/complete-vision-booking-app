@@ -102,15 +102,14 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
               </div>
             )}
 
-          {reservationData?.chauffeur &&
-            reservationData.interestedInCar(
-              <div className="flex justify-between">
-                <span className="text-xs">Chauffeur Price (GHS)</span>
-                <span className="text-xs font-medium">
-                  GHS {chauffeurRate || "0"}
-                </span>
-              </div>
-            )}
+          {reservationData?.chauffeur && reservationData.interestedInCar && (
+            <div className="flex justify-between">
+              <span className="text-xs">Chauffeur Price (GHS)</span>
+              <span className="text-xs font-medium">
+                GHS {chauffeurRate || "0"}
+              </span>
+            </div>
+          )}
 
           {reservationData?.interestedInTour &&
             reservationData.selectedTour && (
