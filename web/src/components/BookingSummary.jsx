@@ -4,7 +4,7 @@ import { fetchExchangeRate } from "../api";
 import { calculateNights, formatWithCommas } from "../utils/helpers";
 
 const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
-  const { reservationData } = useReservation();
+  const { reservationData, setReservationData } = useReservation();
   const [specialRequests, setSpecialRequests] = useState("");
   const [totalPriceUSD, setTotalPriceUSD] = useState(0);
   const [totalPriceGHS, setTotalPriceGHS] = useState(0);
@@ -31,7 +31,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
     const guests = reservationData?.guests || 1;
 
     const listingPrice = reservationData?.listing?.PRICE
-      ? parseFloat(reservationData.listing.PRICE.replace("GHS", "").trim()) || 0
+      ? parseFloat(reservationData.listing.PRICE) || 0
       : 0;
 
     const carPrice =
@@ -58,12 +58,27 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
     const serviceFee = subTotal * 0.01;
     const grandTotalUSD = subTotal + serviceFee;
 
+    if (
+      reservationData.subTotal !== subTotal ||
+      reservationData.grandTotalUSD !== grandTotalUSD
+    ) {
+      setReservationData({
+        ...reservationData,
+        listingPrice: listingPrice,
+        carPrice: carPrice,
+        tourPrice: tourPrice,
+        subTotal: subTotal,
+        grandTotalUSD: grandTotalUSD,
+        nights: nights,
+      });
+    }
+
     if (!isNaN(grandTotalUSD) && !isNaN(exchangeRate)) {
       const grandTotalGHS = grandTotalUSD * exchangeRate;
       setTotalPriceUSD(grandTotalUSD);
       setTotalPriceGHS(grandTotalGHS);
     }
-  }, [reservationData, exchangeRate]);
+  }, [reservationData, exchangeRate, setReservationData]);
 
   const policy = `We understand that plans can change. If you need to cancel your reservation, please let us know at least 24 hours in advance for a full refund. 
     Cancellations made within 24 hours of the check-in date will incur a one-night charge. No-shows will be charged the full amount of the reservation.`;
@@ -75,9 +90,9 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
           <span className="font-bold text-sm">Your Price Summary</span>
 
           <div className="flex justify-between">
-            <span className="text-xs">Listing Price (GHS)</span>
+            <span className="text-xs">Listing Price</span>
             <span className="text-xs font-medium">
-              {reservationData?.listing?.PRICE || "0"} / night
+              ${reservationData?.listing?.PRICE || "0"} / night
             </span>
           </div>
 
@@ -97,7 +112,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
               <div className="flex justify-between">
                 <span className="text-xs">Vehicle Price (GHS)</span>
                 <span className="text-xs font-medium">
-                  GHS {reservationData?.selectedCar?.PRICE || "0"} / night
+                  $ {reservationData?.selectedCar?.PRICE || "0"} / night
                 </span>
               </div>
             )}
@@ -106,7 +121,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
             <div className="flex justify-between">
               <span className="text-xs">Chauffeur Price (GHS)</span>
               <span className="text-xs font-medium">
-                GHS {chauffeurRate || "0"}
+                $ {chauffeurRate || "0"}
               </span>
             </div>
           )}
@@ -116,7 +131,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
               <div className="flex justify-between">
                 <span className="text-xs">Tour Price (GHS)</span>
                 <span className="text-xs font-medium">
-                  GHS {selectedTourPrice}
+                  $ {selectedTourPrice}
                 </span>
               </div>
             )}

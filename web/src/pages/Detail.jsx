@@ -56,7 +56,7 @@ const Detail = ({ fetchDetail, type }) => {
         <div className="flex flex-col gap-y-4">
           <div>
             <span className="text-brand font-bold text-base">
-              {item.PRICE} <span className="font-thin text-xs"> / night</span>
+              ${item.PRICE} <span className="font-thin text-xs"> / night</span>
             </span>
           </div>
           <button

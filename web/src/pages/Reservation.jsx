@@ -6,7 +6,7 @@ import BookingSummary from "../components/BookingSummary";
 import Modal from "../components/Modal";
 import Confirmation from "../pages/Confirmation";
 import { useAuth } from "../contexts/AuthContext";
-import { fetchPlace, fetchCar, fetchTour } from "../api";
+import { fetchPlace, fetchCar, fetchTour, bookProperty } from "../api";
 import { useReservation } from "../contexts/ReservationContext";
 
 const Reservation = ({ type }) => {
@@ -76,6 +76,24 @@ const Reservation = ({ type }) => {
     }
   };
 
+  const confirmBooking = async (paymentReference) => {
+    const { reservationData } = useReservation();
+
+    const bookingDetails = { ...reservationData, paymentReference };
+
+    try {
+      const response = await bookProperty(bookingDetails);
+      const result = await response.json();
+      if (response.ok) {
+        alert("Booking successful!");
+      } else {
+        alert(`Booking failed: ${result.message}`);
+      }
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+    }
+  };
+
   const togglePolicy = () => {
     setShowFullPolicy(!showFullPolicy);
   };
@@ -122,7 +140,7 @@ const Reservation = ({ type }) => {
       <Modal isOpen={showConfirmation} onClose={closeConfirmation}>
         <Confirmation
           bookingDetails={reservationData}
-          // onSubmit={confirmBooking}
+          onSubmit={confirmBooking}
         />
       </Modal>
     </div>

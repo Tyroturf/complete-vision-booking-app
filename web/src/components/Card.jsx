@@ -41,7 +41,7 @@ const Card = ({ item }) => {
           </div>
           <div className="flex">
             <span className="text-brand font-bold text-base">
-              {item.PRICE}{" "}
+              ${item.PRICE}{" "}
               <span className="font-thin text-xs md:text-sm">/ night</span>
             </span>
           </div>
