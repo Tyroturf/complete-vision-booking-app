@@ -20,10 +20,17 @@ export const ReservationProvider = ({ children }) => {
     pickupLocation: "",
     dropoffLocation: "",
     interestedInTour: false,
-    selectedTour: "",
+    selectedTour: {},
+    listingPrice: 0,
+    carPrice: 0,
+    tourPrice: 0,
+    subTotal: 0,
+    grandTotalUSD: 0,
+    nights: 0,
+    selfie: null,
+    driverLicense: null,
+    drivingOption: "",
   });
-
-  console.log(reservationData);
 
   return (
     <ReservationContext.Provider

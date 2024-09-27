@@ -7,6 +7,7 @@ import "../customDatePickerWidth.css";
 import { fetchBookingCars, fetchTourTypes } from "../api";
 import { useReservation } from "../contexts/ReservationContext";
 import { formatDate } from "../utils/helpers";
+import { useLocation } from "react-router-dom";
 
 const reservationSchema = Yup.object().shape({
   firstName: Yup.string().required("First name is required"),
@@ -20,26 +21,81 @@ const reservationSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
+  checkIn: Yup.date().required("Check-in date is required"),
+  checkOut: Yup.date()
+    .required("Check-out date is required")
+    .min(Yup.ref("checkIn"), "Check-out date cannot be before check-in date"),
+  selectedCar: Yup.mixed().when("interestedInCar", {
+    is: true,
+    then: () =>
+      Yup.mixed().required(
+        "Car selection is required when interested in renting a car"
+      ),
+    otherwise: () => Yup.mixed().notRequired(),
+  }),
+
+  drivingOption: Yup.mixed().when("interestedInCar", {
+    is: true,
+    then: () => Yup.string().required("Please select a driving option"),
+  }),
+
+  pickupLocation: Yup.string().when(["interestedInCar", "drivingOption"], {
+    is: (interestedInCar, drivingOption) =>
+      interestedInCar && drivingOption === "chauffeur",
+    then: () =>
+      Yup.string().required(
+        "Pick-up location is required when chauffeur is selected"
+      ),
+  }),
+
+  dropoffLocation: Yup.string().when(["interestedInCar", "drivingOption"], {
+    is: (interestedInCar) => interestedInCar,
+    then: () =>
+      Yup.string().required("Drop-off location is required when renting a car"),
+    otherwise: () => Yup.string().notRequired(),
+  }),
+
+  driverLicense: Yup.mixed()
+    .nullable()
+    .when(["interestedInCar", "drivingOption"], {
+      is: (interestedInCar, drivingOption) =>
+        interestedInCar && drivingOption === "self-driving",
+      then: () =>
+        Yup.mixed().required("Driver's license is required for self-driving"),
+    }),
+
+  selfie: Yup.mixed()
+    .nullable()
+    .when(["interestedInCar", "drivingOption"], {
+      is: (interestedInCar, drivingOption) =>
+        interestedInCar && drivingOption === "self-driving",
+      then: () => Yup.mixed().required("Selfie is required for self-driving"),
+    }),
+
+  selectedTour: Yup.mixed().when("interestedInTour", {
+    is: true,
+    then: () =>
+      Yup.mixed().required(
+        "Please select a tour type when interested in tours"
+      ),
+    otherwise: () => Yup.mixed().notRequired(),
+  }),
 });
 
 const ReservationForm = ({ initialValues, onSubmit, listing }) => {
   const [interestedInCar, setInterestedInCar] = useState(false);
   const [selectedCar, setSelectedCar] = useState("");
   const [carList, setCarList] = useState([]);
-  const [chauffeur, setChauffeur] = useState(false);
-  const [pickupDropoff, setPickupDropoff] = useState(false);
+  const [chauffeur, setChauffeur] = useState(undefined);
+  const [drivingOption, setDrivingOption] = useState("");
   const [pickupLocation, setPickupLocation] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState(listing.LIST_NAME);
   const [interestedInTour, setInterestedInTour] = useState(false);
   const [tourTypes, setTourType] = useState("");
   const [selectedTour, setSelectedTour] = useState("");
-  const [startDate, setStartDate] = useState(
-    initialValues.checkIn ? new Date(initialValues.checkIn) : new Date()
-  );
-  const [endDate, setEndDate] = useState(
-    initialValues.checkOut ? new Date(initialValues.checkOut) : null
-  );
+  const [page, setPage] = useState("");
   const { reservationData, setReservationData } = useReservation();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -85,25 +141,47 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
     }
   }, [chauffeur]);
 
+  useEffect(() => {
+    if ("car_rentals".includes(location.pathname.split("/")[2])) {
+      setPage("car_rental");
+    } else if ("tours".includes(location.pathname.split("/")[2])) {
+      setPage("tours");
+    } else {
+      setPage("place");
+    }
+  }, [page]);
+
   const handleSubmit = (values) => {
+    console.log("values", values);
+    console.log("reserve", reservationData);
+
     onSubmit();
     const bookingData = {
       ...values,
     };
 
-    console.log(bookingData);
+    // console.log(bookingData);
   };
+
+  console.log(
+    reservationSchema.validate(reservationData).catch((err) => {
+      console.log(err.errors);
+    })
+  );
+
   return (
     <>
       <Formik
         initialValues={initialValues}
         validationSchema={reservationSchema}
+        validateOnChange={true}
+        validateOnBlur={true}
         onSubmit={(values, { setSubmitting }) => {
           handleSubmit(values);
           setSubmitting(false);
         }}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, values, setFieldValue, errors }) => (
           <Form className="rounded-xl grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* First Name */}
             <div className="relative">
@@ -113,12 +191,13 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
                 placeholder=" "
                 value={reservationData.firstName}
-                onChange={(e) =>
+                onChange={(e) => {
                   setReservationData({
                     ...reservationData,
                     firstName: e.target.value,
-                  })
-                }
+                  });
+                  setFieldValue("firstName", e.target.value);
+                }}
               />
               <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                 First Name
@@ -137,12 +216,13 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
                 placeholder=" "
                 value={reservationData.lastName}
-                onChange={(e) =>
+                onChange={(e) => {
                   setReservationData({
                     ...reservationData,
                     lastName: e.target.value,
-                  })
-                }
+                  });
+                  setFieldValue("lastName", e.target.value);
+                }}
               />
               <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                 Last Name
@@ -163,12 +243,13 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                 min={1}
                 max={6}
                 value={reservationData.guests}
-                onChange={(e) =>
+                onChange={(e) => {
                   setReservationData({
                     ...reservationData,
                     guests: e.target.value,
-                  })
-                }
+                  });
+                  setFieldValue("guests", e.target.value);
+                }}
               />
               <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                 Guests
@@ -187,12 +268,13 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
                 placeholder=" "
                 value={reservationData.phoneNumber}
-                onChange={(e) =>
+                onChange={(e) => {
                   setReservationData({
                     ...reservationData,
                     phoneNumber: e.target.value,
-                  })
-                }
+                  });
+                  setFieldValue("phoneNumber", e.target.value);
+                }}
               />
               <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                 Phone Number
@@ -211,12 +293,13 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
                 placeholder=" "
                 value={reservationData.email}
-                onChange={(e) =>
+                onChange={(e) => {
                   setReservationData({
                     ...reservationData,
                     email: e.target.value,
-                  })
-                }
+                  });
+                  setFieldValue("email", e.target.value);
+                }}
               />
               <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                 Email
@@ -243,6 +326,8 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                     checkIn: start ? formatDate(start) : null,
                     checkOut: end ? formatDate(end) : null,
                   });
+                  setFieldValue("checkIn", start ? formatDate(start) : null);
+                  setFieldValue("checkOut", end ? formatDate(end) : null);
                 }}
                 startDate={
                   reservationData.checkIn
@@ -261,6 +346,16 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
               <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                 Select Dates
               </label>
+              <ErrorMessage
+                name="checkIn"
+                component="div"
+                className="text-red-500 text-xs mt-1"
+              />
+              <ErrorMessage
+                name="checkOut"
+                component="div"
+                className="text-red-500 text-xs mt-1"
+              />
             </div>
 
             <div className="flex flex-col col-span-1 md:col-span-2">
@@ -276,6 +371,7 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                       ...reservationData,
                       interestedInCar: !interestedInCar,
                     });
+                    setFieldValue("interestedInCar", !interestedInCar);
                   }}
                   className="mr-2"
                 />
@@ -299,6 +395,7 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                         const selectedCarObject = carList.find((car) => {
                           return car.ID === selectedCarId;
                         });
+                        setFieldValue("selectedCar", selectedCarObject);
 
                         if (selectedCarObject) {
                           setSelectedCar(selectedCarObject.ID);
@@ -327,25 +424,38 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                         </option>
                       )}
                     </Field>
+                    <ErrorMessage
+                      name="selectedCar"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
                   </div>
 
                   <div className="flex flex-col mt-4">
                     <span className="font-bold text-sm my-5">
                       Driving Option
                     </span>
+                    <ErrorMessage
+                      name="drivingOption"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
                     <div className="flex items-center">
                       <input
                         type="radio"
                         id="chauffeur"
                         name="drivingOption"
-                        value={chauffeur}
+                        value="chauffeur"
                         checked={chauffeur}
                         onChange={() => {
+                          setFieldValue("drivingOption", "chauffeur");
+                          setDrivingOption("chauffeur");
                           setChauffeur(true);
-                          setPickupDropoff(false);
+                          setDrivingOption(false);
                           setReservationData((prevData) => ({
                             ...prevData,
                             chauffeur: true,
+                            drivingOption: "chauffeur",
                           }));
                         }}
                         className="mr-2"
@@ -364,34 +474,46 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                             className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
                             placeholder="Ex: Home Address"
                             value={reservationData.pickupLocation}
-                            onChange={(e) =>
+                            onChange={(e) => {
                               setReservationData({
                                 ...reservationData,
                                 pickupLocation: e.target.value,
-                              })
-                            }
+                              });
+                              setFieldValue("pickupLocation", e.target.value);
+                            }}
                           />
                           <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                             Pick-up Location
                           </label>
+                          <ErrorMessage
+                            name="pickupLocation"
+                            component="div"
+                            className="text-red-500 text-xs mt-1"
+                          />
                         </div>
                         <div className="relative my-4">
                           <Field
                             type="text"
-                            name="destination"
+                            name="dropoffLocation"
                             className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
                             placeholder=" "
                             value={reservationData.dropoffLocation}
-                            onChange={(e) =>
+                            onChange={(e) => {
                               setReservationData({
                                 ...reservationData,
                                 dropoffLocation: e.target.value,
-                              })
-                            }
+                              });
+                              setFieldValue("dropoffLocation", e.target.value);
+                            }}
                           />
                           <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                             Drop-off Location
                           </label>
+                          <ErrorMessage
+                            name="dropoffLocation"
+                            component="div"
+                            className="text-red-500 text-xs mt-1"
+                          />
                         </div>
                       </>
                     )}
@@ -399,56 +521,123 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
                     <div className="flex items-center mt-4">
                       <input
                         type="radio"
-                        id="pickupDropoff"
+                        id="drivingOption"
                         name="drivingOption"
-                        value={pickupDropoff}
-                        checked={pickupDropoff}
-                        onChange={() => {
+                        value="self-driving"
+                        checked={drivingOption === "self-driving"}
+                        onChange={(e) => {
                           setChauffeur(false);
-                          setPickupDropoff(true);
+                          setDrivingOption("self-driving");
                           setReservationData((prevData) => ({
                             ...prevData,
                             chauffeur: false,
                           }));
+                          setFieldValue("drivingOption", "self-driving");
                         }}
                         className="mr-2"
                       />
                       <label htmlFor="pickupLocation" className="text-xs">
                         Self-driving
                       </label>
+                      <ErrorMessage
+                        name="drivingOption"
+                        component="div"
+                        className="text-red-500 text-xs mt-1"
+                      />
                     </div>
 
-                    {pickupDropoff && (
+                    {drivingOption && (
                       <>
                         <div className="relative mt-8">
                           <Field
                             type="text"
-                            name="destination"
+                            name="dropoffLocation"
                             className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
                             placeholder="Ex: Home Address"
-                            value={dropoffLocation}
-                            onChange={(e) => setDropoffLocation(e.target.value)}
+                            value={reservationData.dropoffLocation}
+                            onChange={(e) => {
+                              setDropoffLocation(e.target.value);
+                              setReservationData((prevData) => ({
+                                ...prevData,
+                                dropoffLocation: e.target.value,
+                              }));
+                              setFieldValue("dropoffLocation", e.target.value);
+                            }}
                           />
                           <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
                             Drop-off Location
                           </label>
+                          <ErrorMessage
+                            name="dropoffLocation"
+                            component="div"
+                            className="text-red-500 text-xs mt-1"
+                          />
                         </div>
-                        <div className="mt-4">
-                          <div className="flex flex-col">
-                            <label
-                              htmlFor="idUpload"
-                              className="text-gray-600 text-xs mb-2"
-                            >
-                              Upload ID
-                            </label>
-                            <input
-                              type="file"
-                              id="idUpload"
-                              name="idUpload"
-                              className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
+                        {
+                          // !userProfile.hasDriverLicense &&
+                          <div className="mt-4">
+                            <div className="flex flex-col">
+                              <label
+                                htmlFor="driverLicense"
+                                className="text-gray-600 text-xs mb-2"
+                              >
+                                Driver's License
+                              </label>
+                              <input
+                                type="file"
+                                id="driverLicense"
+                                name="driverLicense"
+                                onChange={(event) => {
+                                  const file = event.currentTarget.files[0];
+                                  setReservationData((prevData) => ({
+                                    ...prevData,
+                                    driverLicense: file,
+                                  }));
+                                  setFieldValue("driverLicense", file);
+                                }}
+                                className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
+                              />
+                              <ErrorMessage
+                                name="driverLicense"
+                                component="div"
+                                className="text-red-500 text-xs mt-1"
+                              />
+                            </div>
+                          </div>
+                        }
+
+                        {
+                          // !userProfile.hasSelfie &&
+                          <div className="mt-4">
+                            <div className="flex flex-col">
+                              <label
+                                htmlFor="selfie"
+                                className="text-gray-600 text-xs mb-2"
+                              >
+                                Selfie
+                              </label>
+                              <input
+                                type="file"
+                                id="selfie"
+                                name="selfie"
+                                onChange={(event) => {
+                                  const file = event.currentTarget.files[0];
+                                  setFieldValue("selfie", file);
+                                  setReservationData((prevData) => ({
+                                    ...prevData,
+                                    selfie: file,
+                                  }));
+                                }}
+                                className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
+                              />
+                            </div>
+                            <ErrorMessage
+                              name="selfie"
+                              component="div"
+                              className="text-red-500 text-xs mt-1"
                             />
                           </div>
-                        </div>
+                        }
                       </>
                     )}
                   </div>
@@ -457,74 +646,88 @@ const ReservationForm = ({ initialValues, onSubmit, listing }) => {
             </div>
 
             {/* Interested in Tour Section */}
-            <div className="flex flex-col col-span-1 md:col-span-2">
-              <span className="font-bold text-sm my-5">Private tour</span>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="interestedInTour"
-                  checked={interestedInTour}
-                  onChange={() => {
-                    setInterestedInTour(!interestedInTour);
-                    setReservationData((prevData) => ({
-                      ...prevData,
-                      interestedInTour: !interestedInTour,
-                    }));
-                  }}
-                  className="mr-2"
-                />
-                <label htmlFor="interestedInTour" className="text-xs">
-                  Interested in a private tour?
-                </label>
-              </div>
-
-              {/* Tour Type Selection */}
-              {interestedInTour && (
-                <div className="mt-4">
-                  <span className="text-gray-600 text-xs mb-2 block">
-                    Select Tour Type
-                  </span>
-                  <Field
-                    as="select"
-                    name="selectedTour"
-                    value={selectedTour}
-                    onChange={(e) => {
-                      const selectedTourId = Number(e.target.value);
-
-                      const selectedTourObject = tourTypes.find((tour) => {
-                        return tour.ID === selectedTourId;
-                      });
-
-                      if (selectedTourObject) {
-                        setSelectedTour(selectedTourObject);
-                        setReservationData((prevData) => ({
-                          ...prevData,
-                          selectedTour: selectedTourObject,
-                        }));
-                      } else {
-                        console.error("Selected tour not found");
-                      }
+            {page !== "car_rentals" && (
+              <div className="flex flex-col col-span-1 md:col-span-2">
+                <span className="font-bold text-sm my-5">Private tour</span>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="interestedInTour"
+                    checked={interestedInTour}
+                    onChange={() => {
+                      setInterestedInTour(!interestedInTour);
+                      setReservationData((prevData) => ({
+                        ...prevData,
+                        interestedInTour: !interestedInTour,
+                      }));
+                      setFieldValue("interestedInTour", !interestedInTour);
                     }}
-                    className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
-                  >
-                    <option value="" disabled>
-                      Select Tour Type
-                    </option>
-                    {tourTypes.length > 0 ? (
-                      tourTypes.map((tour) => (
-                        <option key={tour.ID} value={tour.ID}>
-                          {tour.LIST_NAME}
-                        </option>
-                      ))
-                    ) : (
-                      <option value="" disabled>
-                        No tour types available
-                      </option>
-                    )}
-                  </Field>
+                    className="mr-2"
+                  />
+                  <label htmlFor="interestedInTour" className="text-xs">
+                    Interested in a private tour?
+                  </label>
+                  <ErrorMessage
+                    name="interestedInTour"
+                    component="div"
+                    className="text-red-500 text-xs mt-1"
+                  />
                 </div>
-              )}
-            </div>
+
+                {/* Tour Type Selection */}
+                {interestedInTour && (
+                  <div className="mt-4">
+                    <span className="text-gray-600 text-xs mb-2 block">
+                      Select Tour Type
+                    </span>
+                    <Field
+                      as="select"
+                      name="selectedTour"
+                      value={selectedTour}
+                      onChange={(e) => {
+                        const selectedTourId = Number(e.target.value);
+
+                        const selectedTourObject = tourTypes.find((tour) => {
+                          return tour.ID === selectedTourId;
+                        });
+                        setFieldValue("selectedTour", selectedTourObject);
+
+                        if (selectedTourObject) {
+                          setSelectedTour(selectedTourObject);
+                          setReservationData((prevData) => ({
+                            ...prevData,
+                            selectedTour: selectedTourObject,
+                          }));
+                        } else {
+                          console.error("Selected tour not found");
+                        }
+                      }}
+                      className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
+                    >
+                      <option value="" disabled>
+                        Select Tour Type
+                      </option>
+                      {tourTypes.length > 0 ? (
+                        tourTypes.map((tour) => (
+                          <option key={tour.ID} value={tour.ID}>
+                            {tour.LIST_NAME}
+                          </option>
+                        ))
+                      ) : (
+                        <option value="" disabled>
+                          No tour types available
+                        </option>
+                      )}
+                    </Field>
+                    <ErrorMessage
+                      name="selectedTour"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="col-span-1 md:col-span-2 w-full flex justify-center">
               <button

@@ -8,8 +8,13 @@ import Confirmation from "../pages/Confirmation";
 import { useAuth } from "../contexts/AuthContext";
 import { fetchPlace, fetchCar, fetchTour, bookProperty } from "../api";
 import { useReservation } from "../contexts/ReservationContext";
+import { formatDate } from "../utils/helpers";
 
 const Reservation = ({ type }) => {
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+
   const location = useLocation();
   const { id } = useParams();
   const { user } = useAuth();
@@ -19,13 +24,19 @@ const Reservation = ({ type }) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { reservationData, setReservationData } = useReservation();
   const [initialValues, setInitialValues] = useState({
-    firstName: user.first_name,
-    lastName: user.last_name,
+    firstName: user.first_name || "",
+    lastName: user.last_name || "",
     guests: params.get("p_num_guests") || 1,
-    phoneNumber: user.contact,
-    email: user.email,
-    checkIn: params.get("p_check_in") || "",
-    checkOut: params.get("p_check_out") || "",
+    phoneNumber: user.contact || "",
+    email: user.email || "",
+    checkIn: params.get("p_check_in") ?? formatDate(today),
+    checkOut: params.get("p_check_out") ?? formatDate(tomorrow),
+    dropoffLocation: "",
+    pickupLocation: "",
+    selfie: null,
+    driverLicense: null,
+    selectedTour: null,
+    selectedCar: null,
   });
 
   useEffect(() => {
