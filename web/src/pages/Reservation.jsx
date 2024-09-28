@@ -6,7 +6,13 @@ import BookingSummary from "../components/BookingSummary";
 import Modal from "../components/Modal";
 import Confirmation from "../pages/Confirmation";
 import { useAuth } from "../contexts/AuthContext";
-import { fetchPlace, fetchCar, fetchTour, bookProperty } from "../api";
+import {
+  fetchPlace,
+  fetchCar,
+  fetchTour,
+  bookProperty,
+  fetchUser,
+} from "../api";
 import { useReservation } from "../contexts/ReservationContext";
 import { formatDate } from "../utils/helpers";
 
@@ -18,6 +24,8 @@ const Reservation = ({ type }) => {
   const location = useLocation();
   const { id } = useParams();
   const { user } = useAuth();
+  const [page, setPage] = useState("");
+  const [userDetails, setuserDetails] = useState({});
   const params = new URLSearchParams(location.search);
   const [showFullPolicy, setShowFullPolicy] = useState(false);
   const [data, setData] = useState({});
@@ -33,11 +41,60 @@ const Reservation = ({ type }) => {
     checkOut: params.get("p_check_out") ?? formatDate(tomorrow),
     dropoffLocation: "",
     pickupLocation: "",
-    selfie: null,
-    driverLicense: null,
     selectedTour: null,
     selectedCar: null,
   });
+
+  useEffect(() => {
+    if ("car_rentals".includes(location.pathname.split("/")[2])) {
+      setPage("car");
+    } else if ("tours".includes(location.pathname.split("/")[2])) {
+      setPage("tour");
+    } else {
+      setPage("place");
+    }
+  }, [page]);
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const { user_id } = JSON.parse(localStorage.getItem("user"));
+      console.log(user_id);
+      if (user_id) {
+        try {
+          const response = await fetchUser(`p_user_id=${user_id}`);
+          const userDetails = response.data["User Details"][0];
+          console.log("userDetails", userDetails);
+          setuserDetails(userDetails);
+
+          setInitialValues((prevValues) => ({
+            ...prevValues,
+            firstName: userDetails.FIRST_NAME || "",
+            lastName: userDetails.LAST_NAME || "",
+            phoneNumber: userDetails.CONTACT || "",
+            email: userDetails.USERNAME || "",
+            driverLicense: userDetails.DLFILETYPE
+              ? userDetails.DLFILETYPE
+              : null,
+            selfie: userDetails.SELFIEFILETYPE
+              ? userDetails.SELFIEFILETYPE
+              : null,
+          }));
+
+          setReservationData((prevData) => ({
+            ...prevData,
+            firstName: userDetails.first_name || "",
+            lastName: userDetails.last_name || "",
+            phoneNumber: userDetails.contact || "",
+            email: userDetails.email || "",
+          }));
+        } catch (err) {
+          console.error("Failed to fetch user details:", err);
+        }
+      }
+    };
+
+    fetchUserDetails();
+  }, [setReservationData]);
 
   useEffect(() => {
     setReservationData((prevData) => ({
@@ -136,6 +193,8 @@ const Reservation = ({ type }) => {
               initialValues={initialValues}
               onSubmit={handleSubmit}
               listing={data}
+              user={userDetails}
+              page={page}
             />
           </div>
         </div>

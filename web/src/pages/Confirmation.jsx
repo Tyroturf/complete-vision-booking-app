@@ -27,6 +27,7 @@ const Confirmation = ({ bookingDetails, onSubmit }) => {
     subTotal,
     grandTotalUSD,
     nights,
+    drivingOption,
   } = bookingDetails;
 
   return (
@@ -70,10 +71,6 @@ const Confirmation = ({ bookingDetails, onSubmit }) => {
             {listing?.LOCATION}
           </p>
           <p className="text-xs md:text-sm">
-            <span className="font-medium">Amenities: </span>
-            {listing?.AMENITIES}
-          </p>
-          <p className="text-xs md:text-sm">
             <span className="font-medium">Price: </span>${listingPrice}
           </p>
         </div>
@@ -88,18 +85,17 @@ const Confirmation = ({ bookingDetails, onSubmit }) => {
             </p> */}
             <p className="text-xs md:text-sm">
               <span className="font-medium">Driving Option: </span>
-              {chauffeur ? "Chauffeur" : "Self-driving"}
+              {drivingOption === "chauffeur" ? "Chauffeur" : "Self-driving"}
             </p>
-            <p className="text-xs md:text-sm">
-              <span className="font-medium">Pickup Location: </span>
-              {pickupLocation || "N/A"}
-            </p>
+            {drivingOption === "chauffeur" && (
+              <p className="text-xs md:text-sm">
+                <span className="font-medium">Pickup Location: </span>
+                {pickupLocation || "N/A"}
+              </p>
+            )}
             <p className="text-xs md:text-sm">
               <span className="font-medium">Dropoff Location: </span>
               {dropoffLocation || "N/A"}
-            </p>
-            <p className="text-xs md:text-sm">
-              <span className="font-medium">Car Price: </span>${carPrice}
             </p>
           </div>
         )}
