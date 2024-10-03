@@ -1,5 +1,3 @@
-import PaystackPop from "@paystack/inline-js";
-
 const Confirmation = ({ bookingDetails, onSubmit, page }) => {
   if (!bookingDetails) {
     return <div>Error: No booking details available.</div>;
