@@ -7,96 +7,149 @@ import "../customDatePickerWidth.css";
 import { fetchBookingCars, fetchTourTypes } from "../api";
 import { useReservation } from "../contexts/ReservationContext";
 import { formatDate } from "../utils/helpers";
-import { useLocation } from "react-router-dom";
+import UploadDocuments from "../components/UploadDocuments";
+import Modal from "../components/Modal";
 
-const reservationSchema = Yup.object().shape({
-  firstName: Yup.string().required("First name is required"),
-  lastName: Yup.string().required("Last name is required"),
-  guests: Yup.number()
-    .min(1, "At least one guest is required")
-    .required("Number of guests is required"),
-  phoneNumber: Yup.string()
-    .matches(/^\d{10}$/, "Phone number is not valid")
-    .required("Phone number is required"),
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  checkIn: Yup.date().required("Check-in date is required"),
-  checkOut: Yup.date()
-    .required("Check-out date is required")
-    .min(Yup.ref("checkIn"), "Check-out date cannot be before check-in date"),
-  selectedCar: Yup.mixed().when("interestedInCar", {
-    is: true,
-    then: () =>
-      Yup.mixed().required(
-        "Car selection is required when interested in renting a car"
-      ),
-    otherwise: () => Yup.mixed().notRequired(),
-  }),
-
-  drivingOption: Yup.mixed().when("interestedInCar", {
-    is: true,
-    then: () => Yup.string().required("Please select a driving option"),
-  }),
-
-  pickupLocation: Yup.string().when(["interestedInCar", "drivingOption"], {
-    is: (interestedInCar, drivingOption) =>
-      interestedInCar && drivingOption === "chauffeur",
-    then: () =>
-      Yup.string().required(
-        "Pick-up location is required when chauffeur is selected"
-      ),
-  }),
-
-  dropoffLocation: Yup.string().when(["interestedInCar", "drivingOption"], {
-    is: (interestedInCar) => interestedInCar,
-    then: () =>
-      Yup.string().required("Drop-off location is required when renting a car"),
-    otherwise: () => Yup.string().notRequired(),
-  }),
-
-  driverLicense: Yup.mixed()
-    .nullable()
-    .when(["interestedInCar", "drivingOption"], {
-      is: (interestedInCar, drivingOption) =>
-        interestedInCar && drivingOption === "self-driving",
-      then: () =>
-        Yup.mixed().required("Driver's license is required for self-driving"),
-      otherwise: () => Yup.mixed().notRequired(),
-    }),
-
-  selfie: Yup.mixed()
-    .nullable()
-    .when(["interestedInCar", "drivingOption"], {
-      is: (interestedInCar, drivingOption) =>
-        interestedInCar && drivingOption === "self-driving",
-      then: () => Yup.mixed().required("Selfie is required for self-driving"),
-      otherwise: () => Yup.mixed().notRequired(),
-    }),
-
-  selectedTour: Yup.mixed().when("interestedInTour", {
-    is: true,
-    then: () =>
-      Yup.mixed().required(
-        "Please select a tour type when interested in tours"
-      ),
-    otherwise: () => Yup.mixed().notRequired(),
-  }),
-});
-
-const ReservationForm = ({ initialValues, onSubmit, listing, user, page }) => {
+const ReservationForm = ({
+  initialValues,
+  onSubmit,
+  listing,
+  user,
+  page,
+  uploadDocuments,
+}) => {
   const [interestedInCar, setInterestedInCar] = useState(false);
   const [selectedCar, setSelectedCar] = useState("");
   const [carList, setCarList] = useState([]);
-  const [chauffeur, setChauffeur] = useState(undefined);
+  const [chauffeur, setChauffeur] = useState(false);
   const [drivingOption, setDrivingOption] = useState("");
-  const [pickupLocation, setPickupLocation] = useState("");
   const [dropoffLocation, setDropoffLocation] = useState(listing.LIST_NAME);
   const [interestedInTour, setInterestedInTour] = useState(false);
   const [tourTypes, setTourType] = useState("");
   const [selectedTour, setSelectedTour] = useState("");
   const { reservationData, setReservationData } = useReservation();
-  const location = useLocation();
+  const [showUploadModal, setShowUploadModal] = useState(false);
+
+  let reservationSchema = null;
+
+  const commonFields = {
+    firstName: Yup.string().required("First name is required"),
+    lastName: Yup.string().required("Last name is required"),
+    guests: Yup.number()
+      .min(1, "At least one guest is required")
+      .required("Number of guests is required"),
+    phoneNumber: Yup.string()
+      .matches(/^\d{10}$/, "Phone number is not valid")
+      .required("Phone number is required"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    checkIn: Yup.date().required("Check-in date is required"),
+    checkOut: Yup.date()
+      .required("Check-out date is required")
+      .min(Yup.ref("checkIn"), "Check-out date cannot be before check-in date"),
+  };
+
+  const createPlaceSchema = () => {
+    return Yup.object().shape({
+      ...commonFields,
+      selectedCar: Yup.mixed().when("interestedInCar", {
+        is: true,
+        then: () =>
+          Yup.mixed().required(
+            "Car selection is required when interested in renting a car"
+          ),
+        otherwise: () => Yup.mixed().notRequired(),
+      }),
+      drivingOption: Yup.mixed().when("interestedInCar", {
+        is: true,
+        then: () => Yup.string().required("Please select a driving option"),
+        otherwise: () => Yup.string().notRequired(),
+      }),
+      pickupLocation: Yup.string().when(["interestedInCar", "drivingOption"], {
+        is: (interestedInCar, drivingOption) =>
+          interestedInCar && drivingOption === "chauffeur",
+        then: () =>
+          Yup.string().required(
+            "Pick-up location is required when chauffeur is selected"
+          ),
+        otherwise: () => Yup.string().notRequired(),
+      }),
+      dropoffLocation: Yup.string().when(["interestedInCar", "drivingOption"], {
+        is: (interestedInCar) => interestedInCar,
+        then: () =>
+          Yup.string().required(
+            "Drop-off location is required when renting a car"
+          ),
+        otherwise: () => Yup.string().notRequired(),
+      }),
+      driverLicense: Yup.mixed()
+        .nullable()
+        .when(["interestedInCar", "drivingOption"], {
+          is: (interestedInCar, drivingOption) =>
+            interestedInCar &&
+            drivingOption === "self-driving" &&
+            !user.DLFILETYPE,
+          then: () =>
+            Yup.mixed().required(
+              "Driver's license is required for self-driving"
+            ),
+          otherwise: () => Yup.mixed().notRequired(),
+        }),
+      selfie: Yup.mixed()
+        .nullable()
+        .when(["interestedInCar", "drivingOption"], {
+          is: (interestedInCar, drivingOption) =>
+            interestedInCar &&
+            drivingOption === "self-driving" &&
+            !user.SELFIEFILETYPE,
+          then: () =>
+            Yup.mixed().required("Selfie is required for self-driving"),
+          otherwise: () => Yup.mixed().notRequired(),
+        }),
+      selectedTour: Yup.mixed().when("interestedInTour", {
+        is: true,
+        then: () =>
+          Yup.mixed().required(
+            "Please select a tour type when interested in tours"
+          ),
+        otherwise: () => Yup.mixed().notRequired(),
+      }),
+    });
+  };
+
+  const createCarSchema = () => {
+    const needsDriverLicense = !user.DLFILETYPE;
+    const needsSelfie = !user.SELFIEFILETYPE;
+
+    return Yup.object().shape({
+      ...commonFields,
+      pickupLocation: Yup.string().when("drivingOption", {
+        is: (drivingOption) => drivingOption === "chauffeur",
+        then: () =>
+          Yup.string().required(
+            "Pick-up location is required when chauffeur is selected"
+          ),
+        otherwise: () => Yup.string().notRequired(),
+      }),
+      dropoffLocation: Yup.string().required("Drop-off location is required"),
+      driverLicense: needsDriverLicense
+        ? Yup.mixed().required("Driver's license is required")
+        : Yup.mixed().notRequired(),
+
+      selfie: needsSelfie
+        ? Yup.mixed().required("Selfie is required")
+        : Yup.mixed().notRequired(),
+    });
+  };
+
+  if (page === "place") {
+    reservationSchema = createPlaceSchema();
+  } else if (page === "car") {
+    reservationSchema = createCarSchema();
+  } else {
+    reservationSchema = Yup.object().shape(commonFields);
+  }
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -128,20 +181,6 @@ const ReservationForm = ({ initialValues, onSubmit, listing, user, page }) => {
     }
   }, [interestedInTour]);
 
-  // useEffect(() => {
-  //   if (chauffeur) {
-  //     setReservationData({
-  //       ...reservationData,
-  //       dropoffLocation: listing.LIST_NAME,
-  //     });
-  //   } else {
-  //     setReservationData({
-  //       ...reservationData,
-  //       dropoffLocation: "",
-  //     });
-  //   }
-  // }, [chauffeur]);
-
   useEffect(() => {
     if (page === "car") {
       setReservationData({
@@ -164,11 +203,15 @@ const ReservationForm = ({ initialValues, onSubmit, listing, user, page }) => {
     // console.log(bookingData);
   };
 
-  // console.log(
-  //   reservationSchema.validate(reservationData).catch((err) => {
-  //     console.log("err", err.errors);
-  //   })
-  // );
+  console.log(
+    reservationSchema.validate(reservationData).catch((err) => {
+      console.log("err", err.errors);
+    })
+  );
+
+  const toggleUploadModal = () => {
+    setShowUploadModal(!showUploadModal);
+  };
 
   return (
     <>
@@ -456,7 +499,6 @@ const ReservationForm = ({ initialValues, onSubmit, listing, user, page }) => {
                               setFieldValue("drivingOption", "chauffeur");
                               setDrivingOption("chauffeur");
                               setChauffeur(true);
-                              setDrivingOption(false);
                               setReservationData((prevData) => ({
                                 ...prevData,
                                 chauffeur: true,
@@ -470,7 +512,7 @@ const ReservationForm = ({ initialValues, onSubmit, listing, user, page }) => {
                           </label>
                         </div>
 
-                        {chauffeur && (
+                        {drivingOption === "chauffeur" && (
                           <>
                             <div className="relative my-4">
                               <Field
@@ -542,6 +584,7 @@ const ReservationForm = ({ initialValues, onSubmit, listing, user, page }) => {
                               setReservationData((prevData) => ({
                                 ...prevData,
                                 chauffeur: false,
+                                drivingOption: "self-driving",
                               }));
                               setFieldValue("drivingOption", "self-driving");
                             }}
@@ -557,7 +600,7 @@ const ReservationForm = ({ initialValues, onSubmit, listing, user, page }) => {
                           />
                         </div>
 
-                        {drivingOption && (
+                        {drivingOption === "self-driving" && (
                           <>
                             <div className="relative mt-8">
                               <Field
@@ -587,68 +630,14 @@ const ReservationForm = ({ initialValues, onSubmit, listing, user, page }) => {
                                 className="text-red-500 text-xs mt-1"
                               />
                             </div>
-                            {!user.DLFILETYPE && (
-                              <div className="mt-4">
-                                <div className="flex flex-col">
-                                  <label
-                                    htmlFor="driverLicense"
-                                    className="text-gray-600 text-xs mb-2"
-                                  >
-                                    Driver's License
-                                  </label>
-                                  <input
-                                    type="file"
-                                    id="driverLicense"
-                                    name="driverLicense"
-                                    onChange={(event) => {
-                                      const file = event.currentTarget.files[0];
-                                      setReservationData((prevData) => ({
-                                        ...prevData,
-                                        driverLicense: file,
-                                      }));
-                                      setFieldValue("driverLicense", file);
-                                    }}
-                                    className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
-                                  />
-                                  <ErrorMessage
-                                    name="driverLicense"
-                                    component="div"
-                                    className="text-red-500 text-xs mt-1"
-                                  />
-                                </div>
-                              </div>
-                            )}
-
-                            {!user.SELFIEFILETYPE && (
-                              <div className="mt-4">
-                                <div className="flex flex-col">
-                                  <label
-                                    htmlFor="selfie"
-                                    className="text-gray-600 text-xs mb-2"
-                                  >
-                                    Selfie
-                                  </label>
-                                  <input
-                                    type="file"
-                                    id="selfie"
-                                    name="selfie"
-                                    onChange={(event) => {
-                                      const file = event.currentTarget.files[0];
-                                      setFieldValue("selfie", file);
-                                      setReservationData((prevData) => ({
-                                        ...prevData,
-                                        selfie: file,
-                                      }));
-                                    }}
-                                    className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
-                                  />
-                                </div>
-                                <ErrorMessage
-                                  name="selfie"
-                                  component="div"
-                                  className="text-red-500 text-xs mt-1"
-                                />
-                              </div>
+                            {!user.DLFILETYPE && !user.SELFIEFILETYPE && (
+                              <button
+                                type="button"
+                                onClick={() => setShowUploadModal(true)}
+                                className="border text-brand px-4 py-2 rounded-md my-5 text-xs hover:scale-105 transition"
+                              >
+                                Upload Documents
+                              </button>
                             )}
                           </>
                         )}
@@ -755,12 +744,11 @@ const ReservationForm = ({ initialValues, onSubmit, listing, user, page }) => {
                     id="chauffeur"
                     name="drivingOption"
                     value="chauffeur"
-                    checked={chauffeur}
+                    checked={drivingOption === "chauffeur"}
                     onChange={() => {
                       setFieldValue("drivingOption", "chauffeur");
                       setDrivingOption("chauffeur");
                       setChauffeur(true);
-                      setDrivingOption(false);
                       setReservationData((prevData) => ({
                         ...prevData,
                         chauffeur: true,
@@ -774,7 +762,7 @@ const ReservationForm = ({ initialValues, onSubmit, listing, user, page }) => {
                   </label>
                 </div>
 
-                {chauffeur && (
+                {drivingOption === "chauffeur" && (
                   <>
                     <div className="relative my-4">
                       <Field
@@ -830,11 +818,11 @@ const ReservationForm = ({ initialValues, onSubmit, listing, user, page }) => {
                 <div className="flex items-center mt-4">
                   <input
                     type="radio"
-                    id="drivingOption"
+                    id="self-driving"
                     name="drivingOption"
                     value="self-driving"
                     checked={drivingOption === "self-driving"}
-                    onChange={(e) => {
+                    onChange={() => {
                       setChauffeur(false);
                       setDrivingOption("self-driving");
                       setReservationData((prevData) => ({
@@ -856,7 +844,7 @@ const ReservationForm = ({ initialValues, onSubmit, listing, user, page }) => {
                   />
                 </div>
 
-                {drivingOption && (
+                {drivingOption === "self-driving" && (
                   <>
                     <div className="relative mt-8">
                       <Field
@@ -883,68 +871,14 @@ const ReservationForm = ({ initialValues, onSubmit, listing, user, page }) => {
                         className="text-red-500 text-xs mt-1"
                       />
                     </div>
-                    {!user.DLFILETYPE && (
-                      <div className="mt-4">
-                        <div className="flex flex-col">
-                          <label
-                            htmlFor="driverLicense"
-                            className="text-gray-600 text-xs mb-2"
-                          >
-                            Driver's License
-                          </label>
-                          <input
-                            type="file"
-                            id="driverLicense"
-                            name="driverLicense"
-                            onChange={(event) => {
-                              const file = event.currentTarget.files[0];
-                              setReservationData((prevData) => ({
-                                ...prevData,
-                                driverLicense: file,
-                              }));
-                              setFieldValue("driverLicense", file);
-                            }}
-                            className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
-                          />
-                          <ErrorMessage
-                            name="driverLicense"
-                            component="div"
-                            className="text-red-500 text-xs mt-1"
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {!user.SELFIEFILETYPE && (
-                      <div className="mt-4">
-                        <div className="flex flex-col">
-                          <label
-                            htmlFor="selfie"
-                            className="text-gray-600 text-xs mb-2"
-                          >
-                            Selfie
-                          </label>
-                          <input
-                            type="file"
-                            id="selfie"
-                            name="selfie"
-                            onChange={(event) => {
-                              const file = event.currentTarget.files[0];
-                              setFieldValue("selfie", file);
-                              setReservationData((prevData) => ({
-                                ...prevData,
-                                selfie: file,
-                              }));
-                            }}
-                            className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
-                          />
-                        </div>
-                        <ErrorMessage
-                          name="selfie"
-                          component="div"
-                          className="text-red-500 text-xs mt-1"
-                        />
-                      </div>
+                    {!user.DLFILETYPE && !user.SELFIEFILETYPE && (
+                      <button
+                        type="button"
+                        onClick={() => setShowUploadModal(true)}
+                        className="border text-brand px-4 py-2 rounded-md my-5 text-xs hover:scale-105 transition"
+                      >
+                        Upload Documents
+                      </button>
                     )}
                   </>
                 )}
@@ -962,6 +896,9 @@ const ReservationForm = ({ initialValues, onSubmit, listing, user, page }) => {
           </Form>
         )}
       </Formik>
+      <Modal isOpen={showUploadModal} onClose={toggleUploadModal}>
+        <UploadDocuments handleSubmit={uploadDocuments} />
+      </Modal>
     </>
   );
 };

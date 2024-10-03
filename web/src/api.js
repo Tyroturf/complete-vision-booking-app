@@ -114,6 +114,8 @@ export const bookProperty = (bookingData) => {
     fee: bookingData.fee,
     chauffuer_rate: bookingData.chauffuer_rate,
     sub_total: bookingData.sub_total,
+    special_note: bookingData.special_note,
+    reference_id: bookingData.paymentReference,
   }).toString();
 
   return api.get(`/property/booking?${queryString}`);
@@ -129,4 +131,12 @@ export const fetchTourTypes = async () => {
 
 export const fetchExchangeRate = async () => {
   return api.get("/exchangerate/rate");
+};
+
+export const fetchUser = async (queryString) => {
+  return api.get(`/user/user_details?${queryString}`);
+};
+
+export const uploadDocs = async (queryString) => {
+  return api.get(`userdoc/document?${queryString}`);
 };

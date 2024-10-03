@@ -1,6 +1,6 @@
 import PaystackPop from "@paystack/inline-js";
 
-const Confirmation = ({ bookingDetails, onSubmit }) => {
+const Confirmation = ({ bookingDetails, onSubmit, page }) => {
   if (!bookingDetails) {
     return <div>Error: No booking details available.</div>;
   }
@@ -76,7 +76,31 @@ const Confirmation = ({ bookingDetails, onSubmit }) => {
         </div>
 
         {/* Car Rental Details */}
-        {interestedInCar && selectedCar && (
+        {page === "place" && interestedInCar && selectedCar && (
+          <div>
+            <h2 className="text-xs md:text-sm font-bold">Car Rental Details</h2>
+            {/* <p className="text-xs md:text-sm">
+              <span className="font-medium">Car Type: </span>
+              {selectedCar?.CAR_TYPE || "N/A"}
+            </p> */}
+            <p className="text-xs md:text-sm">
+              <span className="font-medium">Driving Option: </span>
+              {drivingOption === "chauffeur" ? "Chauffeur" : "Self-driving"}
+            </p>
+            {drivingOption === "chauffeur" && (
+              <p className="text-xs md:text-sm">
+                <span className="font-medium">Pickup Location: </span>
+                {pickupLocation || "N/A"}
+              </p>
+            )}
+            <p className="text-xs md:text-sm">
+              <span className="font-medium">Dropoff Location: </span>
+              {dropoffLocation || "N/A"}
+            </p>
+          </div>
+        )}
+
+        {page === "car" && (
           <div>
             <h2 className="text-xs md:text-sm font-bold">Car Rental Details</h2>
             {/* <p className="text-xs md:text-sm">

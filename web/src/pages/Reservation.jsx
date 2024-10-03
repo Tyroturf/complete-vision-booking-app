@@ -25,7 +25,7 @@ const Reservation = ({ type }) => {
   const { id } = useParams();
   const { user } = useAuth();
   const [page, setPage] = useState("");
-  const [userDetails, setuserDetails] = useState({});
+  const [userDetails, setUserDetails] = useState({});
   const params = new URLSearchParams(location.search);
   const [showFullPolicy, setShowFullPolicy] = useState(false);
   const [data, setData] = useState({});
@@ -45,6 +45,45 @@ const Reservation = ({ type }) => {
     selectedCar: null,
   });
 
+  const fetchUserDetails = async () => {
+    const { user_id } = JSON.parse(localStorage.getItem("user"));
+    console.log(user_id);
+    if (user_id) {
+      try {
+        const response = await fetchUser(`p_user_id=${user_id}`);
+        const userDetails = response.data["User Details"][0];
+        console.log("userDetails", userDetails);
+        setUserDetails(userDetails);
+
+        setInitialValues((prevValues) => ({
+          ...prevValues,
+          firstName: userDetails.FIRST_NAME || "",
+          lastName: userDetails.LAST_NAME || "",
+          phoneNumber: userDetails.CONTACT || "",
+          email: userDetails.USERNAME || "",
+          driverLicense: userDetails.DLFILETYPE ? userDetails.DLFILETYPE : null,
+          selfie: userDetails.SELFIEFILETYPE
+            ? userDetails.SELFIEFILETYPE
+            : null,
+        }));
+
+        setReservationData((prevData) => ({
+          ...prevData,
+          firstName: userDetails.first_name || "",
+          lastName: userDetails.last_name || "",
+          phoneNumber: userDetails.contact || "",
+          email: userDetails.email || "",
+          driverLicense: userDetails.DLFILETYPE ? userDetails.DLFILETYPE : null,
+          selfie: userDetails.SELFIEFILETYPE
+            ? userDetails.SELFIEFILETYPE
+            : null,
+        }));
+      } catch (err) {
+        console.error("Failed to fetch user details:", err);
+      }
+    }
+  };
+
   useEffect(() => {
     if ("car_rentals".includes(location.pathname.split("/")[2])) {
       setPage("car");
@@ -56,43 +95,6 @@ const Reservation = ({ type }) => {
   }, [page]);
 
   useEffect(() => {
-    const fetchUserDetails = async () => {
-      const { user_id } = JSON.parse(localStorage.getItem("user"));
-      console.log(user_id);
-      if (user_id) {
-        try {
-          const response = await fetchUser(`p_user_id=${user_id}`);
-          const userDetails = response.data["User Details"][0];
-          console.log("userDetails", userDetails);
-          setuserDetails(userDetails);
-
-          setInitialValues((prevValues) => ({
-            ...prevValues,
-            firstName: userDetails.FIRST_NAME || "",
-            lastName: userDetails.LAST_NAME || "",
-            phoneNumber: userDetails.CONTACT || "",
-            email: userDetails.USERNAME || "",
-            driverLicense: userDetails.DLFILETYPE
-              ? userDetails.DLFILETYPE
-              : null,
-            selfie: userDetails.SELFIEFILETYPE
-              ? userDetails.SELFIEFILETYPE
-              : null,
-          }));
-
-          setReservationData((prevData) => ({
-            ...prevData,
-            firstName: userDetails.first_name || "",
-            lastName: userDetails.last_name || "",
-            phoneNumber: userDetails.contact || "",
-            email: userDetails.email || "",
-          }));
-        } catch (err) {
-          console.error("Failed to fetch user details:", err);
-        }
-      }
-    };
-
     fetchUserDetails();
   }, [setReservationData]);
 
@@ -121,6 +123,11 @@ const Reservation = ({ type }) => {
         } else if (type === "car_rentals") {
           response = await fetchCar(id);
           setData(response.data.car_rentals[0]);
+          setReservationData((prevData) => ({
+            ...prevData,
+            interestedInCar: true,
+            selectedCar: response.data.car_rentals[0],
+          }));
         } else if (type === "tours") {
           response = await fetchTour(id);
           setData(response.data.tours[0]);
@@ -170,6 +177,30 @@ const Reservation = ({ type }) => {
     setShowConfirmation(false);
   };
 
+  const uploadDocuments = async () => {
+    const driverLicense = reservationData.driverLicense;
+    const selfie = reservationData.selfie;
+
+    const queryString = `user_id=1&dl_photo=${encodeURIComponent(
+      driverLicense.name
+    )}&dlmmetype=${
+      driverLicense.type
+    }&dlfiletype=jpeg&selfiephoto=${encodeURIComponent(
+      selfie.name
+    )}&selfiemmetype=${selfie.type}&selfietype=jpeg`;
+
+    try {
+      const response = await uploadDocs(queryString);
+      console.log("res", response);
+      setShowUploadModal(false);
+      await fetchUserDetails();
+      alert("Documents uploaded successfully");
+    } catch (error) {
+      console.error("Error uploading documents", error);
+      alert("Failed to upload documents");
+    }
+  };
+
   return (
     <div className="container mx-auto mt-20 p-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -195,6 +226,7 @@ const Reservation = ({ type }) => {
               listing={data}
               user={userDetails}
               page={page}
+              uploadDocuments={uploadDocuments}
             />
           </div>
         </div>
@@ -211,6 +243,7 @@ const Reservation = ({ type }) => {
         <Confirmation
           bookingDetails={reservationData}
           onSubmit={confirmBooking}
+          page={page}
         />
       </Modal>
     </div>
