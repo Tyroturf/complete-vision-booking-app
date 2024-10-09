@@ -12,6 +12,7 @@ import {
   fetchTour,
   bookProperty,
   fetchUser,
+  uploadDocs,
 } from "../api";
 import { useReservation } from "../contexts/ReservationContext";
 import { formatDate } from "../utils/helpers";

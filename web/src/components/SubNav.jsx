@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../contexts/AuthContext";
 import { showSuccessToast } from "../utils/toast";
+import logo from "../assets/logo.png";
 
 const baseLinkClasses =
   "text-xs lg:text-sm font-medium lg:px-3 md:px-1 py-2 rounded-md transition flex items-center space-x-2 mx-1";
@@ -72,7 +73,7 @@ const SubNav = () => {
               className="text-gray-500 font-bold text-sm md:text-xl"
               to={"/"}
             >
-              Complete Vision
+              <img className="md:h-14 h-8" src={logo} alt="Logo" />
             </Link>
 
             {/* Hamburger menu for small screens */}
