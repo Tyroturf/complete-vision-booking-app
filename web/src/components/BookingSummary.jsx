@@ -137,10 +137,10 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
             )}
         </div>
 
-        <div className="bg-brand-sm rounded-b-lg w-full mt-auto">
+        <div className="bg-brand-sm rounded-b-lg w-full mt-10">
           <div className="flex justify-between items-center p-6 text-gray-700">
-            <span className="font-medium text-sm">Grand Total (GHS)</span>
-            <span className="text-xl font-bold">
+            <span className="font-medium text-sm">Total (GHS)</span>
+            <span className="text-lg md:text-xl font-bold">
               GHS {formatWithCommas(totalPriceGHS)}
             </span>
           </div>
