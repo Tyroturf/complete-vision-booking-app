@@ -163,7 +163,7 @@ const SubNav = () => {
                         isActive ? activeLinkClasses : defaultLinkClasses
                       }`
                     }
-                    to="/host"
+                    to="/become-a-host"
                   >
                     Become a host
                   </NavLink>

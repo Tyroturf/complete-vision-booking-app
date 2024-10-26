@@ -81,7 +81,7 @@ export const Navbar = () => {
               <Link className={linkClass} to="/register">
                 <span>Sign Up</span>
               </Link>
-              <Link className={linkClass} to="/register">
+              <Link className={linkClass} to="/become-a-host">
                 <span>Become a Host</span>
               </Link>
             </>

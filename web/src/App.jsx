@@ -24,6 +24,9 @@ import CarDetail from "./pages/CarDetail";
 import ReservationWrapper from "./components/ReservationWrapper";
 import TourDetail from "./pages/TourDetail";
 import { ReservationProvider } from "./contexts/ReservationContext";
+import BecomeAHost from "./pages/BecomeAHost";
+import ListInfo from "./pages/ListInfo";
+import { HostRegister } from "./pages/HostRegister";
 
 const App = () => {
   return (
@@ -33,6 +36,7 @@ const App = () => {
           <Router>
             <Routes>
               <Route path="/register" element={<Register />} />
+              <Route path="/register-host" element={<HostRegister />} />
               <Route path="/login" element={<Login />} />
               <Route
                 path="/"
@@ -87,6 +91,22 @@ const App = () => {
                 element={
                   <Layout>
                     <BookTours />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/become-a-host"
+                element={
+                  <Layout>
+                    <BecomeAHost />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/list/:type"
+                element={
+                  <Layout>
+                    <ListInfo />
                   </Layout>
                 }
               />
