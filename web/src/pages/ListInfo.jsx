@@ -3,10 +3,7 @@ import room from "../assets/room.avif";
 import scrape from "../assets/scrape.webp";
 import ap from "../assets/ap.avif";
 import suv from "../assets/suv.png";
-import hall from "../assets/hall.webp";
-import porshe from "../assets/porshe.avif";
 import t1 from "../assets/t1.png";
-import ab from "../assets/ab.png";
 import benz from "../assets/benz.avif";
 import beach from "../assets/beach.png";
 import bus from "../assets/bus.png";
@@ -37,7 +34,7 @@ const ListInfo = () => {
   const currentImages = images[type] || images.property;
 
   return (
-    <div className="my-20 space-y-20">
+    <div className="my-16 md:my-20 space-y-10">
       <section
         className="relative flex flex-col p-4 md:p-7 shadow-md gap-y-3 rounded-md bg-cover bg-center"
         style={{
@@ -47,21 +44,23 @@ const ListInfo = () => {
       >
         <div className="absolute inset-0 bg-black opacity-60 rounded-md"></div>
 
-        <div className="relative z-10 text-white space-y-2">
-          <h1 className="font-bold text-base md:text-xl">
-            {type === "property" && "Let's List Your Property"}
-            {type === "vehicle" && "Let's List Your Vehicle"}
-            {type === "tour" && "Let's Tour Together"}
-          </h1>
-          <p className="text-xs md:text-sm font-medium">
-            {type === "property" &&
-              "List your property for others to rent or buy."}
-            {type === "vehicle" && "List your vehicle for rent or sale."}
-            {type === "tour" &&
-              "Embark on your dream vacation with exclusive 24/7 car service and a personal chauffeur, complemented by a private tour."}
-          </p>
+        <div className="relative z-10 text-white space-x-2 flex justify-between">
+          <div>
+            <h1 className="font-bold text-base md:text-xl">
+              {type === "property" && "Let's List Your Property"}
+              {type === "vehicle" && "Let's List Your Vehicle"}
+              {type === "tour" && "Let's Tour Together"}
+            </h1>
+            <p className="text-xs md:text-sm font-medium">
+              {type === "property" &&
+                "List your property for others to rent or buy."}
+              {type === "vehicle" && "List your vehicle for rent or sale."}
+              {type === "tour" &&
+                "Embark on your dream vacation with exclusive 24/7 car service and a personal chauffeur, complemented by a private tour."}
+            </p>
+          </div>
           <Link
-            className="text-xs lg:text-sm w-full sm:w-48 p-2 bg-white rounded-md font-bold hover:scale-105 transition text-slate-500"
+            className="text-xs lg:text-sm  md:w-28 p-2 bg-white rounded-md font-bold hover:scale-105 transition text-slate-500 text-center md:mt-2"
             to={"/register-host"}
           >
             Get Started

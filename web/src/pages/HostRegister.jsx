@@ -24,6 +24,7 @@ const validationSchema = Yup.object({
 export const HostRegister = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleSubmit = async (values) => {
     try {
@@ -56,10 +57,10 @@ export const HostRegister = () => {
         <FormComponent
           title="Become A Host"
           initialValues={{
-            firstName: "",
-            lastName: "",
-            contact: "",
-            email: "",
+            firstName: user?.first_name || "",
+            lastName: user?.last_name || "",
+            contact: user?.contact || "",
+            email: user?.email || "",
             password: "",
           }}
           validationSchema={validationSchema}

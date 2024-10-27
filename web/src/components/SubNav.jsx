@@ -215,6 +215,13 @@ const SubNav = () => {
                   >
                     <span className="text-base font-bold">Profile</span>
                   </Link>
+                  <Link
+                    className="text-white my-3"
+                    to="/become-a-host"
+                    onClick={handleLinkClick}
+                  >
+                    <span className="text-base font-bold">Become A Host</span>
+                  </Link>
                   <button
                     onClick={() => {
                       handleLogout();
@@ -239,6 +246,13 @@ const SubNav = () => {
                     onClick={handleLinkClick}
                   >
                     <span className="text-base font-bold">Sign Up</span>
+                  </Link>
+                  <Link
+                    className="text-white my-3"
+                    to="/become-a-host"
+                    onClick={handleLinkClick}
+                  >
+                    <span className="text-base font-bold">Become A Host</span>
                   </Link>
                 </>
               )}
