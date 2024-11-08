@@ -4,6 +4,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { RatingSummary } from "../components/Review";
 import ImageGallery from "../components/ImageGallery";
+import Loader from "../components/Loader";
 
 const Detail = ({ fetchDetail, type }) => {
   const { id } = useParams();
@@ -32,7 +33,7 @@ const Detail = ({ fetchDetail, type }) => {
     }
   }, [id, fetchDetail, type]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loader />;
   if (error) return <p>Error fetching details: {error.message}</p>;
 
   const images = [

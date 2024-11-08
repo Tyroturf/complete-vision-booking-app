@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import Card from "../components/Card";
 import ItemList from "../components/ItemsList";
 import { useSearch } from "../contexts/SearchContext";
+import Loader from "../components/Loader";
 
 const BookTours = () => {
   const {
@@ -22,7 +23,7 @@ const BookTours = () => {
     setCurrentPage("tours");
   }, []);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loader />;
   if (error) return <p>Error fetching data: {error.message}</p>;
 
   return (
