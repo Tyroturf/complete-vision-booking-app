@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,9 +20,27 @@ const defaultLinkClasses =
 const activeLinkClasses = "text-brand bg-white bg-opacity-15 backdrop-blur-md";
 
 export const ProfileDropdown = ({ toggleDropdown, handleLogout }) => {
-  const profileLink = "hover:bg-gray-100 w-full p-2 px-6";
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        toggleDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [toggleDropdown]);
+
+  const profileLink = "block hover:bg-gray-100 w-full p-2 px-6 text-left";
+
   return (
     <motion.div
+      ref={dropdownRef}
       className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -30,19 +48,28 @@ export const ProfileDropdown = ({ toggleDropdown, handleLogout }) => {
       transition={{ duration: 0.3 }}
     >
       <ul className="space-y-1 text-sm font-medium my-2">
-        <li className={profileLink}>
-          <Link to="/dashboard" className="text-gray-600">
+        <li>
+          <Link to="/dashboard" className={`${profileLink} text-gray-600`}>
             Dashboard
           </Link>
         </li>
-        <li className={profileLink}>
-          <button onClick={handleLogout}>Logout</button>
+        <li>
+          <Link to="/manage" className={`${profileLink} text-gray-600`}>
+            Manage Property
+          </Link>
+        </li>
+        <li>
+          <button
+            onClick={handleLogout}
+            className={`${profileLink} text-gray-600`}
+          >
+            Logout
+          </button>
         </li>
       </ul>
     </motion.div>
   );
 };
-
 const SubNav = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -221,6 +248,13 @@ const SubNav = () => {
                     onClick={handleLinkClick}
                   >
                     <span className="text-base font-bold">Become A Host</span>
+                  </Link>
+                  <Link
+                    className="text-white my-3"
+                    to="/manage"
+                    onClick={handleLinkClick}
+                  >
+                    <span className="text-base font-bold">Manage Property</span>
                   </Link>
                   <button
                     onClick={() => {
