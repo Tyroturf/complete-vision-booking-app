@@ -36,7 +36,7 @@ const Modal = ({ isOpen, onClose, children }) => {
         <motion.div
           ref={overlayRef}
           onClick={handleOverlayClick}
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
           variants={overlayVariants}
           initial="hidden"
           animate="visible"
