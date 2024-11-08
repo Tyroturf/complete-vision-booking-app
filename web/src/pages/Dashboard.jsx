@@ -466,7 +466,7 @@ export const Dashboard = () => {
   );
 };
 
-const ProfileHero = ({ imageUrl }) => (
+export const ProfileHero = ({ imageUrl }) => (
   <>
     <img
       src={imageUrl}

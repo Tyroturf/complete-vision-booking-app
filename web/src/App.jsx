@@ -27,6 +27,7 @@ import { ReservationProvider } from "./contexts/ReservationContext";
 import BecomeAHost from "./pages/BecomeAHost";
 import ListInfo from "./pages/ListInfo";
 import { HostRegister } from "./pages/HostRegister";
+import Manage from "./pages/Manage";
 
 const App = () => {
   return (
@@ -136,6 +137,16 @@ const App = () => {
                   <PrivateRoute>
                     <Layout>
                       <Dashboard />
+                    </Layout>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/manage"
+                element={
+                  <PrivateRoute>
+                    <Layout>
+                      <Manage />
                     </Layout>
                   </PrivateRoute>
                 }

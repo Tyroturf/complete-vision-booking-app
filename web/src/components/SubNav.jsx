@@ -54,6 +54,11 @@ export const ProfileDropdown = ({ toggleDropdown, handleLogout }) => {
           </Link>
         </li>
         <li>
+          <Link to="/become-a-host" className={`${profileLink} text-gray-600`}>
+            Become a Host
+          </Link>
+        </li>
+        <li>
           <Link to="/manage" className={`${profileLink} text-gray-600`}>
             Manage Property
           </Link>
