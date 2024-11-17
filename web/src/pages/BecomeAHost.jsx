@@ -6,13 +6,26 @@ import build from "../assets/build.jpg";
 
 const BecomeAHost = () => {
   const list = [
-    { id: 1, name: "List Property", image: build, location: "property" },
-    { id: 3, name: "List Vehicle", image: suv, location: "vehicle" },
+    {
+      id: 1,
+      name: "List Property",
+      image: build,
+      location: "property",
+      hostType: "L",
+    },
+    {
+      id: 3,
+      name: "List Vehicle",
+      image: suv,
+      location: "vehicle",
+      hostType: "V",
+    },
     {
       id: 4,
       name: "List Tour / Experience",
       image: ab,
       location: "tour",
+      hostType: "T",
     },
   ];
 
@@ -20,7 +33,7 @@ const BecomeAHost = () => {
     <div className="flex flex-wrap justify-center gap-6 p-6 md:my-40 my-20">
       {list.map((item) => (
         <Link
-          to={`/list/${item.location}`}
+          to={`/list/${item.location}?hostType=${item.hostType}`}
           key={item.id}
           className="w-80 p-4 bg-white rounded-lg shadow-lg transform transition-transform hover:scale-105 hover:shadow-xl"
         >

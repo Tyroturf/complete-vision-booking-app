@@ -140,3 +140,19 @@ export const fetchUser = async (queryString) => {
 export const uploadDocs = async (queryString) => {
   return api.get(`userdoc/document?${queryString}`);
 };
+
+export const becomeAHost = ({ firstName, lastName, contact, email, password, role = "H", hostType }) => {
+  const queryString = new URLSearchParams({
+    first_name: firstName,
+    last_name: lastName,
+    contact,
+    username: email,
+    password,
+    role,
+    host_type: hostType,
+  }).toString();
+
+  const url = `/register/new_user?${queryString}`;
+
+  return api.get(url);
+};

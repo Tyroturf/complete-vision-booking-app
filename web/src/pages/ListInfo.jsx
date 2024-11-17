@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import room from "../assets/room.avif";
 import scrape from "../assets/scrape.webp";
 import ap from "../assets/ap.avif";
@@ -12,7 +12,11 @@ import hist from "../assets/hist.png";
 
 const ListInfo = () => {
   const { type } = useParams();
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+  const hostType = queryParams.get("hostType");
 
+  console.log("Host Type:", hostType);
   const images = {
     property: {
       section1: scrape,
@@ -61,7 +65,7 @@ const ListInfo = () => {
           </div>
           <Link
             className="text-xs lg:text-sm  md:w-28 p-2 bg-white rounded-md font-bold hover:scale-105 transition text-slate-500 text-center md:mt-2"
-            to={"/register-host"}
+            to={`/register-host?hostType=${hostType}`}
           >
             Get Started
           </Link>

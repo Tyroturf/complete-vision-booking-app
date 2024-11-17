@@ -2,9 +2,10 @@ import React from "react";
 import FormComponent from "../forms/RegistrationForm";
 import wheel from "../assets/wheel.webp";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
+import { becomeAHost } from "../api";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First name is required"),
@@ -16,27 +17,29 @@ const validationSchema = Yup.object({
   password: Yup.string()
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
-  // confirmPassword: Yup.string()
-  //   .oneOf([Yup.ref("password"), null], "Passwords must match")
-  //   .required("Confirm password is required"),
 });
 
 export const HostRegister = () => {
   const { register } = useAuth();
-  const navigate = useNavigate();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+  const hostType = queryParams.get("hostType");
 
   const handleSubmit = async (values) => {
     try {
       const { firstName, lastName, contact, email, password } = values;
-      const role = "H";
-      const res = await register({
+      const role = "H"; // Default role for hosts
+
+      const res = await becomeAHost({
         firstName,
         lastName,
         contact,
         email,
         password,
         role,
+        hostType,
       });
 
       if (res.data.error) {
@@ -47,7 +50,7 @@ export const HostRegister = () => {
       showSuccessToast("Sign up successful");
       navigate("/login");
     } catch (error) {
-      showErrorToast(error);
+      showErrorToast(error.message || "An error occurred");
     }
   };
 
