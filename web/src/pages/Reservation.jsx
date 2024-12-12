@@ -16,6 +16,7 @@ import {
 } from "../api";
 import { useReservation } from "../contexts/ReservationContext";
 import { formatDate } from "../utils/helpers";
+import axios from "axios";
 
 const Reservation = ({ type }) => {
   const today = new Date();
@@ -48,7 +49,6 @@ const Reservation = ({ type }) => {
 
   const fetchUserDetails = async () => {
     const { user_id } = JSON.parse(localStorage.getItem("user"));
-    console.log(user_id);
     if (user_id) {
       try {
         const response = await fetchUser(`p_user_id=${user_id}`);
@@ -152,21 +152,28 @@ const Reservation = ({ type }) => {
     }
   };
 
-  const confirmBooking = async (paymentReference) => {
-    const { reservationData } = useReservation();
-
-    const bookingDetails = { ...reservationData, paymentReference };
-
+  const confirmBooking = async () => {
     try {
-      const response = await bookProperty(bookingDetails);
-      const result = await response.json();
-      if (response.ok) {
-        alert("Booking successful!");
-      } else {
-        alert(`Booking failed: ${result.message}`);
-      }
+      // const { email, subTotal } = reservationData;
+
+      // const queryString = new URLSearchParams({
+      //   p_email: email,
+      //   p_amount: subTotal,
+      // }).toString();
+
+      // const response = await initializePayment(queryString);
+
+      // if (response.ok) {
+      //   const data = await response.json();
+      //   window.location.href = data.authorization_url;
+      // } else {
+      //   const result = await response.json();
+      //   alert(`Payment initialization failed: ${result.message}`);
+      // }
+      console.log("first");
     } catch (error) {
       alert(`Error: ${error.message}`);
+    } finally {
     }
   };
 
@@ -178,27 +185,75 @@ const Reservation = ({ type }) => {
     setShowConfirmation(false);
   };
 
-  const uploadDocuments = async () => {
-    const driverLicense = reservationData.driverLicense;
-    const selfie = reservationData.selfie;
+  const uploadDL = async () => {
+    const { driverLicense } = reservationData;
+    const { user_id } = JSON.parse(localStorage.getItem("user"));
 
-    const queryString = `user_id=1&dl_photo=${encodeURIComponent(
-      driverLicense.name
-    )}&dlmmetype=${
-      driverLicense.type
-    }&dlfiletype=jpeg&selfiephoto=${encodeURIComponent(
-      selfie.name
-    )}&selfiemmetype=${selfie.type}&selfietype=jpeg`;
+    const bucketUrl =
+      "https://objectstorage.af-johannesburg-1.oraclecloud.com/p/suIO1K3vlc1QnyW-2BPxWaaHUDuky1kg0oCvk6N19db2Qd_jUv9nEM7oqCgT1Uv6/n/axw84jvjnipe/b/bucket1/o/";
 
-    try {
-      const response = await uploadDocs(queryString);
-      console.log("res", response);
-      setShowUploadModal(false);
-      await fetchUserDetails();
-      alert("Documents uploaded successfully");
-    } catch (error) {
-      console.error("Error uploading documents", error);
-      alert("Failed to upload documents");
+    const uploadUrl = `${bucketUrl}${user_id}_dl`;
+
+    const r = await axios.put(uploadUrl, driverLicense, {
+      headers: {
+        "Content-Type": driverLicense?.type,
+      },
+    });
+
+    if (r.status === 200) {
+      try {
+        const payload = {
+          p_user_id: user_id,
+          p_dl_photo_url: uploadUrl,
+        };
+
+        const queryString = new URLSearchParams(payload).toString();
+
+        const response = await uploadDocs(queryString);
+        await fetchUserDetails();
+        alert("Driver License uploaded successfully");
+      } catch (error) {
+        console.error("Error uploading driver licence", error);
+        alert("Failed to upload driver licence");
+      }
+    } else {
+      throw new Error("Upload failed with status " + response.status);
+    }
+  };
+
+  const uploadSelfie = async () => {
+    const { selfie } = reservationData;
+    const { user_id } = JSON.parse(localStorage.getItem("user"));
+
+    const bucketUrl =
+      "https://objectstorage.af-johannesburg-1.oraclecloud.com/p/suIO1K3vlc1QnyW-2BPxWaaHUDuky1kg0oCvk6N19db2Qd_jUv9nEM7oqCgT1Uv6/n/axw84jvjnipe/b/bucket1/o/";
+
+    const uploadUrl = `${bucketUrl}${user_id}_selfie`;
+
+    const r = await axios.put(uploadUrl, selfie, {
+      headers: {
+        "Content-Type": selfie?.type,
+      },
+    });
+
+    if (r.status === 200) {
+      try {
+        const payload = {
+          p_user_id: user_id,
+          p_selfie_photo_url: uploadUrl,
+        };
+
+        const queryString = new URLSearchParams(payload).toString();
+
+        const response = await uploadDocs(queryString);
+        await fetchUserDetails();
+        alert("Selfie uploaded successfully");
+      } catch (error) {
+        console.error("Error uploading selfie", error);
+        alert("Failed to upload selfie");
+      }
+    } else {
+      throw new Error("Upload failed with status " + response.status);
     }
   };
 
@@ -227,7 +282,8 @@ const Reservation = ({ type }) => {
               listing={data}
               user={userDetails}
               page={page}
-              uploadDocuments={uploadDocuments}
+              uploadDL={uploadDL}
+              uploadSelfie={uploadSelfie}
             />
           </div>
         </div>

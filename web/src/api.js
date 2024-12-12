@@ -138,7 +138,7 @@ export const fetchUser = async (queryString) => {
 };
 
 export const uploadDocs = async (queryString) => {
-  return api.get(`userdoc/document?${queryString}`);
+  return api.get(`/user/update_user_details?${queryString}`);
 };
 
 export const becomeAHost = ({ firstName, lastName, contact, email, password, role = "H", hostType }) => {

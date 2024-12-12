@@ -7,8 +7,9 @@ import "../customDatePickerWidth.css";
 import { fetchBookingCars, fetchTourTypes } from "../api";
 import { useReservation } from "../contexts/ReservationContext";
 import { formatDate } from "../utils/helpers";
-import UploadDocuments from "../components/UploadDocuments";
 import Modal from "../components/Modal";
+import UploadSelfie from "../components/UploadSelfie";
+import UploadDL from "../components/UploadDL";
 
 const ReservationForm = ({
   initialValues,
@@ -16,7 +17,8 @@ const ReservationForm = ({
   listing,
   user,
   page,
-  uploadDocuments,
+  uploadDL,
+  uploadSelfie,
 }) => {
   const [interestedInCar, setInterestedInCar] = useState(false);
   const [selectedCar, setSelectedCar] = useState("");
@@ -28,7 +30,8 @@ const ReservationForm = ({
   const [tourTypes, setTourType] = useState("");
   const [selectedTour, setSelectedTour] = useState("");
   const { reservationData, setReservationData } = useReservation();
-  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showDLUploadModal, setShowDLUploadModal] = useState(false);
+  const [showSelfieUploadModal, setShowSelfieUploadModal] = useState(false);
 
   let reservationSchema = null;
 
@@ -209,8 +212,12 @@ const ReservationForm = ({
     })
   );
 
-  const toggleUploadModal = () => {
-    setShowUploadModal(!showUploadModal);
+  const toggleUploadSelfieModal = () => {
+    setShowSelfieUploadModal(!showSelfieUploadModal);
+  };
+
+  const toggleUploadDLModal = () => {
+    setShowDLUploadModal(!showDLUploadModal);
   };
 
   return (
@@ -630,13 +637,23 @@ const ReservationForm = ({
                                 className="text-red-500 text-xs mt-1"
                               />
                             </div>
-                            {!user.DLFILETYPE && !user.SELFIEFILETYPE && (
+                            {!user.DLFILETYPE && (
                               <button
                                 type="button"
-                                onClick={() => setShowUploadModal(true)}
+                                onClick={() => setShowDLUploadModal(true)}
                                 className="border text-brand px-4 py-2 rounded-md my-5 text-xs hover:scale-105 transition"
                               >
-                                Upload Documents
+                                Upload Driver Licence
+                              </button>
+                            )}
+
+                            {!user.SELFIEFILETYPE && (
+                              <button
+                                type="button"
+                                onClick={() => setShowSelfieUploadModal(true)}
+                                className="border text-brand px-4 py-2 rounded-md text-xs hover:scale-105 transition"
+                              >
+                                Upload Selfie
                               </button>
                             )}
                           </>
@@ -896,8 +913,11 @@ const ReservationForm = ({
           </Form>
         )}
       </Formik>
-      <Modal isOpen={showUploadModal} onClose={toggleUploadModal}>
-        <UploadDocuments handleSubmit={uploadDocuments} />
+      <Modal isOpen={showDLUploadModal} onClose={toggleUploadDLModal}>
+        <UploadDL handleSubmit={uploadDL} />
+      </Modal>
+      <Modal isOpen={showSelfieUploadModal} onClose={toggleUploadSelfieModal}>
+        <UploadSelfie handleSubmit={uploadSelfie} />
       </Modal>
     </>
   );

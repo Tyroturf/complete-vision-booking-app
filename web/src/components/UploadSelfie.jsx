@@ -8,12 +8,12 @@ const validationSchema = Yup.object({
   selfie: Yup.mixed().required("Selfie is required"),
 });
 
-const UploadDocuments = ({ handleSubmit }) => {
+const UploadSelfie = ({ handleSubmit }) => {
   const { reservationData, setReservationData } = useReservation();
 
   return (
     <>
-      <h3 className="text-lg font-bold mb-4">Upload Documents</h3>
+      <h3 className="text-lg font-bold mb-4">Upload Selfie</h3>
       <Formik
         initialValues={{ driverLicense: null, selfie: null }}
         validationSchema={validationSchema}
@@ -23,34 +23,6 @@ const UploadDocuments = ({ handleSubmit }) => {
       >
         {({ setFieldValue }) => (
           <Form>
-            <div className="flex flex-col mb-4">
-              <label
-                htmlFor="driverLicense"
-                className="text-gray-600 text-xs mb-2"
-              >
-                Driver's License
-              </label>
-              <input
-                type="file"
-                id="driverLicense"
-                name="driverLicense"
-                onChange={(event) => {
-                  const file = event.target.files[0];
-                  setReservationData({
-                    ...reservationData,
-                    driverLicense: file,
-                  });
-                  setFieldValue("driverLicense", file);
-                }}
-                className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
-              />
-              <ErrorMessage
-                name="driverLicense"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
-
             <div className="flex flex-col mb-4">
               <label htmlFor="selfie" className="text-gray-600 text-xs mb-2">
                 Selfie
@@ -91,4 +63,4 @@ const UploadDocuments = ({ handleSubmit }) => {
   );
 };
 
-export default UploadDocuments;
+export default UploadSelfie;
