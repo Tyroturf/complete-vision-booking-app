@@ -12,6 +12,7 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { showSuccessToast } from "../utils/toast";
 import logo from "../assets/logo.png";
+import { getHeadingText } from "../utils/helpers";
 
 const baseLinkClasses =
   "text-xs lg:text-sm font-medium lg:px-3 md:px-1 py-2 rounded-md transition flex items-center space-x-2 mx-1";
@@ -37,6 +38,7 @@ export const ProfileDropdown = ({ toggleDropdown, handleLogout }) => {
   }, [toggleDropdown]);
 
   const profileLink = "block hover:bg-gray-100 w-full p-2 px-6 text-left";
+  const { host_type } = JSON.parse(localStorage.getItem("user"));
 
   return (
     <motion.div
@@ -53,14 +55,19 @@ export const ProfileDropdown = ({ toggleDropdown, handleLogout }) => {
             Dashboard
           </Link>
         </li>
-        <li>
-          <Link to="/become-a-host" className={`${profileLink} text-gray-600`}>
-            Become a Host
-          </Link>
-        </li>
+        {host_type && (
+          <li>
+            <Link
+              to="/become-a-host"
+              className={`${profileLink} text-gray-600`}
+            >
+              Become a Host
+            </Link>
+          </li>
+        )}
         <li>
           <Link to="/manage" className={`${profileLink} text-gray-600`}>
-            Manage Property
+            Manage {getHeadingText(host_type)}
           </Link>
         </li>
         <li>
