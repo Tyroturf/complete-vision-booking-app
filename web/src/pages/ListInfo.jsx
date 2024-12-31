@@ -16,7 +16,6 @@ const ListInfo = () => {
   const queryParams = new URLSearchParams(search);
   const hostType = queryParams.get("hostType");
 
-  console.log("Host Type:", hostType);
   const images = {
     property: {
       section1: scrape,

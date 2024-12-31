@@ -188,7 +188,7 @@ export const updateList = async (params) => {
     p_amenities: params.description,
     p_max_guests: params.guests,
     p_price: params.price,
-    p_listing_id: params.p_listing_id,
+    p_listing_id: params.listingId,
     p_image1_url: params.p_image1_url,
     p_image2_url: params.p_image2_url,
     p_image3_url: params.p_image3_url,
@@ -210,30 +210,100 @@ export const fetchListings = async (queryString) => {
   return api.get(`/listing/host_listing?host_id=${queryString}`);
 };
 
-// export const fetchCarId = async () => {
-//   return api.get(`/next/car_rental_id`);
-// };
+export const fetchCarListing = async (queryString) => {
+  return api.get(`/vehicle/car_host_listing?host_id=${queryString}`);
+};
 
-// export const addNewVehicle = async (params) => {
-//   const queryString = new URLSearchParams({
-//     p_car_rental_id: params.p_listing_id,
-//     p_host_id: params.hostId,
-//     p_list_name: params.listName,
-//     p_location: params.location,
-//     p_description: params.description,
-//     p_features: params.features,
-//     p_max_guests: params.guests,
-//     p_price: params.price,
-//     p_car_type: params.car_type,
-//     p_chauffeur_rate: params.chauffeur_rate,
-//     p_image1_url: params.p_image1_url,
-//     p_image2_url: params.p_image2_url,
-//     p_image3_url: params.p_image3_url,
-//     p_image4_url: params.p_image4_url,
-//     p_image5_url: params.p_image5_url,
-//   }).toString();
+export const fetchTourListing = async (queryString) => {
+  return api.get(`/tour/tour_host_listing?host_id=${queryString}`);
+};
 
-//   const url = `/vehicle/Add_Car_Rental?${queryString}`;
+export const addNewVehicle = async (params) => {
+  const queryString = new URLSearchParams({
+    p_car_rental_id: params.p_listing_id,
+    p_host_id: params.hostId,
+    p_list_name: params.listName,
+    p_location: params.location,
+    p_description: params.description,
+    p_features: params.features,
+    p_max_guests: params.guests,
+    p_price: params.price,
+    p_car_type: params.car_type,
+    p_chauffeur_rate: params.chauffeur_rate,
+    p_image1_url: params.p_image1_url,
+    p_image2_url: params.p_image2_url,
+    p_image3_url: params.p_image3_url,
+    p_image4_url: params.p_image4_url,
+    p_image5_url: params.p_image5_url,
+  }).toString();
 
-//   return api.get(url);
-// };
+  const url = `/vehicle/Add_Car_Rental?${queryString}`;
+
+  return api.get(url);
+};
+
+export const updateVehicle = async (params) => {
+  const queryString = new URLSearchParams({
+    p_car_rental_id: params.p_listing_id,
+    p_host_id: params.hostId,
+    p_list_name: params.listName,
+    p_location: params.location,
+    p_description: params.description,
+    p_features: params.features,
+    p_max_guests: params.guests,
+    p_price: params.price,
+    p_car_type: params.car_type,
+    p_chauffeur_rate: params.chauffeur_rate,
+    p_image1_url: params.p_image1_url,
+    p_image2_url: params.p_image2_url,
+    p_image3_url: params.p_image3_url,
+    p_image4_url: params.p_image4_url,
+    p_image5_url: params.p_image5_url,
+  }).toString();
+
+  const url = `/vehicle/update_car_rental?${queryString}`;
+
+  return api.get(url);
+};
+
+export const addNewTour = async (params) => {
+  const queryString = new URLSearchParams({
+    p_tour_id: params.p_listing_id,
+    p_host_id: params.hostId,
+    p_list_name: params.listName,
+    p_location: params.location,
+    p_description: params.description,
+    p_max_guests: params.guests,
+    p_tour_price: params.price,
+    p_image1_url: params.p_image1_url,
+    p_image2_url: params.p_image2_url,
+    p_image3_url: params.p_image3_url,
+    p_image4_url: params.p_image4_url,
+    p_image5_url: params.p_image5_url,
+  }).toString();
+
+  const url = `/tour/Add_Tours?${queryString}`;
+
+  return api.get(url);
+};
+
+export const updateTour = async (params) => {
+  const queryString = new URLSearchParams({
+    p_tour_id: params.p_listing_id,
+    p_host_id: params.hostId,
+    p_list_name: params.listName,
+    p_location: params.location,
+    p_description: params.description,
+    p_max_guests: params.guests,
+    p_tour_price: params.price,
+    p_image1_url: params.p_image1_url,
+    p_image2_url: params.p_image2_url,
+    p_image3_url: params.p_image3_url,
+    p_image4_url: params.p_image4_url,
+    p_image5_url: params.p_image5_url,
+  }).toString();
+
+  const url = `/tour/update_tours?${queryString}`;
+
+  return api.get(url);
+};
