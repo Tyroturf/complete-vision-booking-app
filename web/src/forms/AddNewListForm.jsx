@@ -181,7 +181,7 @@ const AddNewListForm = ({
     setLoading(true);
     try {
       const uploadPromises = images.map((image, index) => {
-        const uploadUrl = `${bucketUrl}${hostId}_${listName}_image_${
+        const uploadUrl = `${bucketUrl}${listingId}H${hostId}_${listName}_image_${
           index + 1
         }`;
         return axios.put(uploadUrl, image, {
@@ -194,7 +194,9 @@ const AddNewListForm = ({
       await Promise.all(uploadPromises);
 
       const imageUrls = images.map((_, index) => {
-        return `${bucketUrl}${hostId}_${listName}_image_${index + 1}`;
+        return `${bucketUrl}${listingId}H${hostId}_${listName}_image_${
+          index + 1
+        }`;
       });
 
       const params = {

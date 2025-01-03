@@ -44,9 +44,9 @@ export const AuthProvider = ({ children }) => {
     return response;
   };
 
-  const logout = () => {
+  const logout = (session) => {
     setUser(null);
-    apiLogout();
+    apiLogout(session);
     localStorage.removeItem("user");
     localStorage.removeItem("session_id");
   };

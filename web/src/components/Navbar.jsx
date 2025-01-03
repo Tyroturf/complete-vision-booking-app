@@ -22,7 +22,8 @@ export const Navbar = () => {
   };
 
   const handleLogout = () => {
-    logout();
+    const session = localStorage.getItem("session_id");
+    logout(session);
     showSuccessToast("Logged out successfully");
   };
 

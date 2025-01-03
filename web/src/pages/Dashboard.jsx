@@ -21,7 +21,6 @@ import wheel from "../assets/wheel.webp";
 import city from "../assets/city.webp";
 import scrape from "../assets/scrape.webp";
 import hall from "../assets/hall.webp";
-import fnj from "../assets/fnj.jpeg";
 import tall from "../assets/tall.webp";
 
 const TotalBookings = ({ totalBookings }) => {

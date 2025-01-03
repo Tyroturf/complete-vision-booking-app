@@ -25,11 +25,13 @@ export const login = async (email, password) => {
   return response;
 };
 
-export const logout = () => {
+export const logout = (p_session_id) => {
   const sessionId = localStorage.getItem("session_id");
+  const queryString = new URLSearchParams({ p_session_id }).toString();
+
   if (!sessionId) return;
 
-  return api.get('/auth/logout')
+  return api.get((`/logout/auth?${queryString}`))
 };
 
 export const register = ({ firstName, lastName, contact, email, password, role }) => {
@@ -219,8 +221,9 @@ export const fetchTourListing = async (queryString) => {
 };
 
 export const addNewVehicle = async (params) => {
+  console.log(params)
   const queryString = new URLSearchParams({
-    p_car_rental_id: params.p_listing_id,
+    p_car_rental_id: params.listingId,
     p_host_id: params.hostId,
     p_list_name: params.listName,
     p_location: params.location,
@@ -228,8 +231,8 @@ export const addNewVehicle = async (params) => {
     p_features: params.features,
     p_max_guests: params.guests,
     p_price: params.price,
-    p_car_type: params.car_type,
-    p_chauffeur_rate: params.chauffeur_rate,
+    p_car_type: params.carType,
+    p_chauffeur_rate: params.chauffeurRate,
     p_image1_url: params.p_image1_url,
     p_image2_url: params.p_image2_url,
     p_image3_url: params.p_image3_url,
@@ -244,7 +247,7 @@ export const addNewVehicle = async (params) => {
 
 export const updateVehicle = async (params) => {
   const queryString = new URLSearchParams({
-    p_car_rental_id: params.p_listing_id,
+    p_car_rental_id: params.listingId,
     p_host_id: params.hostId,
     p_list_name: params.listName,
     p_location: params.location,
@@ -268,7 +271,7 @@ export const updateVehicle = async (params) => {
 
 export const addNewTour = async (params) => {
   const queryString = new URLSearchParams({
-    p_tour_id: params.p_listing_id,
+    p_tour_id: params.listingId,
     p_host_id: params.hostId,
     p_list_name: params.listName,
     p_location: params.location,
@@ -306,4 +309,16 @@ export const updateTour = async (params) => {
   const url = `/tour/update_tours?${queryString}`;
 
   return api.get(url);
+};
+
+export const deleteListing = async (queryString) => {
+  return api.get(`/listing/delete_listing?id=${queryString}`);
+};
+
+export const deleteVehicle = async (queryString) => {
+  return api.get(`/vehicle/delete_car_rental?id=${queryString}`);
+};
+
+export const deleteTour = async (queryString) => {
+  return api.get(`/tour/delete_tour?id=${queryString}`);
 };

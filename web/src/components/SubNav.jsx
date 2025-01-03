@@ -55,7 +55,7 @@ export const ProfileDropdown = ({ toggleDropdown, handleLogout }) => {
             Dashboard
           </Link>
         </li>
-        {host_type && (
+        {!host_type && (
           <li>
             <Link
               to="/become-a-host"
@@ -65,11 +65,13 @@ export const ProfileDropdown = ({ toggleDropdown, handleLogout }) => {
             </Link>
           </li>
         )}
-        <li>
-          <Link to="/manage" className={`${profileLink} text-gray-600`}>
-            Manage {getHeadingText(host_type)}
-          </Link>
-        </li>
+        {host_type && (
+          <li>
+            <Link to="/manage" className={`${profileLink} text-gray-600`}>
+              Manage {getHeadingText(host_type)}
+            </Link>
+          </li>
+        )}
         <li>
           <button
             onClick={handleLogout}
