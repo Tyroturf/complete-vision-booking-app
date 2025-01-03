@@ -14,6 +14,7 @@ import {
 } from "../api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
+import Loader from "../components/Loader";
 
 const Manage = () => {
   const { user_id, host_type } = JSON.parse(localStorage.getItem("user"));
@@ -169,9 +170,11 @@ const Manage = () => {
       </Modal>
 
       {isLoading ? (
-        <p className="text-center py-4">Loading listings...</p>
+        <Loader />
       ) : listings.length === 0 ? (
-        <p className="text-center py-4">No listings available.</p>
+        <p className="text-center py-4 text-sm md:text-lg">
+          No listings available.
+        </p>
       ) : (
         <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 py-2">
           {Array.isArray(listings) &&

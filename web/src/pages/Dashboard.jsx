@@ -437,6 +437,11 @@ const Navbar = ({
 
 export const Dashboard = () => {
   const [activeSection, setActiveSection] = useState("home");
+  const { first_name, last_name, role } = JSON.parse(
+    localStorage.getItem("user")
+  );
+
+  let roleFull = role === "G" ? "Guest" : "Host";
 
   const renderSection = () => {
     switch (activeSection) {
@@ -455,7 +460,11 @@ export const Dashboard = () => {
 
   return (
     <div className="flex flex-col">
-      <ProfileHero imageUrl={hero} />
+      <ProfileHero
+        imageUrl={hero}
+        username={first_name + " " + last_name}
+        role={roleFull}
+      />
       <Navbar
         setActiveSection={setActiveSection}
         activeSection={activeSection}
@@ -465,7 +474,7 @@ export const Dashboard = () => {
   );
 };
 
-export const ProfileHero = ({ imageUrl }) => (
+export const ProfileHero = ({ imageUrl, username, role }) => (
   <>
     <img
       src={imageUrl}
@@ -479,9 +488,9 @@ export const ProfileHero = ({ imageUrl }) => (
         className="w-20 h-20 m-auto rounded-full object-cover md:w-28 md:h-28 border-4 border-brand hover:scale-110 transition"
       />
       <h5 className="mt-4 md:text-xl text-xs font-semibold text-gray-600">
-        Cynthia J. Watts
+        {username}
       </h5>
-      <span className="text-xs text-gray-400 lg:block">Admin</span>
+      <span className="text-xs text-gray-400 lg:block">{role}</span>
     </div>
   </>
 );

@@ -44,7 +44,7 @@ const Modal = ({ isOpen, onClose, children }) => {
           transition={{ duration: 0.3 }}
         >
           <motion.div
-            className="mt-20 bg-white w-full max-w-md sm:max-w-sm p-4 sm:p-6 md:p-8 rounded-lg shadow-lg relative max-h-screen overflow-y-auto m-5"
+            className="mt-20 bg-white w-full max-w-md sm:max-w-sm p-4 sm:p-6 md:p-8 rounded-lg shadow-lg relative max-h-[90vh] overflow-hidden m-5"
             variants={modalVariants}
             initial="hidden"
             animate="visible"
@@ -57,7 +57,7 @@ const Modal = ({ isOpen, onClose, children }) => {
             >
               &times;
             </button>
-            <div className="mt-2">{children}</div>
+            <div className="mt-8 max-h-[75vh] overflow-y-auto">{children}</div>
           </motion.div>
         </motion.div>
       )}

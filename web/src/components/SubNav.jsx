@@ -89,6 +89,7 @@ const SubNav = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { host_type } = JSON.parse(localStorage.getItem("user"));
 
   const handleLogout = () => {
     logout();
@@ -256,20 +257,26 @@ const SubNav = () => {
                   >
                     <span className="text-base font-bold">Profile</span>
                   </Link>
-                  <Link
-                    className="text-white my-3"
-                    to="/become-a-host"
-                    onClick={handleLinkClick}
-                  >
-                    <span className="text-base font-bold">Become A Host</span>
-                  </Link>
-                  <Link
-                    className="text-white my-3"
-                    to="/manage"
-                    onClick={handleLinkClick}
-                  >
-                    <span className="text-base font-bold">Manage Property</span>
-                  </Link>
+                  {!host_type && (
+                    <Link
+                      className="text-white my-3"
+                      to="/become-a-host"
+                      onClick={handleLinkClick}
+                    >
+                      <span className="text-base font-bold">Become A Host</span>
+                    </Link>
+                  )}
+                  {host_type && (
+                    <Link
+                      className="text-white my-3"
+                      to="/manage"
+                      onClick={handleLinkClick}
+                    >
+                      <span className="text-base font-bold">
+                        Manage {getHeadingText(host_type)}
+                      </span>
+                    </Link>
+                  )}
                   <button
                     onClick={() => {
                       handleLogout();
