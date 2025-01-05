@@ -23,7 +23,7 @@ const Card = ({ item }) => {
   return (
     <div className="flex flex-col md:flex-row bg-white shadow-sm mb-7">
       <img
-        src={item.IMAGE_URL}
+        src={item.IMAGE1_URL}
         alt={item.LIST_NAME}
         className="w-full h-52 md:w-96 md:h-72 lg:h-72 object-cover rounded-t-lg md:rounded-r-none md:rounded-l-lg"
       />

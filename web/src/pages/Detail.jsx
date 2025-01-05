@@ -37,11 +37,11 @@ const Detail = ({ fetchDetail, type }) => {
   if (error) return <p>Error fetching details: {error.message}</p>;
 
   const images = [
-    item.IMAGE_URL,
     item.IMAGE1_URL,
     item.IMAGE2_URL,
     item.IMAGE3_URL,
     item.IMAGE4_URL,
+    item.IMAGE5_URL,
   ];
 
   return (

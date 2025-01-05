@@ -263,7 +263,7 @@ const Reservation = ({ type }) => {
         <div className="space-y-5 md:border border-brand md:p-6 rounded-lg">
           <div className="flex justify-between gap-x-3">
             <img
-              src={data.IMAGE_URL}
+              src={data.IMAGE1_URL}
               className="w-1/2 h-28 lg:h-56 object-cover rounded-lg"
               alt={data.LIST_NAME || "icon"}
             />
