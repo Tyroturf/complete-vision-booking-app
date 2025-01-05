@@ -89,7 +89,9 @@ const SubNav = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const { host_type } = JSON.parse(localStorage.getItem("user"));
+
+  const storedUser = localStorage.getItem("user");
+  const host_type = storedUser ? JSON.parse(storedUser).host_type : null;
 
   const handleLogout = () => {
     logout();

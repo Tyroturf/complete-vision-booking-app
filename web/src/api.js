@@ -285,7 +285,7 @@ export const addNewTour = async (params) => {
     p_image5_url: params.p_image5_url,
   }).toString();
 
-  const url = `/tour/Add_Tours?${queryString}`;
+  const url = `/tour/Add_tours?${queryString}`;
 
   return api.get(url);
 };

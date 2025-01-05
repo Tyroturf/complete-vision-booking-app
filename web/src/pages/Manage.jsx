@@ -102,9 +102,9 @@ const Manage = () => {
         response = await fetchTourListing(user_id);
         if (
           response.status === 200 &&
-          Array.isArray(response.data.HostListings)
+          Array.isArray(response.data.TourListings)
         ) {
-          listings = response.data.HostListings;
+          listings = response.data.TourListings;
         }
       } else {
         response = await fetchListings(user_id);
