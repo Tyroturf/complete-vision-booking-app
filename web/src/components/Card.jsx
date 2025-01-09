@@ -42,7 +42,9 @@ const Card = ({ item }) => {
           <div className="flex">
             <span className="text-brand font-bold text-base">
               ${item.PRICE}{" "}
-              <span className="font-thin text-xs md:text-sm">/ night</span>
+              <span className="font-thin text-xs md:text-sm">
+                / {isPlacesPage ? "night" : "day"}
+              </span>
             </span>
           </div>
         </div>

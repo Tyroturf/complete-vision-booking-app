@@ -57,7 +57,11 @@ const Detail = ({ fetchDetail, type }) => {
         <div className="flex flex-col gap-y-4">
           <div>
             <span className="text-brand font-bold text-base">
-              ${item.PRICE} <span className="font-thin text-xs"> / night</span>
+              ${item.PRICE}{" "}
+              <span className="font-thin text-xs">
+                {" "}
+                / {type === "listings" ? "night" : "day"}
+              </span>
             </span>
           </div>
           <button
@@ -83,7 +87,10 @@ const Detail = ({ fetchDetail, type }) => {
         <div className="flex flex-col gap-y-4">
           <div>
             <span className="text-brand font-bold text-base">
-              {item.PRICE} <span className="font-thin text-xs">/ night</span>
+              {item.PRICE}{" "}
+              <span className="font-thin text-xs">
+                / {type === "listings" ? "night" : "day"}
+              </span>
             </span>
           </div>
           <button
@@ -107,10 +114,12 @@ const Detail = ({ fetchDetail, type }) => {
 
       <div className="border border-gray-30 w-2/3 mx-auto my-5"></div>
 
-      <div className="flex flex-col bg-transparent rounded-lg p-4">
-        <span className="text-base font-bold">Amenities</span>
-        <p className="text-xs text-gray-700">{item.AMENITIES}</p>
-      </div>
+      {type === "listings" && (
+        <div className="flex flex-col bg-transparent rounded-lg p-4">
+          <span className="text-base font-bold">Amenities</span>
+          <p className="text-xs text-gray-700">{item.AMENITIES}</p>
+        </div>
+      )}
     </div>
   );
 };

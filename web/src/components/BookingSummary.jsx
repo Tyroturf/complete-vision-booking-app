@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useReservation } from "../contexts/ReservationContext";
 import { fetchExchangeRate } from "../api";
-import { calculateNights, formatWithCommas } from "../utils/helpers";
+import {
+  calculateNights,
+  calculateDays,
+  formatWithCommas,
+} from "../utils/helpers";
 
-const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
+const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
   const { reservationData, setReservationData } = useReservation();
   const [specialRequests, setSpecialRequests] = useState("");
   const [totalPriceUSD, setTotalPriceUSD] = useState(0);
   const [totalPriceGHS, setTotalPriceGHS] = useState(0);
-  const [exchangeRate, setExchangeRate] = useState(0);
   const [chauffeurRate, setChauffeurRate] = useState(0);
+  const [exchangeRate, setExchangeRate] = useState(0);
   const [selectedTourPrice, setSelectedTourPrice] = useState(0);
-  console.log("reservationData", reservationData);
+  const [serviceFee, setServiceFee] = useState(0);
 
   useEffect(() => {
     const getExchangeRate = async () => {
       const response = await fetchExchangeRate();
-      setExchangeRate(response?.data?.ExchangeRate[0].EXCHANGE_RATE || 0);
+      setExchangeRate(response?.data?.ExchangeRate[0]?.EXCHANGE_RATE || 0);
     };
     getExchangeRate();
   }, []);
@@ -24,39 +28,52 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
   useEffect(() => {
     if (!reservationData) return;
 
-    const nights = calculateNights(
-      reservationData?.checkIn,
-      reservationData?.checkOut
-    );
+    const duration =
+      page === "place"
+        ? calculateNights(reservationData?.checkIn, reservationData?.checkOut)
+        : calculateDays(reservationData?.checkIn, reservationData?.checkOut);
+
     const guests = reservationData?.guests || 1;
 
-    const listingPrice = reservationData?.listing?.PRICE
-      ? parseFloat(reservationData.listing.PRICE) || 0
-      : 0;
+    let listingPrice;
+    let chauffeurRate;
+    if (page === "place") {
+      listingPrice = reservationData?.listing?.PRICE
+        ? parseFloat(reservationData.listing.PRICE) || 0
+        : 0;
+      chauffeurRate = reservationData?.chauffeur
+        ? reservationData?.selectedCar?.ChauffeurRate || 0
+        : 0;
+    } else {
+      listingPrice = reservationData?.listing?.PRICE
+        ? parseFloat(reservationData.listing.PRICE) || 0
+        : 0;
+      chauffeurRate = reservationData?.chauffeur
+        ? reservationData?.listing.CHAUFFEUR_RATE || 0
+        : 0;
+    }
+    setChauffeurRate(chauffeurRate);
 
     const carPrice =
       reservationData?.selectedCar && reservationData.interestedInCar
         ? reservationData?.selectedCar?.Price || 0
         : 0;
 
-    const chauffeurRate = reservationData?.chauffeur
-      ? reservationData?.selectedCar?.ChauffeurRate || 0
-      : 0;
-    setChauffeurRate(chauffeurRate);
-
     const tourPrice =
       reservationData?.selectedTour && reservationData.interestedInTour
-        ? reservationData?.selectedTour?.TOUR_PRICE
+        ? reservationData?.selectedTour?.TOUR_PRICE || 0
         : 0;
     setSelectedTourPrice(tourPrice);
 
-    const totalListingPrice = listingPrice * nights;
+    const totalListingPrice =
+      (Number(listingPrice) + Number(chauffeurRate)) * duration;
+
     const totalTourPrice = tourPrice * guests;
-    const totalVehiclePrice = carPrice * nights + chauffeurRate * nights;
+    const totalVehiclePrice = carPrice * duration;
 
     const subTotal = totalListingPrice + totalTourPrice + totalVehiclePrice;
     setTotalPriceUSD(subTotal);
-    const serviceFee = subTotal * 0.05;
+    setServiceFee(subTotal * 0.05);
     const grandTotalUSD = subTotal + serviceFee;
 
     if (
@@ -70,7 +87,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
         tourPrice: tourPrice,
         subTotal: subTotal,
         grandTotalUSD: grandTotalUSD,
-        nights: nights,
+        duration: duration,
       });
     }
 
@@ -79,8 +96,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
       setTotalPriceUSD(grandTotalUSD);
       setTotalPriceGHS(grandTotalGHS);
     }
-  }, [reservationData, exchangeRate, setReservationData]);
-
+  }, [reservationData, exchangeRate, setReservationData, page]);
   const policy = `We understand that plans can change. If you need to cancel your reservation, please let us know at least 24 hours in advance for a full refund. 
     Cancellations made within 24 hours of the check-in date will incur a one-night charge. No-shows will be charged the full amount of the reservation.`;
 
@@ -91,51 +107,70 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
           <span className="font-bold text-sm">Your Price Summary</span>
 
           <div className="flex justify-between">
-            <span className="text-xs">Listing Price $</span>
+            <span className="text-xs">
+              {page === "tour"
+                ? "Tour Price"
+                : page === "car"
+                ? "Car Price"
+                : "Listing Price"}
+            </span>
             <span className="text-xs font-medium">
-              ${reservationData?.listing?.PRICE || "0"} / night
+              ${reservationData?.listing?.PRICE} /{" "}
+              {page === "place" ? "night" : "day"}
             </span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-xs">No. of Nights</span>
+            <span className="text-xs">
+              {page === "place" ? "No. of Nights" : "No. of Days"}
+            </span>
             <span className="text-xs font-medium">
-              {calculateNights(
-                reservationData?.checkIn,
-                reservationData?.checkOut
-              )}
+              {page === "place"
+                ? calculateNights(
+                    reservationData?.checkIn,
+                    reservationData?.checkOut
+                  )
+                : calculateDays(
+                    reservationData?.checkIn,
+                    reservationData?.checkOut
+                  )}
             </span>
           </div>
 
           {reservationData?.interestedInCar &&
             reservationData.selectedCar &&
-            reservationData.selectedCar?.PRICE && (
+            reservationData.selectedCar?.Price && (
               <div className="flex justify-between">
-                <span className="text-xs">Vehicle Price $</span>
+                <span className="text-xs">Car Rental Price $</span>
                 <span className="text-xs font-medium">
-                  $ {reservationData?.selectedCar?.PRICE || "0"} / night
+                  $ {reservationData?.selectedCar?.Price} / day
                 </span>
               </div>
             )}
 
           {reservationData?.chauffeur && reservationData.interestedInCar && (
             <div className="flex justify-between">
-              <span className="text-xs">Chauffeur Price $</span>
-              <span className="text-xs font-medium">
-                $ {chauffeurRate || "0"}
-              </span>
+              <span className="text-xs">Chauffeur Price </span>
+              <span className="text-xs font-medium">$ {chauffeurRate}</span>
             </div>
           )}
 
           {reservationData?.interestedInTour &&
             reservationData.selectedTour && (
               <div className="flex justify-between">
-                <span className="text-xs">Tour Price$</span>
+                <span className="text-xs">Tour Price </span>
                 <span className="text-xs font-medium">
-                  $ {selectedTourPrice}
+                  $ {selectedTourPrice || "0"} / day
                 </span>
               </div>
             )}
+
+          {serviceFee && (
+            <div className="flex justify-between">
+              <span className="text-xs">Service Fee (5% of Total)</span>
+              <span className="text-xs font-medium">$ {serviceFee}</span>
+            </div>
+          )}
 
           {totalPriceUSD && (
             <div className="flex justify-between">

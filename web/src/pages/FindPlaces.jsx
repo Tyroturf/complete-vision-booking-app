@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import Card from "../components/Card";
 import ItemList from "../components/ItemsList";
 import { useSearch } from "../contexts/SearchContext";
-import { formatDate } from "../utils/helpers";
+import { formatDate, getQueryParams } from "../utils/helpers";
 import Loader from "../components/Loader";
 
 const FindPlaces = () => {
@@ -17,23 +17,6 @@ const FindPlaces = () => {
   } = useSearch();
 
   const location = useLocation();
-
-  const getQueryParams = (queryString) => {
-    if (!queryString) {
-      return {};
-    }
-
-    return queryString
-      .slice(1)
-      .split("&")
-      .reduce((params, param) => {
-        const [key, value] = param.split("=");
-        if (key) {
-          params[key] = decodeURIComponent(value);
-        }
-        return params;
-      }, {});
-  };
 
   useEffect(() => {
     setCurrentPage("places");

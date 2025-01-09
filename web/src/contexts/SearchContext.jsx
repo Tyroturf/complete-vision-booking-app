@@ -102,6 +102,7 @@ export const SearchProvider = ({ children }) => {
     searchPlaces,
     searchCars,
     searchTours,
+    setCurrentPage,
     setFindPlacesParams,
   };
 

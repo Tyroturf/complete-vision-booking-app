@@ -290,6 +290,7 @@ const Reservation = ({ type }) => {
 
         <div className="flex items-center">
           <BookingSummary
+            page={page}
             showFullPolicy={showFullPolicy}
             togglePolicy={togglePolicy}
           />

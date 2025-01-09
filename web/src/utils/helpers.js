@@ -6,17 +6,6 @@ export const formatDate = (date) => {
     return `${month}/${day}/${year}`;
   };
 
-export const getQueryParams = (queryString) => {
-  return queryString
-    .slice(1)
-    .split("&")
-    .reduce((params, param) => {
-      const [key, value] = param.split("=");
-      params[key] = decodeURIComponent(value);
-      return params;
-    }, {});
-};
-
 export const formatWithCommas = (number) => {
   return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
@@ -27,6 +16,12 @@ export const calculateNights = (checkIn, checkOut) => {
   const end = new Date(checkOut);
   const timeDiff = Math.abs(end - start);
   return Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+};
+
+export const calculateDays = (checkIn, checkOut) => {
+  const start = new Date(checkIn);
+  const end = new Date(checkOut);
+  return Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
 };
 
 export const getInitialValues = (hostType, initialValues, isEditMode) => {
@@ -85,4 +80,22 @@ export const getHeadingText = (host_type) => {
     default:
       return "Listings";
   }
+};
+
+
+export const getQueryParams = (queryString) => {
+  if (!queryString) {
+    return {};
+  }
+
+  return queryString
+    .slice(1)
+    .split("&")
+    .reduce((params, param) => {
+      const [key, value] = param.split("=");
+      if (key) {
+        params[key] = decodeURIComponent(value);
+      }
+      return params;
+    }, {});
 };

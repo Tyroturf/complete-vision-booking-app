@@ -172,7 +172,7 @@ const ReservationForm = ({
     if (interestedInCar) {
       fetchCars();
     }
-  }, [interestedInCar]);
+  }, [interestedInCar, reservationData.checkIn, reservationData.checkOut]);
 
   useEffect(() => {
     const getTourTypes = async () => {
