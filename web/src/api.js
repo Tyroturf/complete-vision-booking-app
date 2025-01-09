@@ -123,8 +123,13 @@ export const bookProperty = (bookingData) => {
   return api.get(`/property/booking?${queryString}`);
 };
 
-export const fetchBookingCars = () => {
-  return api.get("/car/details");
+export const fetchBookingCars = ({check_in, check_out, num_guests}) => {
+  const queryString = new URLSearchParams({
+    check_in,
+    check_out,
+    num_guests,
+  }).toString();
+  return api.get(`/vehicle/car_list?${queryString}`);
 }
 
 export const fetchTourTypes = async () => {
@@ -165,9 +170,12 @@ export const addNewList = async (params) => {
     p_list_name: params.listName,
     p_location: params.location,
     p_description: params.description,
-    p_amenities: params.description,
+    p_amenities: params.amenities,
     p_max_guests: params.guests,
     p_price: params.price,
+    p_special_date_from: params.p_special_date_from,
+    p_special_date_to: params.p_special_date_to,
+    p_special_price: params.p_special_price,
     p_listing_id: params.listingId,
     p_image1_url: params.p_image1_url,
     p_image2_url: params.p_image2_url,
@@ -321,4 +329,8 @@ export const deleteVehicle = async (queryString) => {
 
 export const deleteTour = async (queryString) => {
   return api.get(`/tour/delete_tour?id=${queryString}`);
+};
+
+export const fetchAmenities = async () => {
+  return api.get("/get/amenities");
 };

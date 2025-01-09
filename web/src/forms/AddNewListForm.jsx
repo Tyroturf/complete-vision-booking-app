@@ -6,14 +6,18 @@ import {
   addNewList,
   addNewTour,
   addNewVehicle,
+  fetchAmenities,
   fetchListingId,
   updateList,
   updateTour,
   updateVehicle,
 } from "../api";
-import { getInitialValues } from "../utils/helpers";
+import { formatDate, getInitialValues } from "../utils/helpers";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import Loader from "../components/Loader";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "../customDatePickerWidth.css";
 
 const AddNewListForm = ({
   mode = "add",
@@ -37,7 +41,34 @@ const AddNewListForm = ({
           .required("Price is required")
           .min(0, "Price must be a positive number"),
         description: Yup.string().required("Description is required"),
-        // features: Yup.string().required("Features are required"),
+        amenities: Yup.array()
+          .min(1, "Please select at least one amenity")
+          .required("Amenities are required"),
+        p_special_date_from: Yup.date()
+          .nullable()
+          .when("showSpecialFields", {
+            is: true,
+            then: Yup.date().required("Start date is required"),
+          }),
+        p_special_date_to: Yup.date()
+          .nullable()
+          .when("showSpecialFields", {
+            is: true,
+            then: Yup.date()
+              .required("End date is required")
+              .min(
+                Yup.ref("p_special_date_from"),
+                "End date must be after start date"
+              ),
+          }),
+        p_special_price: Yup.number()
+          .nullable()
+          .when("showSpecialFields", {
+            is: true,
+            then: Yup.number()
+              .required("Special price is required")
+              .positive("Special price must be a positive number"),
+          }),
         images: Yup.array()
           .of(Yup.mixed().required("Image is required"))
           .test(
@@ -120,6 +151,12 @@ const AddNewListForm = ({
   const [listingId, setListingId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [amenities, setAmenities] = useState([]);
+  const [showSpecialFields, setShowSpecialFields] = useState(false);
+
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
 
   useEffect(() => {
     if (isEditMode) {
@@ -136,11 +173,23 @@ const AddNewListForm = ({
   }, [isEditMode]);
 
   useEffect(() => {
+    const getAmenities = async () => {
+      try {
+        const response = await fetchAmenities();
+        setAmenities(response.data.Amenities || []);
+      } catch (error) {
+        console.error("Failed to fetch amenities:", error);
+      }
+    };
+
+    getAmenities();
+  }, []);
+
+  useEffect(() => {
     const getListingId = async () => {
       try {
         const response = await config.api.fetchId();
         if (response.status === 200 && response.data.listings) {
-          console.log("id", response.data);
           setListingId(response.data?.listings);
         } else {
           console.error("Failed to fetch listing ID.");
@@ -176,6 +225,9 @@ const AddNewListForm = ({
       images,
       carType,
       chauffeurRate,
+      p_special_date_from,
+      p_special_date_to,
+      p_special_price,
     } = values;
 
     setLoading(true);
@@ -207,6 +259,11 @@ const AddNewListForm = ({
         features,
         guests,
         price,
+        ...(hostType === "L" && {
+          p_special_date_from,
+          p_special_date_to,
+          p_special_price,
+        }),
         ...(hostType === "V" && { carType, chauffeurRate }),
         listingId: isEditMode ? initialValues.ID : listingId,
         p_image1_url: imageUrls[0] || initialValues.Image1URL,
@@ -255,7 +312,7 @@ const AddNewListForm = ({
         handleSubmit(values);
       }}
     >
-      {({ setFieldValue, resetForm }) => {
+      {({ setFieldValue, resetForm, values }) => {
         useEffect(() => {
           if (!isEditMode) {
             resetForm();
@@ -265,7 +322,6 @@ const AddNewListForm = ({
 
         return (
           <Form className="grid gap-4 md:grid-cols-2">
-            {/* List Name Field */}
             <div className="relative mb-4">
               <Field
                 type="text"
@@ -285,7 +341,7 @@ const AddNewListForm = ({
                 className="text-red-500 text-xs mt-1"
               />
             </div>
-            {/* Location Field */}
+
             <div className="relative mb-4">
               <Field
                 type="text"
@@ -305,7 +361,7 @@ const AddNewListForm = ({
                 className="text-red-500 text-xs mt-1"
               />
             </div>
-            {/* Guests Field */}
+
             <div className="relative mb-4">
               <Field
                 type="number"
@@ -325,7 +381,7 @@ const AddNewListForm = ({
                 className="text-red-500 text-xs mt-1"
               />
             </div>
-            {/* Price Field */}
+
             <div className="relative mb-4">
               <Field
                 type="number"
@@ -337,7 +393,7 @@ const AddNewListForm = ({
                 htmlFor="price"
                 className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
               >
-                Price
+                Price $
               </label>
               <ErrorMessage
                 name="price"
@@ -365,7 +421,7 @@ const AddNewListForm = ({
                 className="text-red-500 text-xs mt-1"
               />
             </div>
-            {/* Features Field (for cars) */}
+
             {hostType === "V" && (
               <div className="relative mb-4 md:col-span-2">
                 <Field
@@ -387,7 +443,119 @@ const AddNewListForm = ({
                 />
               </div>
             )}
-            {/* Car Type (for cars) */}
+
+            {hostType === "L" && (
+              <div className="relative mb-4 md:col-span-2">
+                <Field
+                  as="select"
+                  name="amenities"
+                  multiple
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-xs"
+                >
+                  {amenities.map((amenity) => (
+                    <option key={amenity.ID} value={amenity.ID}>
+                      {amenity.NAME}
+                    </option>
+                  ))}
+                </Field>
+                <label
+                  htmlFor="amenities"
+                  className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                >
+                  Amenities
+                </label>
+                <ErrorMessage
+                  name="amenities"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
+            )}
+
+            <div className="relative mb-4 md:col-span-2">
+              <label className="inline-flex items-center text-xs text-gray-700">
+                <input
+                  type="checkbox"
+                  className="mr-2 rounded border-gray-300 focus:ring-brand"
+                  onChange={(e) => setShowSpecialFields(e.target.checked)}
+                />
+                Enable Special Dates and Price
+              </label>
+            </div>
+
+            {showSpecialFields && (
+              <>
+                <div className="relative col-span-1 md:col-span-2">
+                  <DatePicker
+                    id="listing-special-dates"
+                    selected={null}
+                    onChange={(dates) => {
+                      const [start, end] = dates;
+                      setFieldValue(
+                        "p_special_date_from",
+                        start ? formatDate(start) : null
+                      );
+                      setFieldValue(
+                        "p_special_date_to",
+                        end ? formatDate(end) : null
+                      );
+                    }}
+                    startDate={
+                      values.p_special_date_from
+                        ? new Date(values.p_special_date_from)
+                        : null
+                    }
+                    endDate={
+                      values.p_special_date_to
+                        ? new Date(values.p_special_date_to)
+                        : null
+                    }
+                    selectsRange
+                    minDate={new Date()}
+                    placeholderText="Select a date range"
+                    className="w-full border text-gray-600 border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-xs text-center sm:text-left"
+                    wrapperClassName="customDatePickerWidth"
+                  />
+                  <label
+                    htmlFor="listing-special-dates"
+                    className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                  >
+                    Select Special Dates
+                  </label>
+                  <ErrorMessage
+                    name="p_special_date_from"
+                    component="div"
+                    className="text-red-500 text-xs mt-1"
+                  />
+                  <ErrorMessage
+                    name="p_special_date_to"
+                    component="div"
+                    className="text-red-500 text-xs mt-1"
+                  />
+                </div>
+
+                <div className="relative mb-4 md:col-span-2">
+                  <Field
+                    type="number"
+                    name="p_special_price"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                    placeholder=" "
+                  />
+                  <label
+                    htmlFor="p_special_price"
+                    className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                  >
+                    Special Price $
+                  </label>
+                  <ErrorMessage
+                    name="p_special_price"
+                    component="div"
+                    className="text-red-500 text-xs mt-1"
+                  />
+                </div>
+              </>
+            )}
+
             {hostType === "V" && (
               <div className="relative mb-4">
                 <Field

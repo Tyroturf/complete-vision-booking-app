@@ -156,9 +156,14 @@ const ReservationForm = ({
 
   useEffect(() => {
     const fetchCars = async () => {
+      const params = {
+        check_in: reservationData.checkIn,
+        check_out: reservationData.checkOut,
+        num_guests: reservationData.guests,
+      };
       try {
-        const response = await fetchBookingCars();
-        setCarList(response.data.listings);
+        const response = await fetchBookingCars(params);
+        setCarList(response.data.CarRentals);
       } catch (err) {
         console.error("Failed to fetch car data", err);
       }
@@ -486,10 +491,10 @@ const ReservationForm = ({
                           <option value="" disabled>
                             Select Car
                           </option>
-                          {carList.length > 0 ? (
-                            carList.map((car) => (
+                          {carList?.length > 0 ? (
+                            carList?.map((car) => (
                               <option key={car.ID} value={car.ID}>
-                                {car.LIST_NAME}
+                                {car.ListName}
                               </option>
                             ))
                           ) : (

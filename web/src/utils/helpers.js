@@ -65,6 +65,9 @@ export const getInitialValues = (hostType, initialValues, isEditMode) => {
       return {
         ...defaultValues,
         features: initialValues?.Features || "",
+        p_special_date_from: initialValues?.SpecialDateFrom,
+        p_special_date_to: initialValues?.SpecialDateTo,
+        p_special_price: initialValues?.SpecialPrice,
       };
 
     default:

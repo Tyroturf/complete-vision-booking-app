@@ -52,12 +52,12 @@ const Modal = ({ isOpen, onClose, children }) => {
             transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
           >
             <button
-              className="absolute top-3 right-3 md:top-7 md:right-7 text-gray-500 hover:text-gray-700 text-2xl"
+              className="absolute top-3 right-3 md:top-5 md:right-5 text-gray-500 hover:text-gray-700 text-2xl"
               onClick={onClose}
             >
               &times;
             </button>
-            <div className="mt-8 max-h-[75vh] overflow-y-auto">{children}</div>
+            <div className="pt-8 max-h-[75vh] overflow-y-auto">{children}</div>
           </motion.div>
         </motion.div>
       )}

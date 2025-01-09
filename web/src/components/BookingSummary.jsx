@@ -36,11 +36,11 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
 
     const carPrice =
       reservationData?.selectedCar && reservationData.interestedInCar
-        ? reservationData?.selectedCar?.PRICE || 0
+        ? reservationData?.selectedCar?.Price || 0
         : 0;
 
     const chauffeurRate = reservationData?.chauffeur
-      ? reservationData?.selectedCar?.CHAUFFEUR_RATE || 0
+      ? reservationData?.selectedCar?.ChauffeurRate || 0
       : 0;
     setChauffeurRate(chauffeurRate);
 
@@ -55,7 +55,8 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
     const totalVehiclePrice = carPrice * nights + chauffeurRate * nights;
 
     const subTotal = totalListingPrice + totalTourPrice + totalVehiclePrice;
-    const serviceFee = subTotal * 0.01;
+    setTotalPriceUSD(subTotal);
+    const serviceFee = subTotal * 0.05;
     const grandTotalUSD = subTotal + serviceFee;
 
     if (
@@ -90,14 +91,14 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
           <span className="font-bold text-sm">Your Price Summary</span>
 
           <div className="flex justify-between">
-            <span className="text-xs">Listing Price</span>
+            <span className="text-xs">Listing Price $</span>
             <span className="text-xs font-medium">
               ${reservationData?.listing?.PRICE || "0"} / night
             </span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-xs">Nights</span>
+            <span className="text-xs">No. of Nights</span>
             <span className="text-xs font-medium">
               {calculateNights(
                 reservationData?.checkIn,
@@ -110,7 +111,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
             reservationData.selectedCar &&
             reservationData.selectedCar?.PRICE && (
               <div className="flex justify-between">
-                <span className="text-xs">Vehicle Price (GHS)</span>
+                <span className="text-xs">Vehicle Price $</span>
                 <span className="text-xs font-medium">
                   $ {reservationData?.selectedCar?.PRICE || "0"} / night
                 </span>
@@ -119,7 +120,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
 
           {reservationData?.chauffeur && reservationData.interestedInCar && (
             <div className="flex justify-between">
-              <span className="text-xs">Chauffeur Price (GHS)</span>
+              <span className="text-xs">Chauffeur Price $</span>
               <span className="text-xs font-medium">
                 $ {chauffeurRate || "0"}
               </span>
@@ -129,19 +130,28 @@ const BookingSummary = ({ showFullPolicy, togglePolicy }) => {
           {reservationData?.interestedInTour &&
             reservationData.selectedTour && (
               <div className="flex justify-between">
-                <span className="text-xs">Tour Price (GHS)</span>
+                <span className="text-xs">Tour Price$</span>
                 <span className="text-xs font-medium">
                   $ {selectedTourPrice}
                 </span>
               </div>
             )}
+
+          {totalPriceUSD && (
+            <div className="flex justify-between">
+              <span className="text-xs">Total $</span>
+              <span className="text-xs font-medium">
+                $ {formatWithCommas(totalPriceUSD)}
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="bg-brand-sm rounded-b-lg w-full mt-10">
           <div className="flex justify-between items-center p-6 text-gray-700">
             <span className="font-medium text-sm">Total (GHS)</span>
             <span className="text-lg md:text-xl font-bold">
-              GHS {formatWithCommas(totalPriceGHS)}
+              {formatWithCommas(totalPriceGHS)}
             </span>
           </div>
         </div>
