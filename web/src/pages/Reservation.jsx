@@ -53,7 +53,6 @@ const Reservation = ({ type }) => {
       try {
         const response = await fetchUser(`p_user_id=${user_id}`);
         const userDetails = response.data["User Details"][0];
-        console.log("userDetails", userDetails);
         setUserDetails(userDetails);
 
         setInitialValues((prevValues) => ({
@@ -119,7 +118,13 @@ const Reservation = ({ type }) => {
       try {
         let response;
         if (type === "listings") {
-          response = await fetchPlace(id);
+          const q = {
+            id,
+            checkIn: params.get("p_check_in") ?? formatDate(today),
+            checkOut: params.get("p_check_out") ?? formatDate(tomorrow),
+          };
+
+          response = await fetchPlace(q);
           setData(response.data.listings[0]);
         } else if (type === "car_rentals") {
           response = await fetchCar(id);

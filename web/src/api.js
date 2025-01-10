@@ -69,8 +69,8 @@ export const searchTours = (params) => {
   return api.get("/tour/tours", { params });
 };
 
-export const fetchPlace = (id) => {
-  const queryString = new URLSearchParams({ p_listing_id: id }).toString();
+export const fetchPlace = (params) => {
+  const queryString = new URLSearchParams({ p_listing_id: params.id, p_check_in: params.checkIn, p_check_out: params.checkOut }).toString();
   
   return api.get(`/listing/listings?${queryString}`);
 };
