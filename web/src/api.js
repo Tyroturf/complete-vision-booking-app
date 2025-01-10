@@ -75,14 +75,14 @@ export const fetchPlace = (params) => {
   return api.get(`/listing/listings?${queryString}`);
 };
 
-export const fetchCar = (id) => {
-  const queryString = new URLSearchParams({ p_rental_id: id }).toString();
+export const fetchCar = (params) => {
+  const queryString = new URLSearchParams({ p_rental_id: params.id }).toString();
   
   return api.get(`/vehicle/rental?${queryString}`);
 };
 
-export const fetchTour = (id) => {
-  const queryString = new URLSearchParams({ p_tour_id: id }).toString();
+export const fetchTour = (params) => {
+  const queryString = new URLSearchParams({ p_tour_id: params.id }).toString();
   
   return api.get(`/tour/tours?${queryString}`);
 };

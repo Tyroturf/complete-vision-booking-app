@@ -117,17 +117,16 @@ const Reservation = ({ type }) => {
     const fetchData = async () => {
       try {
         let response;
+        const q = {
+          id,
+          checkIn: params.get("p_check_in") ?? formatDate(today),
+          checkOut: params.get("p_check_out") ?? formatDate(tomorrow),
+        };
         if (type === "listings") {
-          const q = {
-            id,
-            checkIn: params.get("p_check_in") ?? formatDate(today),
-            checkOut: params.get("p_check_out") ?? formatDate(tomorrow),
-          };
-
           response = await fetchPlace(q);
           setData(response.data.listings[0]);
         } else if (type === "car_rentals") {
-          response = await fetchCar(id);
+          response = await fetchCar(q);
           setData(response.data.car_rentals[0]);
           setReservationData((prevData) => ({
             ...prevData,
@@ -135,7 +134,7 @@ const Reservation = ({ type }) => {
             selectedCar: response.data.car_rentals[0],
           }));
         } else if (type === "tours") {
-          response = await fetchTour(id);
+          response = await fetchTour(q);
           setData(response.data.tours[0]);
         }
       } catch (err) {
