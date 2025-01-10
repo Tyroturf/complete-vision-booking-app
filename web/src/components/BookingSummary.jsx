@@ -167,7 +167,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
 
           {serviceFee && (
             <div className="flex justify-between">
-              <span className="text-xs">Service Fee (5% of Total)</span>
+              <span className="text-xs">Service Fee</span>
               <span className="text-xs font-medium">$ {serviceFee}</span>
             </div>
           )}
