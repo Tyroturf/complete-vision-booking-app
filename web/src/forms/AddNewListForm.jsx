@@ -13,11 +13,12 @@ import {
   updateVehicle,
 } from "../api";
 import { formatDate, getInitialValues } from "../utils/helpers";
-import { showErrorToast, showSuccessToast } from "../utils/toast";
+import { showSuccessToast } from "../utils/toast";
 import Loader from "../components/Loader";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../customDatePickerWidth.css";
+import CustomSelect from "../components/CustomSelect";
 
 const AddNewListForm = ({
   mode = "add",
@@ -41,7 +42,7 @@ const AddNewListForm = ({
           .required("Price is required")
           .min(0, "Price must be a positive number"),
         description: Yup.string().required("Description is required"),
-        amenities: Yup.array()
+        amenities: Yup.string()
           .min(1, "Please select at least one amenity")
           .required("Amenities are required"),
         p_special_date_from: Yup.date()
@@ -176,7 +177,12 @@ const AddNewListForm = ({
     const getAmenities = async () => {
       try {
         const response = await fetchAmenities();
-        setAmenities(response.data.Amenities || []);
+        setAmenities(
+          response.data.Amenities.map((amenity) => ({
+            label: amenity.NAME,
+            value: amenity.NAME,
+          }))
+        );
       } catch (error) {
         console.error("Failed to fetch amenities:", error);
       }
@@ -224,6 +230,7 @@ const AddNewListForm = ({
       price,
       images,
       carType,
+      amenities,
       chauffeurRate,
       p_special_date_from,
       p_special_date_to,
@@ -263,6 +270,7 @@ const AddNewListForm = ({
           p_special_date_from,
           p_special_date_to,
           p_special_price,
+          amenities,
         }),
         ...(hostType === "V" && { carType, chauffeurRate }),
         listingId: isEditMode ? initialValues.ID : listingId,
@@ -447,17 +455,28 @@ const AddNewListForm = ({
             {hostType === "L" && (
               <div className="relative mb-4 md:col-span-2">
                 <Field
-                  as="select"
                   name="amenities"
-                  multiple
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-xs"
-                >
-                  {amenities.map((amenity) => (
-                    <option key={amenity.ID} value={amenity.ID}>
-                      {amenity.NAME}
-                    </option>
-                  ))}
-                </Field>
+                  component={({ field, form }) => (
+                    <CustomSelect
+                      field={field}
+                      form={form}
+                      options={amenities}
+                      isMulti
+                      className="w-full text-xs"
+                      placeholder="Select Amenities"
+                      onChange={(selectedOptions) => {
+                        console.log(selectedOptions);
+                        const selectedValues = selectedOptions.map(
+                          (option) => option.value
+                        );
+                        form.setFieldValue(
+                          field.name,
+                          selectedValues.join(", ")
+                        );
+                      }}
+                    />
+                  )}
+                />
                 <label
                   htmlFor="amenities"
                   className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"

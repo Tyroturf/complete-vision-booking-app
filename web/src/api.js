@@ -195,7 +195,7 @@ export const updateList = async (params) => {
     p_list_name: params.listName,
     p_location: params.location,
     p_description: params.description,
-    p_amenities: params.description,
+    p_amenities: params.amenities,
     p_max_guests: params.guests,
     p_price: params.price,
     p_listing_id: params.listingId,
