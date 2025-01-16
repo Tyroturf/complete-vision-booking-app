@@ -386,6 +386,7 @@ const ReservationForm = ({
             <div className="relative col-span-1 md:col-span-2">
               <DatePicker
                 id="reservation-dates"
+                minDate={new Date()}
                 selected={
                   reservationData.checkIn
                     ? new Date(reservationData.checkIn)

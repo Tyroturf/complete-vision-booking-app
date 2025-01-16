@@ -106,6 +106,7 @@ const SearchBar = ({ initialValues }) => {
               startDate={startDate}
               endDate={endDate}
               selectsRange
+              minDate={new Date()}
               className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-xs text-center sm:text-left"
               wrapperClassName="customDatePickerWidth"
             />
