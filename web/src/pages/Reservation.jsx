@@ -6,14 +6,7 @@ import BookingSummary from "../components/BookingSummary";
 import Modal from "../components/Modal";
 import Confirmation from "../pages/Confirmation";
 import { useAuth } from "../contexts/AuthContext";
-import {
-  fetchPlace,
-  fetchCar,
-  fetchTour,
-  bookProperty,
-  fetchUser,
-  uploadDocs,
-} from "../api";
+import { fetchPlace, fetchCar, fetchTour, fetchUser, uploadDocs } from "../api";
 import { useReservation } from "../contexts/ReservationContext";
 import { formatDate } from "../utils/helpers";
 import axios from "axios";
@@ -267,14 +260,14 @@ const Reservation = ({ type }) => {
         <div className="space-y-5 md:border border-brand md:p-6 rounded-lg">
           <div className="flex justify-between gap-x-3">
             <img
-              src={data.IMAGE1_URL}
+              src={data?.IMAGE1_URL}
               className="w-1/2 h-28 lg:h-56 object-cover rounded-lg"
-              alt={data.LIST_NAME || "icon"}
+              alt={data?.LIST_NAME || "icon"}
             />
             <div className="flex flex-col justify-center gap-y-1">
-              <span className="font-medium text-sm">{data.LIST_NAME}</span>
+              <span className="font-medium text-sm">{data?.LIST_NAME}</span>
               <RatingSummary />
-              <span className="font-thin text-xs">{data.LOCATION}</span>
+              <span className="font-thin text-xs">{data?.LOCATION}</span>
             </div>
           </div>
 

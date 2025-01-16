@@ -87,38 +87,40 @@ export const fetchTour = (params) => {
   return api.get(`/tour/tours?${queryString}`);
 };
 
-export const bookProperty = (bookingData) => {
-  const queryString = new URLSearchParams({
-    listing_id: bookingData.listing_id,
-    user_id: bookingData.user_id,
-    booking_date: bookingData.booking_date,
-    first_name: bookingData.first_name,
-    last_name: bookingData.last_name,
-    contact: bookingData.contact,
-    email: bookingData.email,
-    num_guests: bookingData.num_guests,
-    car_services: bookingData.car_services ? "Y" : "N",
-    driving_type: bookingData.driving_type,
-    pickup_location: bookingData.pickup_location,
-    dropoff_location: bookingData.dropoff_location,
-    private_tour: bookingData.private_tour ? "Y" : "N",
-    checkin: bookingData.checkin,
-    checkout: bookingData.checkout,
-    listing_price: bookingData.listing_price,
-    ride_price: bookingData.ride_price,
-    tour_price: bookingData.tour_price,
-    no_nights: bookingData.no_nights,
-    total: bookingData.total,
-    tour_type: bookingData.tour_type,
-    car_id: bookingData.car_id,
-    status: bookingData.status,
-    host_id: bookingData.host_id,
-    fee: bookingData.fee,
-    chauffuer_rate: bookingData.chauffuer_rate,
-    sub_total: bookingData.sub_total,
-    special_note: bookingData.special_note,
-    reference_id: bookingData.paymentReference,
-  }).toString();
+export const saveBooking = (bookingData) => {
+  const queryString = new URLSearchParams(
+    Object.entries({
+      listing_id: bookingData.listing?.ID,
+      user_id: bookingData.user_id,
+      booking_date: bookingData.bookingDate,
+      first_name: bookingData.firstName,
+      last_name: bookingData.lastName,
+      contact: bookingData.phoneNumber,
+      email: bookingData.email,
+      num_guests: bookingData.guests,
+      car_services: bookingData.interestedInCar ? "Y" : undefined,
+      driving_type: bookingData.drivingOption,
+      pickup_location: bookingData.pickupLocation,
+      dropoff_location: bookingData.dropoffLocation,
+      private_tour: bookingData.interestedInTour ? "Y" : undefined,
+      checkin: bookingData.checkIn,
+      checkout: bookingData.checkOut,
+      listing_price: bookingData.listingPrice,
+      ride_price: bookingData.carPrice || undefined,
+      tour_price: bookingData.tourPrice || undefined,
+      no_nights: bookingData.nights || undefined,
+      total: bookingData.grandTotalUSD,
+      tour_type: bookingData.selectedTour?.LIST_NAME,
+      car_id: bookingData.selectedCar?.CAR_ID,
+      status: bookingData.status,
+      host_id: bookingData.listing?.HOST_ID,
+      fee: bookingData.fee || undefined,
+      chauffuer_rate: bookingData.chauffeur ? "Y" : undefined,
+      sub_total: bookingData.subTotal,
+      special_note: bookingData.specialNote,
+      reference_id: bookingData.paymentReference,
+    }).filter(([_, value]) => value !== undefined && value !== "")
+  ).toString();
 
   return api.get(`/property/booking?${queryString}`);
 };
@@ -333,4 +335,8 @@ export const deleteTour = async (queryString) => {
 
 export const fetchAmenities = async () => {
   return api.get("/get/amenities");
+};
+
+export const verifyPayment = async (queryString) => {
+  return api.get(`/verify/paystack?reference_id=${queryString}`);
 };

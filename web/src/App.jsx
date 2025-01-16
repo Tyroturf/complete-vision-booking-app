@@ -28,6 +28,7 @@ import BecomeAHost from "./pages/BecomeAHost";
 import ListInfo from "./pages/ListInfo";
 import { HostRegister } from "./pages/HostRegister";
 import Manage from "./pages/Manage";
+import ThankYou from "./pages/ThankYou";
 
 const App = () => {
   return (
@@ -127,6 +128,16 @@ const App = () => {
                   <PrivateRoute>
                     <Layout>
                       <Confirmation />
+                    </Layout>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/thank-you"
+                element={
+                  <PrivateRoute>
+                    <Layout>
+                      <ThankYou />
                     </Layout>
                   </PrivateRoute>
                 }

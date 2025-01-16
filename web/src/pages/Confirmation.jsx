@@ -1,4 +1,17 @@
+import { PaystackButton } from "react-paystack";
+import { saveBooking, verifyPayment } from "../api";
+import { useState } from "react";
+import { formatDate } from "../utils/helpers";
+import { showErrorToast, showSuccessToast } from "../utils/toast";
+import ThankYou from "./ThankYou";
+import { useNavigate } from "react-router-dom";
+
 const Confirmation = ({ bookingDetails, onSubmit, page }) => {
+  const [paymentReference, setPaymentReference] = useState(null);
+  const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
+  const { user_id } = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
+
   if (!bookingDetails) {
     return <div>Error: No booking details available.</div>;
   }
@@ -26,7 +39,63 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
     grandTotalUSD,
     nights,
     drivingOption,
+    duration,
   } = bookingDetails;
+
+  const fullName = `${firstName + " " + lastName}`;
+  const bookingDate = new Date();
+  const updatedBookingDetails = {
+    ...bookingDetails,
+    bookingDate: formatDate(bookingDate),
+    user_id,
+  };
+
+  const initializePayment = async () => {
+    try {
+      // Step 1: Create payment record on backend
+      const response = await saveBooking(updatedBookingDetails);
+      if (response.data.status === "Booking Confirmed") {
+        const { reference_id } = response.data;
+        setPaymentReference(reference_id.toString());
+      } else {
+        showErrorToast("Error confirming booking");
+      }
+    } catch (error) {
+      showErrorToast("Error confirming booking");
+      console.error("Error initializing payment:", error);
+    }
+  };
+
+  const onSuccess = async (response) => {
+    try {
+      const res = await verifyPayment(response.reference);
+      if (res.data.status === "success") {
+        showSuccessToast("Payment verified successfully!");
+        navigate("/thank-you");
+      } else {
+        showErrorToast("Payment verification failed.");
+      }
+    } catch (error) {
+      showErrorToast("Error verifying payment.");
+      console.error("Error verifying payment:", error);
+    }
+  };
+  const onClose = async (response) => {
+    console.log("Don't go");
+  };
+
+  const paystackProps = {
+    email,
+    amount: grandTotalUSD * 100,
+    currency: "GHS",
+    publicKey: paystackPublicKey,
+    text: "Pay Now",
+    onSuccess,
+    onClose,
+    reference: paymentReference,
+    className:
+      "bg-brand text-xs font-bold text-white px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition",
+  };
 
   return (
     <div className="space-y-4 text-gray-600">
@@ -53,7 +122,7 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
           </p>
           <p className="text-xs md:text-sm">
             <span className="font-medium">Dates: </span>
-            {checkIn} - {checkOut} ({nights} nights)
+            {checkIn} - {checkOut} ({duration} nights)
           </p>
         </div>
 
@@ -150,12 +219,16 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
         </div> */}
       </div>
 
-      <button
-        onClick={onSubmit}
-        className="bg-brand text-xs font-bold text-white px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition"
-      >
-        Confirm Booking
-      </button>
+      {!paymentReference ? (
+        <button
+          onClick={initializePayment}
+          className="bg-brand text-xs font-bold text-white px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition"
+        >
+          Confirm
+        </button>
+      ) : (
+        <PaystackButton {...paystackProps} />
+      )}
     </div>
   );
 };
