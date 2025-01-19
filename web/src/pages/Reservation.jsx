@@ -10,7 +10,6 @@ import { fetchPlace, fetchCar, fetchTour, fetchUser, uploadDocs } from "../api";
 import { useReservation } from "../contexts/ReservationContext";
 import { formatDate } from "../utils/helpers";
 import axios from "axios";
-import { PaystackButton } from "react-paystack";
 
 const Reservation = ({ type }) => {
   const today = new Date();
@@ -40,50 +39,6 @@ const Reservation = ({ type }) => {
     selectedTour: null,
     selectedCar: null,
   });
-
-  const {
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    guests,
-    checkIn,
-    checkOut,
-    interestedInCar,
-    selectedCar,
-    chauffeur,
-    interestedInTour,
-    selectedTour,
-    listing,
-    pickupLocation,
-    dropoffLocation,
-    listingPrice,
-    carPrice,
-    tourPrice,
-    subTotal,
-    grandTotalUSD,
-    nights,
-    drivingOption,
-    duration,
-  } = reservationData;
-  const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
-
-  const paystackProps = {
-    email,
-    amount: 100,
-    currency: "GHS",
-    publicKey: paystackPublicKey,
-    text: "Pay Now",
-    onSuccess: () => {
-      console.log("first");
-    },
-    onClose: () => {
-      console.log("first");
-    },
-    // reference: paymentReference,
-    className:
-      "bg-brand text-xs font-bold text-white px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition",
-  };
 
   const fetchUserDetails = async () => {
     const { user_id } = JSON.parse(localStorage.getItem("user"));
@@ -344,11 +299,8 @@ const Reservation = ({ type }) => {
           bookingDetails={reservationData}
           onSubmit={confirmBooking}
           page={page}
-          closeConfirmation={closeConfirmation}
         />
       </Modal>
-
-      <PaystackButton {...paystackProps} />
     </div>
   );
 };

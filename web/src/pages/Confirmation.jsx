@@ -3,7 +3,6 @@ import { saveBooking, verifyPayment } from "../api";
 import { useState } from "react";
 import { formatDate } from "../utils/helpers";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
-import ThankYou from "./ThankYou";
 import { useNavigate } from "react-router-dom";
 
 const Confirmation = ({ bookingDetails, onSubmit, page }) => {
