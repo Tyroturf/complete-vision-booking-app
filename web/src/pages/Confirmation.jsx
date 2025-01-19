@@ -92,7 +92,7 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
     text: "Pay Now",
     onSuccess,
     onClose,
-    reference: paymentReference,
+    // reference: paymentReference,
     className:
       "bg-brand text-xs font-bold text-white px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition",
   };
@@ -219,7 +219,7 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
         </div> */}
       </div>
 
-      {!paymentReference ? (
+      {/* {!paymentReference ? (
         <button
           onClick={initializePayment}
           className="bg-brand text-xs font-bold text-white px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition"
@@ -227,8 +227,8 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
           Confirm
         </button>
       ) : (
-        <PaystackButton {...paystackProps} />
-      )}
+        )} */}
+      <PaystackButton {...paystackProps} />
     </div>
   );
 };

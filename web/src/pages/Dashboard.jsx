@@ -161,7 +161,7 @@ const BookingCard = ({ booking }) => {
         <div className="flex my-5">
           <button
             className="bg-brand p-3 px-6 text-white font-medium rounded-sm text-xs w-full"
-            onClick={() => navigate("/booking-details")} // Adjust the path as needed
+            onClick={() => navigate("/booking-details")}
           >
             View
           </button>
