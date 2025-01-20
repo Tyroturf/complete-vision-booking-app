@@ -51,7 +51,6 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
 
   const initializePayment = async () => {
     try {
-      // Step 1: Create payment record on backend
       const response = await saveBooking(updatedBookingDetails);
       if (response.data.status === "Booking Confirmed") {
         const { reference_id } = response.data;
@@ -96,6 +95,7 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
       "bg-brand text-xs font-bold text-white px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition",
   };
 
+  console.log("paystack", paystackProps);
   return (
     <div className="space-y-4 text-gray-600">
       <h1 className="text-md md:text-lg font-bold mb-4">

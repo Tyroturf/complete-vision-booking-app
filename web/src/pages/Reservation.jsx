@@ -140,9 +140,8 @@ const Reservation = ({ type }) => {
     }
   }, [id, type]);
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async () => {
     try {
-      console.log("Reservation details:", values);
       setShowConfirmation(true);
     } catch (error) {
       console.error("Failed to reserve", error);
