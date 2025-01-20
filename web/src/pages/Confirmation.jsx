@@ -91,7 +91,7 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
     text: "Pay Now",
     onSuccess,
     onClose,
-    // reference: paymentReference,
+    reference: paymentReference,
     className:
       "bg-brand text-xs font-bold text-white px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition",
   };
