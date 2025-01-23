@@ -17,7 +17,6 @@ import { AuthProvider } from "./contexts/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import { ToastContainer } from "react-toastify";
 import { SearchProvider } from "./contexts/SearchContext";
-import Reservation from "./pages/Reservation";
 import Confirmation from "./pages/Confirmation";
 import { Dashboard } from "./pages/Dashboard";
 import CarDetail from "./pages/CarDetail";
@@ -29,6 +28,8 @@ import ListInfo from "./pages/ListInfo";
 import { HostRegister } from "./pages/HostRegister";
 import Manage from "./pages/Manage";
 import ThankYou from "./pages/ThankYou";
+import BookingDetails from "./pages/BookingDetail";
+import Bookings from "./pages/Bookings";
 
 const App = () => {
   return (
@@ -158,6 +159,26 @@ const App = () => {
                   <PrivateRoute>
                     <Layout>
                       <Manage />
+                    </Layout>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/booking-details/:id"
+                element={
+                  <PrivateRoute>
+                    <Layout>
+                      <BookingDetails />
+                    </Layout>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/bookings"
+                element={
+                  <PrivateRoute>
+                    <Layout>
+                      <Bookings />
                     </Layout>
                   </PrivateRoute>
                 }

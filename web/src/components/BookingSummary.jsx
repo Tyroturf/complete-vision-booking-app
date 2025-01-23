@@ -75,6 +75,8 @@ const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
     setTotalPriceUSD(subTotal);
     setServiceFee(subTotal * 0.05);
     const grandTotalUSD = subTotal + serviceFee;
+    const totalPriceGHS = grandTotalUSD * exchangeRate;
+    setTotalPriceGHS(totalPriceGHS);
 
     if (
       reservationData.subTotal !== subTotal ||
@@ -82,12 +84,16 @@ const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
     ) {
       setReservationData({
         ...reservationData,
-        listingPrice: listingPrice,
-        carPrice: carPrice,
-        tourPrice: tourPrice,
-        subTotal: subTotal,
-        grandTotalUSD: grandTotalUSD,
-        duration: duration,
+        listingPrice,
+        carPrice,
+        tourPrice,
+        subTotal,
+        grandTotalUSD,
+        duration,
+        serviceFee,
+        totalPriceGHS,
+        specialRequests,
+        chauffeurRate,
       });
     }
 

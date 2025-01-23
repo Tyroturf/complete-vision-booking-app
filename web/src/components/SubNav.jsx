@@ -72,6 +72,13 @@ export const ProfileDropdown = ({ toggleDropdown, handleLogout }) => {
             </Link>
           </li>
         )}
+        {
+          <li>
+            <Link to="/bookings" className={`${profileLink} text-gray-600`}>
+              Past Bookings
+            </Link>
+          </li>
+        }
         <li>
           <button
             onClick={handleLogout}
@@ -268,6 +275,13 @@ const SubNav = () => {
                       <span className="text-base font-bold">Become A Host</span>
                     </Link>
                   )}
+                  <Link
+                    to="/bookings"
+                    className="text-white my-3"
+                    onClick={handleLinkClick}
+                  >
+                    <span className="text-base font-bold">Past Bookings</span>
+                  </Link>
                   {host_type && (
                     <Link
                       className="text-white my-3"

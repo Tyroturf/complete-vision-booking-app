@@ -30,6 +30,12 @@ export const ReservationProvider = ({ children }) => {
     selfie: null,
     driverLicense: null,
     drivingOption: "",
+    serviceFee: 0,
+    totalPriceGHS: "",
+    specialNote: "",
+    status: "pending",
+    specialRequests: "",
+    chauffeurRate: 0,
   });
 
   return (

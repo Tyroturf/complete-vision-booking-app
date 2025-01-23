@@ -5,7 +5,8 @@ import { formatDate } from "../utils/helpers";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import { useNavigate } from "react-router-dom";
 
-const Confirmation = ({ bookingDetails, onSubmit, page }) => {
+const Confirmation = ({ bookingDetails, page }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [paymentReference, setPaymentReference] = useState(null);
   const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
   const { user_id } = JSON.parse(localStorage.getItem("user"));
@@ -25,7 +26,7 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
     checkOut,
     interestedInCar,
     selectedCar,
-    chauffeur,
+    chauffeurRate,
     interestedInTour,
     selectedTour,
     listing,
@@ -39,9 +40,14 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
     nights,
     drivingOption,
     duration,
+    serviceFee,
+    totalPriceGHS,
+    specialNote,
+    status,
+    specialRequests,
   } = bookingDetails;
 
-  const fullName = `${firstName + " " + lastName}`;
+  const fullName = `${firstName} ${lastName}`;
   const bookingDate = new Date();
   const updatedBookingDetails = {
     ...bookingDetails,
@@ -50,9 +56,9 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
   };
 
   const initializePayment = async () => {
+    setIsLoading(true);
     try {
       const response = await saveBooking(updatedBookingDetails);
-      console.log("save", response);
       if (response.data.status === "Booking Confirmed") {
         const { reference_id } = response.data;
         setPaymentReference(reference_id.toString());
@@ -62,6 +68,8 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
     } catch (error) {
       showErrorToast("Error confirming booking");
       console.error("Error initializing payment:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -79,13 +87,14 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
       console.error("Error verifying payment:", error);
     }
   };
-  const onClose = async (response) => {
-    console.log("Don't go");
+
+  const onClose = () => {
+    showErrorToast("Payment process was canceled.");
   };
 
   const paystackProps = {
     email,
-    amount: grandTotalUSD * 100,
+    amount: totalPriceGHS * 100,
     currency: "GHS",
     publicKey: paystackPublicKey,
     text: "Pay Now",
@@ -96,7 +105,6 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
       "bg-brand text-xs font-bold text-white px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition",
   };
 
-  console.log("paystack", paystackProps);
   return (
     <div className="space-y-4 text-gray-600">
       <h1 className="text-md md:text-lg font-bold mb-4">
@@ -106,9 +114,7 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
         {/* Guest Information */}
         <div>
           <h2 className="text-xs md:text-sm font-bold">Guest Information</h2>
-          <p className="text-xs md:text-sm">
-            {firstName} {lastName}
-          </p>
+          <p className="text-xs md:text-sm">{fullName}</p>
           <p className="text-xs md:text-sm">{email}</p>
           <p className="text-xs md:text-sm">{phoneNumber}</p>
         </div>
@@ -122,11 +128,19 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
           </p>
           <p className="text-xs md:text-sm">
             <span className="font-medium">Dates: </span>
-            {checkIn} - {checkOut} ({duration} nights)
+            {checkIn} - {checkOut}
+          </p>
+          <p className="text-xs md:text-sm">
+            <span className="font-medium">Listing: </span>
+            {listing?.LIST_NAME || "N/A"}
+          </p>
+          <p className="text-xs md:text-sm">
+            <span className="font-medium">Nights: </span>
+            {duration}
           </p>
         </div>
 
-        {/* Listing Details */}
+        {/* Accommodation */}
         <div>
           <h2 className="text-xs md:text-sm font-bold">Accommodation</h2>
           <p className="text-xs md:text-sm">
@@ -138,7 +152,8 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
             {listing?.LOCATION}
           </p>
           <p className="text-xs md:text-sm">
-            <span className="font-medium">Price: </span>${listingPrice}
+            <span className="font-medium">Price per Night: </span>$
+            {listingPrice}
           </p>
         </div>
 
@@ -146,47 +161,28 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
         {page === "place" && interestedInCar && selectedCar && (
           <div>
             <h2 className="text-xs md:text-sm font-bold">Car Rental Details</h2>
-            {/* <p className="text-xs md:text-sm">
-              <span className="font-medium">Car Type: </span>
-              {selectedCar?.CAR_TYPE || "N/A"}
-            </p> */}
             <p className="text-xs md:text-sm">
               <span className="font-medium">Driving Option: </span>
               {drivingOption === "chauffeur" ? "Chauffeur" : "Self-driving"}
             </p>
             {drivingOption === "chauffeur" && (
-              <p className="text-xs md:text-sm">
-                <span className="font-medium">Pickup Location: </span>
-                {pickupLocation || "N/A"}
-              </p>
+              <>
+                <p className="text-xs md:text-sm">
+                  <span className="font-medium">Chauffeur Rate: </span>$
+                  {chauffeurRate}
+                </p>
+                <p className="text-xs md:text-sm">
+                  <span className="font-medium">Pickup Location: </span>
+                  {pickupLocation || "N/A"}
+                </p>
+              </>
             )}
             <p className="text-xs md:text-sm">
               <span className="font-medium">Dropoff Location: </span>
               {dropoffLocation || "N/A"}
             </p>
-          </div>
-        )}
-
-        {page === "car" && (
-          <div>
-            <h2 className="text-xs md:text-sm font-bold">Car Rental Details</h2>
-            {/* <p className="text-xs md:text-sm">
-              <span className="font-medium">Car Type: </span>
-              {selectedCar?.CAR_TYPE || "N/A"}
-            </p> */}
             <p className="text-xs md:text-sm">
-              <span className="font-medium">Driving Option: </span>
-              {drivingOption === "chauffeur" ? "Chauffeur" : "Self-driving"}
-            </p>
-            {drivingOption === "chauffeur" && (
-              <p className="text-xs md:text-sm">
-                <span className="font-medium">Pickup Location: </span>
-                {pickupLocation || "N/A"}
-              </p>
-            )}
-            <p className="text-xs md:text-sm">
-              <span className="font-medium">Dropoff Location: </span>
-              {dropoffLocation || "N/A"}
+              <span className="font-medium">Car Price: </span>${carPrice}
             </p>
           </div>
         )}
@@ -200,31 +196,44 @@ const Confirmation = ({ bookingDetails, onSubmit, page }) => {
               {selectedTour?.LIST_NAME || "N/A"}
             </p>
             <p className="text-xs md:text-sm">
+              <span className="font-medium">Duration: </span>
+              {duration} hours
+            </p>
+            <p className="text-xs md:text-sm">
               <span className="font-medium">Tour Price: </span>${tourPrice}
             </p>
           </div>
         )}
 
-        {/* Pricing Breakdown */}
-        {/* <div>
-          <h2 className="text-xs md:text-sm font-bold">Pricing Breakdown</h2>
+        {/* Price Breakdown */}
+        <div>
+          <h2 className="text-xs md:text-sm font-bold">Price Breakdown</h2>
           <p className="text-xs md:text-sm">
-            <span className="font-medium">Subtotal: </span>
-            {subTotal} GHS
+            <span className="font-medium">Subtotal: </span>${subTotal}
           </p>
           <p className="text-xs md:text-sm">
-            <span className="font-medium">Grand Total (USD): </span>
-            {grandTotalUSD} USD
+            <span className="font-medium">Service Fee: </span>${serviceFee}
           </p>
-        </div> */}
+          <p className="text-xs md:text-sm">
+            <span className="font-medium">Total Price (USD): </span>$
+            {grandTotalUSD}
+          </p>
+          <p className="text-xs md:text-sm">
+            <span className="font-medium">Total Price (GHS): </span>₵
+            {totalPriceGHS}
+          </p>
+        </div>
       </div>
 
       {!paymentReference ? (
         <button
           onClick={initializePayment}
-          className="bg-brand text-xs font-bold text-white px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition"
+          disabled={isLoading}
+          className={`bg-brand text-xs font-bold text-white px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition ${
+            isLoading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
-          Confirm
+          {isLoading ? "Processing..." : "Confirm & Pay"}
         </button>
       ) : (
         <PaystackButton {...paystackProps} />

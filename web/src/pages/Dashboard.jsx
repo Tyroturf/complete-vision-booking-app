@@ -15,13 +15,6 @@ import * as Yup from "yup";
 import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { RatingSummary } from "../components/Review";
-import wheel from "../assets/wheel.webp";
-import city from "../assets/city.webp";
-import scrape from "../assets/scrape.webp";
-import hall from "../assets/hall.webp";
-import tall from "../assets/tall.webp";
 
 const TotalBookings = ({ totalBookings }) => {
   const { ref, inView } = useInView({
@@ -114,136 +107,6 @@ const Home = () => {
             </PieChart>
           </ResponsiveContainer>
         </div>
-      </div>
-    </div>
-  );
-};
-
-const BookingCard = ({ booking }) => {
-  const navigate = useNavigate();
-
-  return (
-    <div
-      className="flex flex-col md:flex-row bg-white shadow-sm mb-7"
-      onClick={() => navigate("/booking-details")}
-    >
-      <img
-        src={booking.image}
-        alt={booking.title}
-        className="w-full h-52 md:w-96 md:h-72 lg:h-72 object-cover rounded-t-lg md:rounded-r-none md:rounded-l-lg"
-      />
-      <div className="flex flex-col md:m-5 mt-5 justify-center w-auto md:w-full">
-        <div className="flex justify-between">
-          <div className="flex flex-col gap-y-3">
-            <span className="font-bold">{booking.title}</span>
-            <span className="font-thin text-xs">Date: {booking.date}</span>
-            <span className="font-thin text-xs">
-              Location: {booking.location}
-            </span>
-            <div className="flex gap-2 bg-white rounded-lg pr-4">
-              <ul className="flex gap-x-2">
-                {booking.amenities?.map((am, index) => (
-                  <li key={index} className="text-xs font-medium">
-                    {am}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <RatingSummary rating={booking.rating} />
-          </div>
-          <div className="flex">
-            <span className="text-brand font-bold text-base">
-              ${booking.amount}{" "}
-              <span className="font-thin text-xs">/ booking</span>
-            </span>
-          </div>
-        </div>
-        <div className="flex my-5">
-          <button
-            className="bg-brand p-3 px-6 text-white font-medium rounded-sm text-xs w-full"
-            onClick={() => navigate("/booking-details")}
-          >
-            View
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const Bookings = () => {
-  const [activeTab, setActiveTab] = useState("Past Stays");
-
-  const bookingsData = {
-    "Past Stays": [
-      {
-        title: "Stay in New York",
-        date: "2024-01-10",
-        location: "New York, NY",
-        amount: 200,
-        image: wheel,
-        status: "Completed",
-      },
-      {
-        title: "Stay in Paris",
-        date: "2024-02-15",
-        location: "Paris, France",
-        image: hall,
-        amount: 300,
-        status: "Cancelled",
-      },
-    ],
-    Rentals: [
-      {
-        title: "Car Rental in LA",
-        date: "2024-03-12",
-        location: "Los Angeles, CA",
-        image: tall,
-        amount: 150,
-        status: "Completed",
-      },
-      {
-        title: "Car Rental in Tokyo",
-        date: "2024-04-18",
-        location: "Tokyo, Japan",
-        image: scrape,
-        amount: 250,
-        status: "Cancelled",
-      },
-    ],
-    Tours: [
-      {
-        title: "Tour of Rome",
-        date: "2024-05-10",
-        location: "Rome, Italy",
-        amount: 100,
-        image: city,
-        status: "Completed",
-      },
-      {
-        title: "Tour of London",
-        date: "2024-06-22",
-        location: "London, UK",
-        image: tall,
-        amount: 120,
-        status: "Cancelled",
-      },
-    ],
-  };
-
-  const bookings = bookingsData[activeTab];
-
-  return (
-    <div>
-      <Navbar
-        setActiveSection={setActiveTab}
-        activeSection={activeTab}
-        sections={["Past Stays", "Rentals", "Tours"]}
-      />
-      <div className="p-4">
-        {bookings.map((booking, index) => (
-          <BookingCard key={index} booking={booking} />
-        ))}
       </div>
     </div>
   );
@@ -412,7 +275,7 @@ const Payment = () => <div>Manage payment information...</div>;
 const Navbar = ({
   setActiveSection,
   activeSection,
-  sections = ["home", "bookings", "account", "payment"],
+  sections = ["home", "account", "payment"],
 }) => {
   return (
     <div className="flex justify-around items-center p-4 mt-4 relative shadow-sm">
@@ -447,8 +310,6 @@ export const Dashboard = () => {
     switch (activeSection) {
       case "home":
         return <Home />;
-      case "bookings":
-        return <Bookings />;
       case "account":
         return <Account />;
       case "payment":

@@ -109,15 +109,15 @@ export const saveBooking = (bookingData) => {
       ride_price: bookingData.carPrice || undefined,
       tour_price: bookingData.tourPrice || undefined,
       no_nights: bookingData.nights || undefined,
-      total: bookingData.grandTotalUSD,
+      total: bookingData.totalPriceGHS,
       tour_type: bookingData.selectedTour?.LIST_NAME,
       car_id: bookingData.selectedCar?.CAR_ID,
       status: bookingData.status,
       host_id: bookingData.listing?.HOST_ID,
-      fee: bookingData.fee || undefined,
-      chauffuer_rate: bookingData.chauffeur ? "Y" : undefined,
+      fee: bookingData.serviceFee || undefined,
+      chauffuer_rate: bookingData.chauffeurRate || undefined,
       sub_total: bookingData.subTotal,
-      special_note: bookingData.specialNote,
+      special_note: bookingData.specialRequests,
       reference_id: bookingData.paymentReference,
     }).filter(([_, value]) => value !== undefined && value !== "")
   ).toString();
@@ -339,4 +339,12 @@ export const fetchAmenities = async () => {
 
 export const verifyPayment = async (queryString) => {
   return api.get(`/verify/paystack?reference_id=${queryString}`);
+};
+
+export const fetchPastStaysBookings = async (queryString) => {
+  return api.get(`/property/user_bookings?P_USER_ID=${queryString}`);
+};
+
+export const fetchBooking = async (queryString) => {
+  return api.get(`/property/booking_details?P_BOOKING_ID=${queryString}`);
 };
