@@ -118,6 +118,12 @@ const BookingDetails = () => {
         )}
         {booking.TourPrice && (
           <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Tour Type:</strong>
+            {booking.TourType}
+          </p>
+        )}
+        {booking.TourPrice && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
             <strong className="text-brand">Tour Price:</strong> ${" "}
             {booking.TourPrice}
           </p>
@@ -131,6 +137,12 @@ const BookingDetails = () => {
         {booking.Fee && (
           <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
             <strong className="text-brand">Service Fee:</strong> $ {booking.Fee}
+          </p>
+        )}
+        {booking.SubTotal && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Sub Total:</strong> ${" "}
+            {booking.SubTotal}
           </p>
         )}
         {booking.Total && (
