@@ -58,72 +58,108 @@ const BookingDetails = () => {
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">List Name:</strong>{" "}
-          {`${booking["List Name"]}`}
-        </p>
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">Contact:</strong> {booking.Contact}
-        </p>
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">Email:</strong> {booking.Email}
-        </p>
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">Check-in:</strong> {booking.Checkin}
-        </p>
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">Check-out:</strong> {booking.Checkout}
-        </p>
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">Guests:</strong> {booking.NumGuests}
-        </p>
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">Listing:</strong>{" "}
-          {booking["List Name"]}
-        </p>
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">Price:</strong> GHS{" "}
-          {booking.ListingPrice}
-        </p>
+        {booking.FirstName && booking.LastName && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Guest Name:</strong>{" "}
+            {`${booking.FirstName} ${booking.LastName}`}
+          </p>
+        )}
+        {booking["List Name"] && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">List Name:</strong>{" "}
+            {`${booking["List Name"]}`}
+          </p>
+        )}
+        {booking.Contact && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Contact:</strong> {booking.Contact}
+          </p>
+        )}
+        {booking.Email && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Email:</strong> {booking.Email}
+          </p>
+        )}
+        {booking.Checkin && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Check-in:</strong> {booking.Checkin}
+          </p>
+        )}
+        {booking.Checkout && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Check-out:</strong>{" "}
+            {booking.Checkout}
+          </p>
+        )}
+        {booking.NumGuests && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Guests:</strong> {booking.NumGuests}
+          </p>
+        )}
+        {booking.ListingPrice && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Price:</strong> ${" "}
+            {booking.ListingPrice}
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">Ride Price:</strong> GHS{" "}
-          {booking.RidePrice}
-        </p>
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">Tour Price:</strong> GHS{" "}
-          {booking.TourPrice}
-        </p>
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">Chauffeur Rate:</strong> GHS{" "}
-          {booking.ChauffuerRate}
-        </p>
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">Service Fee:</strong> GHS {booking.Fee}
-        </p>
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">Total:</strong> GHS {booking.Total}
-        </p>
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">Status:</strong>{" "}
-          <span
-            className={`font-medium px-3 py-1 rounded-lg ${
-              booking.Status === "success"
-                ? "bg-green-100 text-green-600"
-                : booking.Status === "pending"
-                ? "bg-yellow-100 text-yellow-600"
-                : "bg-red-100 text-red-600"
-            }`}
-          >
-            {booking.Status}
-          </span>
-        </p>
-        <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 col-span-full">
-          <strong className="text-brand">Special Note:</strong>{" "}
-          {booking.SpecialNote}
-        </p>
+        {booking.RidePrice && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Ride Price:</strong> ${" "}
+            {booking.RidePrice}
+          </p>
+        )}
+        {booking["List Name"] && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Car Type:</strong> {booking.CarID}
+          </p>
+        )}
+        {booking.TourPrice && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Tour Price:</strong> ${" "}
+            {booking.TourPrice}
+          </p>
+        )}
+        {booking.ChauffuerRate && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Chauffeur Rate:</strong> ${" "}
+            {booking.ChauffuerRate}
+          </p>
+        )}
+        {booking.Fee && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Service Fee:</strong> $ {booking.Fee}
+          </p>
+        )}
+        {booking.Total && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Total:</strong> GHS {booking.Total}
+          </p>
+        )}
+        {booking.Status && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Status:</strong>{" "}
+            <span
+              className={`font-medium px-3 py-1 rounded-lg ${
+                booking.Status === "success"
+                  ? "bg-green-100 text-green-600"
+                  : booking.Status === "pending"
+                  ? "bg-yellow-100 text-yellow-600"
+                  : "bg-red-100 text-red-600"
+              }`}
+            >
+              {booking.Status}
+            </span>
+          </p>
+        )}
+        {booking.SpecialNote && (
+          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 col-span-full">
+            <strong className="text-brand">Special Note:</strong>{" "}
+            {booking.SpecialNote}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -162,6 +162,10 @@ const Confirmation = ({ bookingDetails, page }) => {
           <div>
             <h2 className="text-xs md:text-sm font-bold">Car Rental Details</h2>
             <p className="text-xs md:text-sm">
+              <span className="font-medium">Car: </span>
+              {selectedCar?.ListName || "N/A"}
+            </p>
+            <p className="text-xs md:text-sm">
               <span className="font-medium">Driving Option: </span>
               {drivingOption === "chauffeur" ? "Chauffeur" : "Self-driving"}
             </p>
