@@ -101,7 +101,7 @@ const Detail = ({ fetchDetail, type }) => {
         <div className="flex flex-col gap-y-4">
           <div>
             <span className="text-brand font-bold text-base">
-              {item?.PRICE}{" "}
+              ${item?.PRICE}{" "}
               <span className="font-thin text-xs">
                 / {type === "listings" ? "night" : "day"}
               </span>

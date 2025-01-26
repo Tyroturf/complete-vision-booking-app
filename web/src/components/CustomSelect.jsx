@@ -5,9 +5,9 @@ const CustomSelect = ({
   className,
   placeholder,
   field,
+  form,
   options,
   isMulti = false,
-  onChange,
 }) => {
   const getValue = () => {
     if (options) {
@@ -30,7 +30,11 @@ const CustomSelect = ({
     const selectedValues = isMulti
       ? selectedOptions.map((option) => option.value)
       : selectedOptions?.value;
-    onChange(selectedValues);
+
+    form.setFieldValue(
+      field.name,
+      isMulti ? selectedValues.join(", ") : selectedValues
+    );
   };
 
   return (
