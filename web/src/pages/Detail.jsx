@@ -6,6 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 import ImageGallery from "../components/ImageGallery";
 import Loader from "../components/Loader";
 import { formatDate } from "../utils/helpers";
+import AmenitiesList from "../components/AmenitiesList";
 
 const Detail = ({ fetchDetail, type }) => {
   const today = new Date();
@@ -60,8 +61,9 @@ const Detail = ({ fetchDetail, type }) => {
           <span className="font-bold text-xl text-gray-700">
             {item?.LIST_NAME}
           </span>
+          <br />
           {/* <RatingSummary /> */}
-          <span>{item?.LOCATION}</span>
+          <span className="text-xs md:text-sm">{item?.LOCATION}</span>
         </div>
         <div className="flex flex-col gap-y-4">
           <div>
@@ -136,9 +138,9 @@ const Detail = ({ fetchDetail, type }) => {
       <div className="border border-gray-30 w-2/3 mx-auto my-5"></div>
 
       {type === "listings" && (
-        <div className="flex flex-col bg-transparent rounded-lg p-4">
+        <div className="flex flex-col gap-2 bg-transparent rounded-lg p-4">
           <span className="text-base font-bold">Amenities</span>
-          <p className="text-xs text-gray-700">{item?.AMENITIES}</p>
+          <AmenitiesList amenities={item?.AMENITIES} />
         </div>
       )}
     </div>
