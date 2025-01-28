@@ -61,16 +61,24 @@ export const getInitialValues = (hostType, initialValues, isEditMode) => {
         ...defaultValues,
         features: initialValues?.Features || "",
         amenities: initialValues?.Amenities || "",
-        p_special_date_from: initialValues?.SpecialDateFrom,
-        p_special_date_to: initialValues?.SpecialDateTo,
-        p_special_price: initialValues?.SpecialPrice,
+        p_special_date_from:
+          initialValues?.SpecialDateFrom === "undefined"
+            ? null
+            : initialValues?.SpecialDateFrom || "",
+        p_special_date_to:
+          initialValues?.SpecialDateTo === "undefined"
+            ? null
+            : initialValues?.SpecialDateTo || "",
+        p_special_price:
+          initialValues?.SpecialPrice === "undefined"
+            ? null
+            : initialValues?.SpecialPrice || "",
       };
 
     default:
       return defaultValues;
   }
 };
-
 
 export const getHeadingText = (host_type) => {
   switch (host_type) {

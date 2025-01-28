@@ -320,7 +320,7 @@ const AddNewListForm = ({
         handleSubmit(values);
       }}
     >
-      {({ setFieldValue, resetForm, values }) => {
+      {({ setFieldValue, resetForm, values, errors }) => {
         useEffect(() => {
           if (!isEditMode) {
             resetForm();
@@ -496,7 +496,9 @@ const AddNewListForm = ({
                 <input
                   type="checkbox"
                   className="mr-2 rounded border-gray-300 focus:ring-brand"
-                  onChange={(e) => setShowSpecialFields(e.target.checked)}
+                  onChange={(e) => {
+                    setShowSpecialFields(e.target.checked);
+                  }}
                 />
                 Enable Special Dates and Price
               </label>
@@ -507,16 +509,20 @@ const AddNewListForm = ({
                 <div className="relative col-span-1 md:col-span-2">
                   <DatePicker
                     id="listing-special-dates"
-                    selected={null}
+                    selected={
+                      values.p_special_date_from
+                        ? new Date(values.p_special_date_from)
+                        : null
+                    }
                     onChange={(dates) => {
                       const [start, end] = dates;
                       setFieldValue(
                         "p_special_date_from",
-                        start ? formatDate(start) : null
+                        start ? start.toISOString() : null
                       );
                       setFieldValue(
                         "p_special_date_to",
-                        end ? formatDate(end) : null
+                        end ? end.toISOString() : null
                       );
                     }}
                     startDate={
