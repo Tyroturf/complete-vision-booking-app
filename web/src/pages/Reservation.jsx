@@ -1,7 +1,7 @@
 import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ReservationForm from "../forms/ReservationForm";
-import { RatingSummary } from "../components/Review";
+// import { RatingSummary } from "../components/Review";
 import BookingSummary from "../components/BookingSummary";
 import Modal from "../components/Modal";
 import Confirmation from "../pages/Confirmation";
@@ -265,7 +265,7 @@ const Reservation = ({ type }) => {
             />
             <div className="flex flex-col justify-center gap-y-1">
               <span className="font-medium text-sm">{data?.LIST_NAME}</span>
-              <RatingSummary />
+              {/* <RatingSummary /> */}
               <span className="font-thin text-xs">{data?.LOCATION}</span>
             </div>
           </div>

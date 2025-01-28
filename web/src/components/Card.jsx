@@ -37,7 +37,7 @@ const Card = ({ item }) => {
             <div className="flex gap-2 bg-white rounded-lg pr-4">
               <p className="text-xs">{item.AMENITIES}</p>
             </div>
-            <RatingSummary rating={item.rating} />
+            {/* <RatingSummary rating={item.rating} /> */}
           </div>
           <div className="flex">
             <span className="text-brand font-bold text-base">

@@ -2,7 +2,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { RatingSummary } from "../components/Review";
+// import { RatingSummary } from "../components/Review";
 import ImageGallery from "../components/ImageGallery";
 import Loader from "../components/Loader";
 import { formatDate } from "../utils/helpers";
@@ -60,7 +60,7 @@ const Detail = ({ fetchDetail, type }) => {
           <span className="font-bold text-xl text-gray-700">
             {item?.LIST_NAME}
           </span>
-          <RatingSummary />
+          {/* <RatingSummary /> */}
           <span>{item?.LOCATION}</span>
         </div>
         <div className="flex flex-col gap-y-4">
@@ -95,7 +95,7 @@ const Detail = ({ fetchDetail, type }) => {
       <div className="lg:hidden flex justify-between items-center p-5 pt-10">
         <div className="flex-col items-center justify-center text-gray-700">
           <span className="font-bold text-sm">{item?.LIST_NAME}</span>
-          <RatingSummary />
+          {/* <RatingSummary /> */}
           <span className="text-xs font-thin">{item?.LOCATION}</span>
         </div>
         <div className="flex flex-col gap-y-4">
@@ -130,7 +130,7 @@ const Detail = ({ fetchDetail, type }) => {
         <span className="text-xs md:text:lg tracking-wide font-thin">
           {item?.DESCRIPTION}
         </span>
-        <RatingSummary />
+        {/* <RatingSummary /> */}
       </div>
 
       <div className="border border-gray-30 w-2/3 mx-auto my-5"></div>
