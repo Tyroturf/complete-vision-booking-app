@@ -518,11 +518,11 @@ const AddNewListForm = ({
                       const [start, end] = dates;
                       setFieldValue(
                         "p_special_date_from",
-                        start ? start.toISOString() : null
+                        start ? formatDate(start) : null
                       );
                       setFieldValue(
                         "p_special_date_to",
-                        end ? end.toISOString() : null
+                        end ? formatDate(end) : null
                       );
                     }}
                     startDate={
