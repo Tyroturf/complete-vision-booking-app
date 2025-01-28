@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { RatingSummary } from "./Review";
+import AmenitiesList from "../components/AmenitiesList";
 
 const Card = ({ item }) => {
   const navigate = useNavigate();
