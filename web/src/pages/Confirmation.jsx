@@ -237,7 +237,7 @@ const Confirmation = ({ bookingDetails, page }) => {
             isLoading ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
-          {isLoading ? "Processing..." : "Confirm & Pay"}
+          {isLoading ? "Processing..." : "Confirm Booking"}
         </button>
       ) : (
         <PaystackButton {...paystackProps} />

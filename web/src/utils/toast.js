@@ -3,12 +3,12 @@ import "react-toastify/dist/ReactToastify.css"; // Make sure to import the CSS
 
 export const showErrorToast = (message) => {
   toast.error(message, {
-    position: "top-right",
+    position: "top-left",
   });
 };
 
 export const showSuccessToast = (message) => {
   toast.success(message, {
-    position: "top-right"
+    position: "top-left"
   })
 }

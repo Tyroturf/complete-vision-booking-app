@@ -110,7 +110,7 @@ export const saveBooking = (bookingData) => {
       tour_price: bookingData.tourPrice || undefined,
       no_nights: bookingData.nights || undefined,
       total: bookingData.totalPriceGHS,
-      car_id: bookingData.selectedCar.ListName,
+      car_id: bookingData.selectedCar?.ListName,
       tour_type: bookingData.selectedTour?.LIST_NAME,
       status: bookingData.status,
       host_id: bookingData.listing?.HOST_ID,
