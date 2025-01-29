@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { fetchBooking } from "../api";
+import { useParams, useNavigate } from "react-router-dom";
+import { fetchBooking, cancelBooking, verifyPayment } from "../api";
 import Loader from "../components/Loader";
+import { showErrorToast, showSuccessToast } from "../utils/toast";
+import { PaystackButton } from "react-paystack";
 
 const BookingDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isCancelling, setIsCancelling] = useState(false);
+
+  const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
 
   useEffect(() => {
     const getBookingDetails = async () => {
@@ -31,18 +37,69 @@ const BookingDetails = () => {
     }
   }, [id]);
 
-  if (loading) {
-    return <Loader />;
-  }
+  const handleCancelBooking = async () => {
+    if (!booking || booking.Status !== "pending") return;
 
-  if (error) {
+    setIsCancelling(true);
+    try {
+      const params = {
+        booking_id: booking.ID,
+        status: "cancelled",
+      };
+      const response = await cancelBooking(params);
+      if (response?.data?.message === "Booking successfully updated.") {
+        setBooking((prev) => ({ ...prev, Status: "cancelled" }));
+        showSuccessToast("Booking successfully updated");
+      } else {
+        showErrorToast("Failed to cancel booking");
+        throw new Error("Failed to cancel booking");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
+  const onSuccess = async (response) => {
+    try {
+      const res = await verifyPayment(response.reference);
+      if (res.data.status === "success") {
+        showSuccessToast("Payment verified successfully!");
+        navigate("/thank-you");
+      } else {
+        showErrorToast("Payment verification failed.");
+      }
+    } catch (error) {
+      showErrorToast("Error verifying payment.");
+      console.error("Error verifying payment:", error);
+    }
+  };
+
+  const onClose = () => {
+    showErrorToast("Payment process was canceled.");
+  };
+
+  const paystackProps = {
+    email: booking?.Email,
+    amount: booking?.Total * 100,
+    currency: "GHS",
+    publicKey: paystackPublicKey,
+    text: "Pay Now",
+    onSuccess,
+    onClose,
+    reference: booking?.ReferenceID,
+    className:
+      "bg-brand text-xs font-bold text-white w-full px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition",
+  };
+
+  if (loading) return <Loader />;
+  if (error)
     return (
       <div className="text-center mt-20 text-red-500 font-medium">
         Error: {error}
       </div>
     );
-  }
-
   if (!booking) {
     return (
       <div className="text-center mt-20 text-gray-500 font-medium">
@@ -173,6 +230,19 @@ const BookingDetails = () => {
           </p>
         )}
       </div>
+
+      {booking.Status === "pending" && (
+        <>
+          <PaystackButton {...paystackProps} />
+          <button
+            onClick={handleCancelBooking}
+            className="w-full bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 transition"
+            disabled={isCancelling}
+          >
+            {isCancelling ? "Cancelling..." : "Cancel Booking"}
+          </button>
+        </>
+      )}
     </div>
   );
 };

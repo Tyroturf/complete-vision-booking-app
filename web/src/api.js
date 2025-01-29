@@ -125,6 +125,51 @@ export const saveBooking = (bookingData) => {
   return api.get(`/property/booking?${queryString}`);
 };
 
+// export const updateBooking = (bookingData) => {
+//   const queryString = new URLSearchParams(
+//     Object.entries({
+//       booking_id: bookingData.ID,
+//       listing_id: bookingData.ListingID,
+//       user_id: bookingData.UserID,
+//       first_name: bookingData.FirstName,
+//       last_name: bookingData.LastName,
+//       contact: bookingData.Contact,
+//       email: bookingData.Email,
+//       num_guests: bookingData.NumGuests,
+//       car_services: bookingData.CarID ? "Y" : undefined,
+//       driving_type: bookingData.DrivingType,
+//       pickup_location: bookingData.PickupLocation,
+//       dropoff_location: bookingData.DropoffLocation,
+//       private_tour: bookingData.TourType ? "Y" : undefined,
+//       checkin: bookingData.Checkin,
+//       checkout: bookingData.Checkout,
+//       listing_price: bookingData.ListingPrice,
+//       ride_price: bookingData.RidePrice || undefined,
+//       tour_price: bookingData.TourPrice || undefined,
+//       total: bookingData.Total,
+//       car_id: bookingData.CarID,
+//       tour_type: bookingData.TourType,
+//       status: bookingData.Status,
+//       fee: bookingData.Fee || undefined,
+//       chauffuer_rate: bookingData.ChauffuerRate || undefined,
+//       sub_total: bookingData.SubTotal,
+//       special_note: bookingData.SpecialNote,
+//       reference_id: bookingData.ReferenceID,
+//     }).filter(([_, value]) => value !== undefined && value !== "")
+//   ).toString();
+
+//   return api.get(`/property/update_booking_by_user?${queryString}`);
+// };
+
+export const cancelBooking = ({booking_id, status}) => {
+  const queryString = new URLSearchParams({
+    booking_id,
+    status
+  })
+
+  return api.get(`/property/update_booking_by_user?${queryString}`);
+};
+
 export const fetchBookingCars = ({check_in, check_out, num_guests}) => {
   const queryString = new URLSearchParams({
     check_in,
