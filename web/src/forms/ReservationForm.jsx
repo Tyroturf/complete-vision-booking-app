@@ -128,7 +128,7 @@ const ReservationForm = ({
     return Yup.object().shape({
       ...commonFields,
       pickupLocation: Yup.string().when("drivingOption", {
-        is: (drivingOption) => drivingOption === "chauffeur",
+        is: "chauffeur",
         then: () =>
           Yup.string().required(
             "Pick-up location is required when chauffeur is selected"
@@ -136,13 +136,22 @@ const ReservationForm = ({
         otherwise: () => Yup.string().notRequired(),
       }),
       dropoffLocation: Yup.string().required("Drop-off location is required"),
-      driverLicense: needsDriverLicense
-        ? Yup.mixed().required("Driver's license is required")
-        : Yup.mixed().notRequired(),
+      driverLicense: Yup.mixed().when(
+        "drivingOption",
+        (drivingOption, schema) => {
+          if (drivingOption === "self-driving" && needsDriverLicense) {
+            return schema.required("Driver's license is required");
+          }
+          return schema.notRequired();
+        }
+      ),
 
-      selfie: needsSelfie
-        ? Yup.mixed().required("Selfie is required")
-        : Yup.mixed().notRequired(),
+      selfie: Yup.mixed().when("drivingOption", (drivingOption, schema) => {
+        if (drivingOption === "self-driving" && needsSelfie) {
+          return schema.required("Selfie is required");
+        }
+        return schema.notRequired();
+      }),
     });
   };
 
@@ -257,7 +266,7 @@ const ReservationForm = ({
               />
               <label
                 htmlFor="firstName"
-                className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
               >
                 First Name
               </label>
@@ -285,7 +294,7 @@ const ReservationForm = ({
               />
               <label
                 htmlFor="lastName"
-                className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
               >
                 Last Name
               </label>
@@ -315,7 +324,7 @@ const ReservationForm = ({
               />
               <label
                 htmlFor="guests"
-                className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
               >
                 Guests
               </label>
@@ -343,7 +352,7 @@ const ReservationForm = ({
               />
               <label
                 htmlFor="phoneNumber"
-                className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
               >
                 Phone Number
               </label>
@@ -371,7 +380,7 @@ const ReservationForm = ({
               />
               <label
                 htmlFor="email"
-                className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
               >
                 Email
               </label>
@@ -418,7 +427,7 @@ const ReservationForm = ({
               />
               <label
                 htmlFor="reservation-dates"
-                className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
               >
                 Select Dates
               </label>
@@ -566,7 +575,7 @@ const ReservationForm = ({
                               />
                               <label
                                 htmlFor="pickupLocation"
-                                className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
                               >
                                 Pick-up Location
                               </label>
@@ -596,7 +605,7 @@ const ReservationForm = ({
                               />
                               <label
                                 htmlFor="dropoffLocation"
-                                className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
                               >
                                 Drop-off Location
                               </label>
@@ -661,7 +670,7 @@ const ReservationForm = ({
                               />
                               <label
                                 htmlFor="dropoffLocation"
-                                className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
                               >
                                 Drop-off Location
                               </label>
@@ -830,7 +839,7 @@ const ReservationForm = ({
                           setFieldValue("pickupLocation", e.target.value);
                         }}
                       />
-                      <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1">
+                      <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none">
                         Pick-up Location
                       </label>
                       <ErrorMessage
@@ -856,7 +865,7 @@ const ReservationForm = ({
                       />
                       <label
                         htmlFor="dropoffLocation"
-                        className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                        className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
                       >
                         Drop-off Location
                       </label>
@@ -918,7 +927,7 @@ const ReservationForm = ({
                       />
                       <label
                         htmlFor="dropoffLocation"
-                        className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                        className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
                       >
                         Drop-off Location
                       </label>

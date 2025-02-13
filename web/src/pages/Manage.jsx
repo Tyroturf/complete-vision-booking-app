@@ -19,6 +19,17 @@ import Loader from "../components/Loader";
 const Manage = () => {
   const { user_id, host_type } = JSON.parse(localStorage.getItem("user"));
 
+  const getFullHostType = (type) => {
+    switch (type) {
+      case "V":
+        return "vehicle";
+      case "T":
+        return "tour";
+      default:
+        return "listing";
+    }
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [listings, setListings] = useState([]);
@@ -141,6 +152,7 @@ const Manage = () => {
           initialValues={selectedListing}
           onClose={toggleModal}
           getListings={getListings}
+          type={getFullHostType(host_type)}
         />
       </Modal>
 

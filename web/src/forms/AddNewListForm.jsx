@@ -465,7 +465,6 @@ const AddNewListForm = ({
                       className="w-full text-xs"
                       placeholder="Select Amenities"
                       onChange={(selectedOptions) => {
-                        console.log(selectedOptions);
                         const selectedValues = selectedOptions.map(
                           (option) => option.value
                         );
@@ -491,18 +490,20 @@ const AddNewListForm = ({
               </div>
             )}
 
-            <div className="relative mb-4 md:col-span-2">
-              <label className="inline-flex items-center text-xs text-gray-700">
-                <input
-                  type="checkbox"
-                  className="mr-2 rounded border-gray-300 focus:ring-brand"
-                  onChange={(e) => {
-                    setShowSpecialFields(e.target.checked);
-                  }}
-                />
-                Enable Special Dates and Price
-              </label>
-            </div>
+            {hostType === "L" && (
+              <div className="relative mb-4 md:col-span-2">
+                <label className="inline-flex items-center text-xs text-gray-700">
+                  <input
+                    type="checkbox"
+                    className="mr-2 rounded border-gray-300 focus:ring-brand"
+                    onChange={(e) => {
+                      setShowSpecialFields(e.target.checked);
+                    }}
+                  />
+                  Enable Special Dates and Price
+                </label>
+              </div>
+            )}
 
             {showSpecialFields && (
               <>
