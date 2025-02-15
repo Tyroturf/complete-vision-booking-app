@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { fetchBooking, cancelBooking, verifyPayment } from "../api";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import {
+  fetchBooking,
+  cancelBooking,
+  verifyPayment,
+  fetchTourBooking,
+  fetchCarBooking,
+} from "../api";
 import Loader from "../components/Loader";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import { PaystackButton } from "react-paystack";
@@ -13,29 +19,46 @@ const BookingDetails = () => {
   const [error, setError] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
 
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+  const type = queryParams.get("type");
   const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
 
   useEffect(() => {
-    const getBookingDetails = async () => {
+    const fetchDetails = async () => {
       setLoading(true);
+      setError(null);
       try {
-        const response = await fetchBooking(id);
-        if (response.status === 200) {
-          setBooking(response.data.Bookings[0]);
+        let response;
+        if (type === "past stays") {
+          response = await fetchBooking(id);
+        } else if (type === "rentals") {
+          response = await fetchCarBooking(id);
+          console.log("resss", response);
+        } else if (type === "tours") {
+          response = await fetchTourBooking(id);
+        }
+
+        if (response?.status === 200) {
+          setBooking(
+            response.data.Bookings?.[0] ||
+              response.data.CarBookings?.[0] ||
+              response.data.TourBookings?.[0]
+          );
         } else {
           throw new Error("Failed to fetch booking details");
         }
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "Failed to load booking details.");
       } finally {
         setLoading(false);
       }
     };
 
     if (id) {
-      getBookingDetails();
+      fetchDetails();
     }
-  }, [id]);
+  }, [id, type]);
 
   const handleCancelBooking = async () => {
     if (!booking || booking.Status !== "pending") return;

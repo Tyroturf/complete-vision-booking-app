@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import Loader from "../components/Loader";
-import { Navbar } from "../components/Navbar";
-import { fetchPastStaysBookings } from "../api";
+import {
+  fetchPastStaysBookings,
+  fetchPastCarBookings,
+  fetchPastTourBookings,
+} from "../api";
 import { useNavigate } from "react-router-dom";
 import { formatWithCommas } from "../utils/helpers";
+import { Nav } from "./Dashboard";
 
 const Bookings = () => {
   const { user_id } = JSON.parse(localStorage.getItem("user"));
@@ -13,20 +17,28 @@ const Bookings = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (activeTab === "Past Stays") {
-      fetchPastStays();
-    }
+    fetchBookings();
   }, [activeTab]);
 
-  const fetchPastStays = async () => {
+  const fetchBookings = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetchPastStaysBookings(user_id);
-      console.log(response);
-      if (response.status === 200) {
-        const data = await response.data.Bookings;
-        setBookingsData(data);
+      let response;
+      if (activeTab === "Past Stays") {
+        response = await fetchPastStaysBookings(user_id);
+      } else if (activeTab === "Rentals") {
+        response = await fetchPastCarBookings(user_id);
+      } else if (activeTab === "Tours") {
+        response = await fetchPastTourBookings(user_id);
+      }
+      console.log(response.data);
+      if (response?.status === 200) {
+        setBookingsData(
+          response.data.Bookings ||
+            response.data.CarBookings ||
+            response.data.TourBookings
+        );
       } else {
         setError("Failed to load bookings. Please try again.");
       }
@@ -38,8 +50,8 @@ const Bookings = () => {
   };
 
   return (
-    <div>
-      <Navbar
+    <div className="mt-20">
+      <Nav
         setActiveSection={setActiveTab}
         activeSection={activeTab}
         sections={["Past Stays", "Rentals", "Tours"]}
@@ -53,7 +65,7 @@ const Bookings = () => {
         {!loading &&
           !error &&
           bookingsData.map((booking, index) => (
-            <BookingCard key={index} booking={booking} />
+            <BookingCard key={index} booking={booking} activeTab={activeTab} />
           ))}
       </div>
     </div>
@@ -62,15 +74,17 @@ const Bookings = () => {
 
 export default Bookings;
 
-const BookingCard = ({ booking }) => {
+const BookingCard = ({ booking, activeTab }) => {
   const navigate = useNavigate();
-
-  console.log(formatWithCommas(booking.Total));
 
   return (
     <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg mb-7 cursor-pointer hover:shadow-lg transition-shadow">
       <img
-        src={booking["List Image"] || "https://via.placeholder.com/150"}
+        src={
+          booking["List Image"] ||
+          booking["Image1URL"] ||
+          "https://via.placeholder.com/150"
+        }
         alt={`${booking.FirstName}'s Booking`}
         className="w-full h-52 md:w-72 md:h-72 object-cover rounded-t-lg md:rounded-l-lg"
       />
@@ -79,7 +93,11 @@ const BookingCard = ({ booking }) => {
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-3">
             <h3 className="font-bold text-lg cursor-pointer">
-              {`${booking["List Name"]}`}
+              {`${
+                booking["List Name"] ||
+                booking["ListName"] ||
+                booking["List Image 1"]
+              }`}
             </h3>
             <p className="text-sm text-gray-500">
               Booking Date:{" "}
@@ -122,7 +140,9 @@ const BookingCard = ({ booking }) => {
             className="bg-brand text-white px-6 py-2 text-sm font-medium rounded-lg"
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/booking-details/${booking.ID}`);
+              navigate(
+                `/booking-details/${booking.ID}?type=${activeTab.toLowerCase()}`
+              );
             }}
           >
             View Details

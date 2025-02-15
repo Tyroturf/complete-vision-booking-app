@@ -272,7 +272,7 @@ const Account = () => {
 
 const Payment = () => <div>Manage payment information...</div>;
 
-const Navbar = ({
+export const Nav = ({
   setActiveSection,
   activeSection,
   sections = ["home", "account", "payment"],
@@ -326,10 +326,7 @@ export const Dashboard = () => {
         username={first_name + " " + last_name}
         role={roleFull}
       />
-      <Navbar
-        setActiveSection={setActiveSection}
-        activeSection={activeSection}
-      />
+      <Nav setActiveSection={setActiveSection} activeSection={activeSection} />
       <div className="relative overflow-hidden">{renderSection()}</div>
     </div>
   );

@@ -940,7 +940,7 @@ const ReservationForm = ({
                     {!user.DLFILETYPE && !user.SELFIEFILETYPE && (
                       <button
                         type="button"
-                        onClick={() => setShowUploadModal(true)}
+                        onClick={() => setShowDLUploadModal(true)}
                         className="border text-brand px-4 py-2 rounded-md my-5 text-xs hover:scale-105 transition"
                       >
                         Upload Documents

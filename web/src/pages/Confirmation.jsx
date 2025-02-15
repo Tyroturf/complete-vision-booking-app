@@ -1,5 +1,10 @@
 import { PaystackButton } from "react-paystack";
-import { saveBooking, verifyPayment } from "../api";
+import {
+  saveBooking,
+  saveCarBooking,
+  saveTourBooking,
+  verifyPayment,
+} from "../api";
 import { useState } from "react";
 import { formatDate } from "../utils/helpers";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
@@ -58,7 +63,19 @@ const Confirmation = ({ bookingDetails, page }) => {
   const initializePayment = async () => {
     setIsLoading(true);
     try {
-      const response = await saveBooking(updatedBookingDetails);
+      let response;
+
+      if (page === "place") {
+        response = await saveBooking(updatedBookingDetails);
+      } else if (page === "car") {
+        response = await saveCarBooking(updatedBookingDetails);
+      } else if (page === "tour") {
+        response = await saveTourBooking(updatedBookingDetails);
+      } else {
+        showErrorToast("Invalid booking type");
+        return;
+      }
+
       if (response.data.status === "Booking Confirmed") {
         const { reference_id } = response.data;
         setPaymentReference(reference_id.toString());

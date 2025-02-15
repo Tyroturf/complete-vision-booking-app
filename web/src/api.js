@@ -125,6 +125,69 @@ export const saveBooking = (bookingData) => {
   return api.get(`/property/booking?${queryString}`);
 };
 
+export const saveCarBooking = (bookingData) => {
+  console.log(bookingData)
+  const queryString = new URLSearchParams(
+    Object.entries({
+      RENTAL_ID: bookingData.listing?.ID,
+      USER_ID: bookingData.user_id,
+      BOOKING_DATE: bookingData.bookingDate,
+      FIRST_NAME: bookingData.firstName,
+      LAST_NAME: bookingData.lastName,
+      CONTACT: bookingData.phoneNumber,
+      EMAIL: bookingData.email,
+      NUM_GUESTS: bookingData.guests,
+      DRIVING_TYPE: bookingData.drivingOption,
+      NUM_TRIPS: bookingData.numTrips,
+      PICKUP_LOCATION: bookingData.pickupLocation,
+      DROPOFF_LOCATION: bookingData.dropoffLocation,
+      CHECKIN: bookingData.checkIn,
+      CHECKOUT: bookingData.checkOut,
+      TOTAL: bookingData.totalPriceGHS,
+      CAR_TYPE: bookingData.carType,
+      CHAUFFUER_RATE: bookingData.chauffeurRate || undefined,
+      NO_DAYS: bookingData.nights || undefined,
+      STATUS: bookingData.status,
+      DL_PHOTO: bookingData.dlPhoto,
+      SELFIE_PHOTO: bookingData.selfiePhoto,
+      HOST: bookingData.listing?.HOST_ID,
+      FEE: bookingData.serviceFee || undefined,
+      SUB_TOTAL: bookingData.subTotal,
+    }).filter(([_, value]) => value !== undefined && value !== "")
+  ).toString();
+
+  return api.get(`/carbooking/booking?${queryString}`);
+};
+
+export const saveTourBooking = (bookingData) => {
+  console.log(bookingData);
+  const queryString = new URLSearchParams(
+    Object.entries({
+      TOUR_ID: bookingData.listing?.ID,
+      USER_ID: bookingData.user_id,
+      BOOKING_DATE: bookingData.bookingDate,
+      FIRST_NAME: bookingData.firstName,
+      LAST_NAME: bookingData.lastName,
+      CONTACT: bookingData.phoneNumber,
+      EMAIL: bookingData.email,
+      NUM_GUESTS: bookingData.guests,
+      PICKUP_LOCATION: bookingData.pickupLocation,
+      MMETYPE: bookingData.meetupType,
+      FILETYPE: bookingData.fileType,
+      CHECKIN: bookingData.checkIn,
+      CHECKOUT: bookingData.checkOut,
+      TOTAL: bookingData.totalPriceGHS,
+      NO_DAYS: bookingData.nights || undefined,
+      STATUS: bookingData.status,
+      HOST: bookingData.listing?.HOST_ID,
+      FEE: bookingData.serviceFee || undefined,
+      SUB_TOTAL: bookingData.subTotal,
+    }).filter(([_, value]) => value !== undefined && value !== "")
+  ).toString();
+
+  return api.get(`/tourbooking/booking?${queryString}`);
+};
+
 // export const updateBooking = (bookingData) => {
 //   const queryString = new URLSearchParams(
 //     Object.entries({
@@ -393,6 +456,21 @@ export const fetchPastStaysBookings = async (queryString) => {
   return api.get(`/property/user_bookings?P_USER_ID=${queryString}`);
 };
 
+export const fetchPastCarBookings = async (queryString) => {
+  return api.get(`/carbooking/user_bookings?P_USER_ID=${queryString}`);
+};
+
+export const fetchPastTourBookings = async (queryString) => {
+  return api.get(`/tourbooking/user_bookings?P_USER_ID=${queryString}`);
+};
+
 export const fetchBooking = async (queryString) => {
   return api.get(`/property/booking_details?P_BOOKING_ID=${queryString}`);
+};
+export const fetchCarBooking = async (queryString) => {
+  return api.get(`/carbooking/car_booking_details?P_BOOKING_ID=${queryString}`);
+};
+
+export const fetchTourBooking = async (queryString) => {
+  return api.get(`/tourbooking/tour_booking_details?P_BOOKING_ID=${queryString}`);
 };

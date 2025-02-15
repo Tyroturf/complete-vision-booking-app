@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const ThankYou = ({ paymentReference, email }) => {
   return (
@@ -17,18 +18,18 @@ const ThankYou = ({ paymentReference, email }) => {
           <span className="font-medium text-brand">{email}</span>.
         </p>
         <div className="flex justify-center space-x-4 mt-4">
-          <button
-            onClick={() => (window.location.href = "/")}
+          <Link
+            to="/"
             className="bg-brand text-white font-semibold px-6 py-2 rounded-md shadow-md hover:bg-brand-4xl hover:scale-105 transition transform"
           >
             Go to Homepage
-          </button>
-          <button
-            onClick={() => (window.location.href = "/bookings")}
+          </Link>
+          <Link
+            to="/bookings"
             className="bg-gray-500 text-white font-semibold px-6 py-2 rounded-md shadow-md hover:bg-gray-600 hover:scale-105 transition transform"
           >
             View My Bookings
-          </button>
+          </Link>
         </div>
       </div>
     </div>
