@@ -83,6 +83,7 @@ const BookingCard = ({ booking, activeTab }) => {
         src={
           booking["List Image"] ||
           booking["Image1URL"] ||
+          booking["List Image 1"] ||
           "https://via.placeholder.com/150"
         }
         alt={`${booking.FirstName}'s Booking`}
