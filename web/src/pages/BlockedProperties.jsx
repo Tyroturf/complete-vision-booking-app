@@ -1,44 +1,28 @@
 import { useEffect, useState } from "react";
 import Loader from "../components/Loader";
-import {
-  fetchPastStaysBookings,
-  fetchPastCarBookings,
-  fetchPastTourBookings,
-} from "../api";
-import { useNavigate } from "react-router-dom";
+import { fetchBlockedBookings } from "../api";
 import { formatWithCommas } from "../utils/helpers";
-import { Nav } from "./Dashboard";
 
-const Bookings = () => {
+const BlockedProperties = () => {
   const { user_id } = JSON.parse(localStorage.getItem("user"));
-  const [activeTab, setActiveTab] = useState("Past Stays");
   const [bookingsData, setBookingsData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchBookings();
-  }, [activeTab]);
+  }, []);
 
   const fetchBookings = async () => {
     setLoading(true);
     setError(null);
     try {
       let response;
-      if (activeTab === "Past Stays") {
-        response = await fetchPastStaysBookings(user_id);
-      } else if (activeTab === "Rentals") {
-        response = await fetchPastCarBookings(user_id);
-      } else if (activeTab === "Tours") {
-        response = await fetchPastTourBookings(user_id);
-      }
+      response = await fetchBlockedBookings(user_id);
+
       console.log(response.data);
       if (response?.status === 200) {
-        setBookingsData(
-          response.data.Bookings ||
-            response.data.CarBookings ||
-            response.data.TourBookings
-        );
+        setBookingsData(response.data.Bookings);
       } else {
         setError("Failed to load bookings. Please try again.");
       }
@@ -51,31 +35,47 @@ const Bookings = () => {
 
   return (
     <div className="mt-20">
-      <Nav
-        setActiveSection={setActiveTab}
-        activeSection={activeTab}
-        sections={["Past Stays", "Rentals", "Tours"]}
-      />
       <div className="p-4">
         {loading && <Loader />}
         {error && <p className="text-red-500">{error}</p>}
         {!loading && !error && bookingsData.length === 0 && (
-          <p>No bookings found for {activeTab}.</p>
+          <p>No blocked properties</p>
         )}
         {!loading &&
           !error &&
           bookingsData.map((booking, index) => (
-            <BookingCard key={index} booking={booking} activeTab={activeTab} />
+            <BookingCard key={index} booking={booking} />
           ))}
       </div>
     </div>
   );
 };
 
-export default Bookings;
+export default BlockedProperties;
 
-const BookingCard = ({ booking, activeTab }) => {
-  const navigate = useNavigate();
+const BookingCard = ({ booking }) => {
+  const handleBlock = async () => {
+    // if (!booking || booking.Status !== "pending") return;
+    // setIsCancelling(true);
+    // try {
+    //   const params = {
+    //     booking_id: booking.ID,
+    //     status: "cancelled",
+    //   };
+    //   const response = await cancelBooking(params);
+    //   if (response?.data?.message === "Booking successfully updated.") {
+    //     setBooking((prev) => ({ ...prev, Status: "cancelled" }));
+    //     showSuccessToast("Booking successfully updated");
+    //   } else {
+    //     showErrorToast("Failed to cancel booking");
+    //     throw new Error("Failed to cancel booking");
+    //   }
+    // } catch (err) {
+    //   setError(err.message);
+    // } finally {
+    //   setIsCancelling(false);
+    // }
+  };
 
   return (
     <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg mb-7 cursor-pointer hover:shadow-lg transition-shadow">
@@ -101,7 +101,7 @@ const BookingCard = ({ booking, activeTab }) => {
               }`}
             </h3>
             <p className="text-sm text-gray-500">
-              Booking Date:{" "}
+              Blocked Date:{" "}
               <span className="font-medium">{booking.BookingDate}</span>
             </p>
             <p className="text-sm text-gray-500">
@@ -109,10 +109,6 @@ const BookingCard = ({ booking, activeTab }) => {
             </p>
             <p className="text-sm text-gray-500">
               Check-out: <span className="font-medium">{booking.Checkout}</span>
-            </p>
-            <p className="text-sm text-gray-500">
-              Total Guests:{" "}
-              <span className="font-medium">{booking.NumGuests}</span>
             </p>
           </div>
 
@@ -141,14 +137,9 @@ const BookingCard = ({ booking, activeTab }) => {
           </span>
           <button
             className="bg-brand text-white px-6 py-2 text-sm font-medium rounded-lg"
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate(
-                `/booking-details/${booking.ID}?type=${activeTab.toLowerCase()}`
-              );
-            }}
+            onClick={handleBlock}
           >
-            View Details
+            Unblock
           </button>
         </div>
       </div>

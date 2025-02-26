@@ -29,7 +29,6 @@ const AddNewListForm = ({
 }) => {
   const isEditMode = mode === "edit";
   const { host_type: hostType } = JSON.parse(localStorage.getItem("user"));
-
   const configurations = {
     listing: {
       validationSchema: Yup.object({
@@ -409,7 +408,6 @@ const AddNewListForm = ({
                 className="text-red-500 text-xs mt-1"
               />
             </div>
-            {/* Description Field */}
             <div className="relative mb-4 md:col-span-2">
               <Field
                 as="textarea"

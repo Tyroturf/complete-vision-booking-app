@@ -148,31 +148,6 @@ const Reservation = ({ type }) => {
     }
   };
 
-  const confirmBooking = async () => {
-    try {
-      // const { email, subTotal } = reservationData;
-
-      // const queryString = new URLSearchParams({
-      //   p_email: email,
-      //   p_amount: subTotal,
-      // }).toString();
-
-      // const response = await initializePayment(queryString);
-
-      // if (response.ok) {
-      //   const data = await response.json();
-      //   window.location.href = data.authorization_url;
-      // } else {
-      //   const result = await response.json();
-      //   alert(`Payment initialization failed: ${result.message}`);
-      // }
-      console.log("first");
-    } catch (error) {
-      alert(`Error: ${error.message}`);
-    } finally {
-    }
-  };
-
   const togglePolicy = () => {
     setShowFullPolicy(!showFullPolicy);
   };
@@ -294,11 +269,7 @@ const Reservation = ({ type }) => {
       </div>
 
       <Modal isOpen={showConfirmation} onClose={closeConfirmation}>
-        <Confirmation
-          bookingDetails={reservationData}
-          onSubmit={confirmBooking}
-          page={page}
-        />
+        <Confirmation bookingDetails={reservationData} page={page} />
       </Modal>
     </div>
   );

@@ -3,7 +3,12 @@ import { ProfileHero } from "./Dashboard";
 import hero from "../assets/g.jpg";
 import Modal from "../components/Modal";
 import AddNewListForm from "../forms/AddNewListForm";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faTrash,
+  faCalendarAlt,
+  faEye,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   fetchListings,
   fetchCarListing,
@@ -11,13 +16,26 @@ import {
   deleteListing,
   deleteVehicle,
   deleteTour,
+  blockDates,
 } from "../api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import Loader from "../components/Loader";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { formatDate } from "../utils/helpers";
+import { useNavigate } from "react-router-dom";
 
 const Manage = () => {
   const { user_id, host_type } = JSON.parse(localStorage.getItem("user"));
+
+  const navigate = useNavigate();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [listings, setListings] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedListing, setSelectedListing] = useState(null);
 
   const getFullHostType = (type) => {
     switch (type) {
@@ -29,13 +47,6 @@ const Manage = () => {
         return "listing";
     }
   };
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [listings, setListings] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedListing, setSelectedListing] = useState(null);
-
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
@@ -143,8 +154,18 @@ const Manage = () => {
   return (
     <div className="flex flex-col">
       <ProfileHero imageUrl={hero} />
-
-      <NewList openAddModal={openAddModal} buttonText={getAddButtonText()} />
+      <div className="flex gap-5">
+        <NewList openAddModal={openAddModal} buttonText={getAddButtonText()} />
+        <button
+          onClick={() => navigate("/blocked-properties")}
+          className="flex items-center my-3 md:my-10 gap-3"
+        >
+          <FontAwesomeIcon icon={faEye} />
+          <span className="text-xs text-slate-700">
+            View Blocked Properties
+          </span>
+        </button>
+      </div>
 
       <Modal isOpen={isModalOpen} onClose={toggleModal}>
         <AddNewListForm
@@ -196,6 +217,7 @@ const Manage = () => {
                 listing={listing}
                 onEdit={() => openEditModal(listing)}
                 onDelete={() => openDeleteModal(listing)}
+                user_id={user_id}
               />
             ))}
         </div>
@@ -218,40 +240,118 @@ const NewList = ({ openAddModal, buttonText }) => {
   );
 };
 
-const ListCard = ({ listing, onEdit, onDelete }) => {
+const ListCard = ({ listing, onEdit, onDelete, user_id }) => {
   const imageUrl = listing.Image1URL || "https://via.placeholder.com/300";
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [selectedDates, setSelectedDates] = useState([null, null]);
+  const [loading, setLoading] = useState(false);
 
+  const toggleDatePicker = () => {
+    setIsDatePickerOpen(!isDatePickerOpen);
+  };
+
+  const handleDateChange = (dates) => {
+    setSelectedDates(dates);
+  };
+
+  const handleBlockDates = async () => {
+    const [checkin, checkout] = selectedDates;
+    if (!checkin || !checkout)
+      return alert("Please select a valid date range.");
+
+    setLoading(true);
+    try {
+      const params = {
+        listing_id: listing.ID,
+        user_id,
+        booking_date: formatDate(checkin),
+        checkin: formatDate(checkin),
+        checkout: formatDate(checkout),
+        status: "success",
+        host_id: listing.HostID,
+      };
+      const response = await blockDates(params);
+
+      if (response.status === 200) {
+        alert("Dates blocked successfully!");
+      } else {
+        alert("Failed to block dates.");
+      }
+    } catch (error) {
+      console.error("Error blocking dates:", error);
+      alert("Error blocking dates.");
+    } finally {
+      setLoading(false);
+      setIsDatePickerOpen(false);
+    }
+  };
   return (
-    <div className="cursor-pointer overflow-hidden rounded-md transform transition-transform duration-300 hover:scale-105">
-      <div className="relative w-full h-60 overflow-hidden rounded-lg">
-        <img
-          src={imageUrl}
-          alt={listing.ListName}
-          className="w-full h-full object-cover"
-        />
+    <>
+      <div className="cursor-pointer overflow-hidden rounded-md transform transition-transform duration-300 hover:scale-105">
+        <div className="relative w-full h-60 overflow-hidden rounded-lg">
+          <img
+            src={imageUrl}
+            alt={listing.ListName}
+            className="w-full h-full object-cover"
+          />
 
-        <div className="absolute inset-0 flex flex-col justify-end p-2 transition-opacity duration-300 bg-black bg-opacity-10 hover:bg-opacity-50">
-          <div className="flex justify-between gap-10 mb-2 text-xs lg:text-sm text-white mx-auto">
-            <p className="font-bold">{listing.ListName}</p>
-            <p className="font-bold">${listing.Price}</p>
-          </div>
-          <div className="flex gap-10 mx-auto justify-between">
-            <button
-              onClick={onEdit}
-              className="flex items-center justify-center text-white text-md w-10 h-10 p-2 hover:scale-105"
-            >
-              <FontAwesomeIcon icon={faEdit} />
-            </button>
-            <button
-              onClick={onDelete}
-              className="flex items-center justify-center text-white text-md w-10 h-10 p-2 hover:scale-105"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </button>
+          <div className="absolute inset-0 flex flex-col justify-end p-2 transition-opacity duration-300 bg-black bg-opacity-10 hover:bg-opacity-50">
+            <div className="flex justify-between gap-10 mb-2 text-xs lg:text-sm text-white mx-auto">
+              <p className="font-bold">{listing.ListName}</p>
+              <p className="font-bold">${listing.Price}</p>
+            </div>
+            <div className="flex gap-5 mx-auto justify-between">
+              <button
+                onClick={onEdit}
+                className="flex items-center justify-center text-white text-md w-10 h-10 p-2 hover:scale-105"
+              >
+                <FontAwesomeIcon icon={faEdit} />
+              </button>
+              <button
+                onClick={onDelete}
+                className="flex items-center justify-center text-white text-md w-10 h-10 p-2 hover:scale-105"
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </button>
+              <button
+                onClick={toggleDatePicker}
+                className="flex items-center justify-center text-white text-md w-10 h-10 p-2 hover:scale-105"
+              >
+                <FontAwesomeIcon icon={faCalendarAlt} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Date Picker Modal */}
+      {isDatePickerOpen && (
+        <Modal isOpen={isDatePickerOpen}>
+          <h3 className="text-sm font-bold mb-2">Block Dates</h3>
+          <DatePicker
+            selectsRange={true}
+            startDate={selectedDates[0]}
+            endDate={selectedDates[1]}
+            onChange={handleDateChange}
+            inline
+          />
+          <div className="flex justify-between mt-3">
+            <button
+              onClick={toggleDatePicker}
+              className="px-3 py-1 bg-gray-300 rounded-md text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleBlockDates}
+              className="px-3 py-1 bg-red-500 text-white rounded-md text-sm"
+            >
+              {loading ? "Blocking..." : "Block Dates"}
+            </button>
+          </div>
+        </Modal>
+      )}
+    </>
   );
 };
 export default Manage;

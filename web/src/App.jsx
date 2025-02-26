@@ -30,6 +30,17 @@ import Manage from "./pages/Manage";
 import ThankYou from "./pages/ThankYou";
 import BookingDetails from "./pages/BookingDetail";
 import Bookings from "./pages/Bookings";
+import BlockedProperties from "./pages/BlockedProperties";
+
+const renderWithLayout = (Component) => (
+  <Layout>
+    <Component />
+  </Layout>
+);
+
+const renderPrivateRoute = (Component) => (
+  <PrivateRoute>{renderWithLayout(Component)}</PrivateRoute>
+);
 
 const App = () => {
   return (
@@ -38,151 +49,52 @@ const App = () => {
         <ReservationProvider>
           <Router>
             <Routes>
+              {/* Public Routes */}
               <Route path="/register" element={<Register />} />
               <Route path="/register-host" element={<HostRegister />} />
               <Route path="/login" element={<Login />} />
-              <Route
-                path="/"
-                element={
-                  <Layout>
-                    <Home />
-                  </Layout>
-                }
-              />
+              <Route path="/" element={renderWithLayout(Home)} />
               <Route
                 path="/places/:id"
-                element={
-                  <Layout>
-                    <PlaceDetail />
-                  </Layout>
-                }
+                element={renderWithLayout(PlaceDetail)}
               />
-              <Route
-                path="/cars/:id"
-                element={
-                  <Layout>
-                    <CarDetail />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/tours/:id"
-                element={
-                  <Layout>
-                    <TourDetail />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/places"
-                element={
-                  <Layout>
-                    <FindPlaces />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/cars"
-                element={
-                  <Layout>
-                    <CarRentals />
-                  </Layout>
-                }
-              />
-              <Route
-                path="/tours"
-                element={
-                  <Layout>
-                    <BookTours />
-                  </Layout>
-                }
-              />
+              <Route path="/cars/:id" element={renderWithLayout(CarDetail)} />
+              <Route path="/tours/:id" element={renderWithLayout(TourDetail)} />
+              <Route path="/places" element={renderWithLayout(FindPlaces)} />
+              <Route path="/cars" element={renderWithLayout(CarRentals)} />
+              <Route path="/tours" element={renderWithLayout(BookTours)} />
               <Route
                 path="/become-a-host"
-                element={
-                  <Layout>
-                    <BecomeAHost />
-                  </Layout>
-                }
+                element={renderWithLayout(BecomeAHost)}
               />
-              <Route
-                path="/list/:type"
-                element={
-                  <Layout>
-                    <ListInfo />
-                  </Layout>
-                }
-              />
+              <Route path="/list/:type" element={renderWithLayout(ListInfo)} />
+
+              {/* Private Routes */}
               <Route
                 path="/reservation/:type/:id"
-                element={
-                  <PrivateRoute>
-                    <Layout>
-                      <ReservationWrapper />
-                    </Layout>
-                  </PrivateRoute>
-                }
+                element={renderPrivateRoute(ReservationWrapper)}
               />
               <Route
                 path="/confirmation"
-                element={
-                  <PrivateRoute>
-                    <Layout>
-                      <Confirmation />
-                    </Layout>
-                  </PrivateRoute>
-                }
+                element={renderPrivateRoute(Confirmation)}
               />
-              <Route
-                path="/thank-you"
-                element={
-                  <PrivateRoute>
-                    <Layout>
-                      <ThankYou />
-                    </Layout>
-                  </PrivateRoute>
-                }
-              />
+              <Route path="/thank-you" element={renderPrivateRoute(ThankYou)} />
               <Route
                 path="/dashboard"
-                element={
-                  <PrivateRoute>
-                    <Layout>
-                      <Dashboard />
-                    </Layout>
-                  </PrivateRoute>
-                }
+                element={renderPrivateRoute(Dashboard)}
               />
-              <Route
-                path="/manage"
-                element={
-                  <PrivateRoute>
-                    <Layout>
-                      <Manage />
-                    </Layout>
-                  </PrivateRoute>
-                }
-              />
+              <Route path="/manage" element={renderPrivateRoute(Manage)} />
               <Route
                 path="/booking-details/:id"
-                element={
-                  <PrivateRoute>
-                    <Layout>
-                      <BookingDetails />
-                    </Layout>
-                  </PrivateRoute>
-                }
+                element={renderPrivateRoute(BookingDetails)}
               />
+              <Route path="/bookings" element={renderPrivateRoute(Bookings)} />
               <Route
-                path="/bookings"
-                element={
-                  <PrivateRoute>
-                    <Layout>
-                      <Bookings />
-                    </Layout>
-                  </PrivateRoute>
-                }
+                path="/blocked-properties"
+                element={renderPrivateRoute(BlockedProperties)}
               />
+
+              {/* Redirect unknown routes to home */}
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
             <ToastContainer />

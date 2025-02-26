@@ -35,9 +35,11 @@ const Card = ({ item }) => {
               {item.LIST_NAME}
             </span>
             <span className="font-thin text-xs">{item.LOCATION}</span>
-            <div className="flex gap-2 bg-white rounded-lg pr-4">
-              <AmenitiesList amenities={item?.AMENITIES} />
-            </div>
+            {isPlacesPage && (
+              <div className="flex gap-2 bg-white rounded-lg pr-4">
+                <AmenitiesList amenities={item?.AMENITIES} />
+              </div>
+            )}
             {/* <RatingSummary rating={item.rating} /> */}
           </div>
           <div className="flex">

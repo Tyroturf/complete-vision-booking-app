@@ -163,30 +163,32 @@ export const saveTourBooking = (bookingData) => {
   console.log(bookingData);
   const queryString = new URLSearchParams(
     Object.entries({
-      TOUR_ID: bookingData.listing?.ID,
-      USER_ID: bookingData.user_id,
-      BOOKING_DATE: bookingData.bookingDate,
-      FIRST_NAME: bookingData.firstName,
-      LAST_NAME: bookingData.lastName,
-      CONTACT: bookingData.phoneNumber,
-      EMAIL: bookingData.email,
-      NUM_GUESTS: bookingData.guests,
-      PICKUP_LOCATION: bookingData.pickupLocation,
-      MMETYPE: bookingData.meetupType,
-      FILETYPE: bookingData.fileType,
-      CHECKIN: bookingData.checkIn,
-      CHECKOUT: bookingData.checkOut,
-      TOTAL: bookingData.totalPriceGHS,
-      NO_DAYS: bookingData.nights || undefined,
-      STATUS: bookingData.status,
-      HOST: bookingData.listing?.HOST_ID,
-      FEE: bookingData.serviceFee || undefined,
-      SUB_TOTAL: bookingData.subTotal,
+      p_TOUR_ID: bookingData.listing?.ID,
+      p_USER_ID: bookingData.user_id,
+      p_BOOKING_DATE: bookingData.bookingDate,
+      p_FIRST_NAME: bookingData.firstName,
+      p_LAST_NAME: bookingData.lastName,
+      p_CONTACT: bookingData.phoneNumber,
+      p_EMAIL: bookingData.email,
+      p_NUM_GUESTS: bookingData.guests,
+      p_PICKUP_LOCATION: bookingData.pickupLocation,
+      p_CHECKIN: bookingData.checkIn,
+      p_CHECKOUT: bookingData.checkOut,
+      p_TOTAL: bookingData.totalPriceGHS,
+      p_NO_DAYS: bookingData.nights,
+      p_STATUS: bookingData.status,
+      p_SPECIAL_NOTE: bookingData.specialNote,
+      p_HOST: bookingData.listing?.HOST_ID,
+      p_FEE: bookingData.serviceFee,
+      p_SUB_TOTAL: bookingData.subTotal,
+      p_REFERENCE_ID: bookingData.referenceId,
+      p_BOOKING_ID: bookingData.bookingId,
     }).filter(([_, value]) => value !== undefined && value !== "")
   ).toString();
 
   return api.get(`/tourbooking/booking?${queryString}`);
 };
+
 
 // export const updateBooking = (bookingData) => {
 //   const queryString = new URLSearchParams(
@@ -413,7 +415,7 @@ export const addNewTour = async (params) => {
 
 export const updateTour = async (params) => {
   const queryString = new URLSearchParams({
-    p_tour_id: params.p_listing_id,
+    p_tour_id: params.listingId,
     p_host_id: params.hostId,
     p_list_name: params.listName,
     p_location: params.location,
@@ -467,10 +469,37 @@ export const fetchPastTourBookings = async (queryString) => {
 export const fetchBooking = async (queryString) => {
   return api.get(`/property/booking_details?P_BOOKING_ID=${queryString}`);
 };
+
 export const fetchCarBooking = async (queryString) => {
   return api.get(`/carbooking/car_booking_details?P_BOOKING_ID=${queryString}`);
 };
 
 export const fetchTourBooking = async (queryString) => {
   return api.get(`/tourbooking/tour_booking_details?P_BOOKING_ID=${queryString}`);
+};
+
+export const blockDates = async ({listing_id,
+  user_id,
+  booking_date,
+  checkin,
+  checkout,
+  status,
+  host_id}) => {
+  const queryString = new URLSearchParams({
+    listing_id,
+        user_id,
+        booking_date,
+        checkin,
+        checkout,
+        status,
+        host_id
+  }).toString();
+
+  const url = `/property/block_dates?${queryString}`;
+
+  return api.get(url);
+};
+
+export const fetchBlockedBookings = async (queryString) => {
+  return api.get(`/property/blocked_bookings?P_USER_ID=${queryString}`);
 };
