@@ -6,8 +6,8 @@ import AddNewListForm from "../forms/AddNewListForm";
 import {
   faEdit,
   faTrash,
-  faCalendarAlt,
   faEye,
+  faCancel,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   fetchListings,
@@ -304,20 +304,23 @@ const ListCard = ({ listing, onEdit, onDelete, user_id }) => {
               <button
                 onClick={onEdit}
                 className="flex items-center justify-center text-white text-md w-10 h-10 p-2 hover:scale-105"
+                title="Edit Property"
               >
                 <FontAwesomeIcon icon={faEdit} />
               </button>
               <button
                 onClick={onDelete}
                 className="flex items-center justify-center text-white text-md w-10 h-10 p-2 hover:scale-105"
+                title="Delete Property"
               >
                 <FontAwesomeIcon icon={faTrash} />
               </button>
               <button
                 onClick={toggleDatePicker}
                 className="flex items-center justify-center text-white text-md w-10 h-10 p-2 hover:scale-105"
+                title="Block Property"
               >
-                <FontAwesomeIcon icon={faCalendarAlt} />
+                <FontAwesomeIcon icon={faCancel} />
               </button>
             </div>
           </div>
@@ -326,14 +329,15 @@ const ListCard = ({ listing, onEdit, onDelete, user_id }) => {
 
       {/* Date Picker Modal */}
       {isDatePickerOpen && (
-        <Modal isOpen={isDatePickerOpen}>
-          <h3 className="text-sm font-bold mb-2">Block Dates</h3>
+        <Modal isOpen={isDatePickerOpen} onClose={toggleDatePicker}>
+          <h3 className="text-sm font-bold mb-2 text-center">Block Property</h3>
           <DatePicker
             selectsRange={true}
             startDate={selectedDates[0]}
             endDate={selectedDates[1]}
             onChange={handleDateChange}
             inline
+            minDate={new Date()}
           />
           <div className="flex justify-between mt-3">
             <button
@@ -346,7 +350,7 @@ const ListCard = ({ listing, onEdit, onDelete, user_id }) => {
               onClick={handleBlockDates}
               className="px-3 py-1 bg-red-500 text-white rounded-md text-sm"
             >
-              {loading ? "Blocking..." : "Block Dates"}
+              {loading ? "Blocking..." : "Block"}
             </button>
           </div>
         </Modal>
