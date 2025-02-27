@@ -503,3 +503,7 @@ export const blockDates = async ({listing_id,
 export const fetchBlockedBookings = async (queryString) => {
   return api.get(`/property/blocked_bookings?P_USER_ID=${queryString}`);
 };
+
+export const deleteBlockedBooking = async (queryString) => {
+  return api.get(`/property/delete_booking?P_BOOKING_ID=${queryString}`);
+};

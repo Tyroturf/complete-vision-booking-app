@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Loader from "../components/Loader";
-import { fetchBlockedBookings } from "../api";
+import { deleteBlockedBooking, fetchBlockedBookings } from "../api";
 import { formatWithCommas } from "../utils/helpers";
 
 const BlockedProperties = () => {
@@ -20,7 +20,6 @@ const BlockedProperties = () => {
       let response;
       response = await fetchBlockedBookings(user_id);
 
-      console.log(response.data);
       if (response?.status === 200) {
         setBookingsData(response.data.Bookings);
       } else {
@@ -44,7 +43,11 @@ const BlockedProperties = () => {
         {!loading &&
           !error &&
           bookingsData.map((booking, index) => (
-            <BookingCard key={index} booking={booking} />
+            <BookingCard
+              key={index}
+              booking={booking}
+              fetchBookings={fetchBookings}
+            />
           ))}
       </div>
     </div>
@@ -53,28 +56,26 @@ const BlockedProperties = () => {
 
 export default BlockedProperties;
 
-const BookingCard = ({ booking }) => {
+const BookingCard = ({ booking, fetchBookings }) => {
+  const [isUnblocking, setIsUnblocking] = useState(false);
+
   const handleBlock = async () => {
-    // if (!booking || booking.Status !== "pending") return;
-    // setIsCancelling(true);
-    // try {
-    //   const params = {
-    //     booking_id: booking.ID,
-    //     status: "cancelled",
-    //   };
-    //   const response = await cancelBooking(params);
-    //   if (response?.data?.message === "Booking successfully updated.") {
-    //     setBooking((prev) => ({ ...prev, Status: "cancelled" }));
-    //     showSuccessToast("Booking successfully updated");
-    //   } else {
-    //     showErrorToast("Failed to cancel booking");
-    //     throw new Error("Failed to cancel booking");
-    //   }
-    // } catch (err) {
-    //   setError(err.message);
-    // } finally {
-    //   setIsCancelling(false);
-    // }
+    if (!booking || booking.Status !== "blocked") return;
+    setIsUnblocking(true);
+    try {
+      const response = await deleteBlockedBooking(booking.ID);
+      fetchBookings();
+      if (response?.data?.message === "Booking successfully deleted.") {
+        showSuccessToast("Property successfully unblocked");
+      } else {
+        showErrorToast("Failed to unblock property");
+        throw new Error("Failed to unblock property");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsUnblocking(false);
+    }
   };
 
   return (
@@ -139,7 +140,7 @@ const BookingCard = ({ booking }) => {
             className="bg-brand text-white px-6 py-2 text-sm font-medium rounded-lg"
             onClick={handleBlock}
           >
-            Unblock
+            {isUnblocking ? "Unblocking..." : "Unblock Property"}
           </button>
         </div>
       </div>
