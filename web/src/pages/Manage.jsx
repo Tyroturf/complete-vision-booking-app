@@ -267,19 +267,19 @@ const ListCard = ({ listing, onEdit, onDelete, user_id }) => {
         booking_date: formatDate(checkin),
         checkin: formatDate(checkin),
         checkout: formatDate(checkout),
-        status: "success",
+        status: "blocked",
         host_id: listing.HostID,
       };
       const response = await blockDates(params);
 
       if (response.status === 200) {
-        alert("Dates blocked successfully!");
+        showSuccessToast("Dates blocked successfully!");
       } else {
-        alert("Failed to block dates.");
+        showErrorToast("Failed to block dates.");
       }
     } catch (error) {
       console.error("Error blocking dates:", error);
-      alert("Error blocking dates.");
+      showErrorToast("Failed to block dates.");
     } finally {
       setLoading(false);
       setIsDatePickerOpen(false);
