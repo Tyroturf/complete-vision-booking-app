@@ -20,7 +20,6 @@ const Card = ({ item }) => {
     }
   };
 
-  console.log("item", item);
   return (
     <div className="flex flex-col md:flex-row bg-white shadow-sm mb-7">
       <img
@@ -36,7 +35,7 @@ const Card = ({ item }) => {
             </span>
             <span className="font-thin text-xs">{item.LOCATION}</span>
             {isPlacesPage && (
-              <div className="flex gap-2 bg-white rounded-lg pr-4">
+              <div className="flex gap-2 bg-white rounded-lg pr-4 my-5">
                 <AmenitiesList amenities={item?.AMENITIES} />
               </div>
             )}

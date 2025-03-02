@@ -28,15 +28,15 @@ const AmenitiesList = ({ amenities = "" }) => {
     : [];
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-3 md:flex gap-4">
       {amenitiesArray.length > 0 ? (
         amenitiesArray.map((amenity) => (
           <div key={amenity} className="flex items-center space-x-2">
             <FontAwesomeIcon
               icon={amenitiesIcons[amenity] || faUtensils}
-              className="text-brand text-lg"
+              className="text-brand text-sm md:text:lg"
             />
-            <span className="text-sm text-gray-700">{amenity}</span>
+            <span className="text-xs md:text:sm text-gray-700">{amenity}</span>
           </div>
         ))
       ) : (

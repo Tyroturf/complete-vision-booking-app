@@ -28,81 +28,67 @@ const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
   useEffect(() => {
     if (!reservationData) return;
 
+    const {
+      checkIn,
+      checkOut,
+      listing,
+      chauffeur,
+      selectedCar,
+      interestedInCar,
+      interestedInTour,
+      selectedTour,
+      guests,
+    } = reservationData;
+
     const duration =
       page === "place"
-        ? calculateNights(reservationData?.checkIn, reservationData?.checkOut)
-        : calculateDays(reservationData?.checkIn, reservationData?.checkOut);
+        ? calculateNights(checkIn, checkOut)
+        : calculateDays(checkIn, checkOut);
 
-    const guests = reservationData?.guests || 1;
+    const listingPrice = parseFloat(listing?.PRICE) || 0;
+    const chauffeurRate = chauffeur
+      ? (page === "place"
+          ? selectedCar?.ChauffeurRate
+          : listing?.CHAUFFEUR_RATE) || 0
+      : 0;
+    const carPrice = interestedInCar ? selectedCar?.Price || 0 : 0;
+    const tourPrice = interestedInTour ? selectedTour?.TOUR_PRICE || 0 : 0;
 
-    let listingPrice;
-    let chauffeurRate;
-    if (page === "place") {
-      listingPrice = reservationData?.listing?.PRICE
-        ? parseFloat(reservationData.listing.PRICE) || 0
-        : 0;
-      chauffeurRate = reservationData?.chauffeur
-        ? reservationData?.selectedCar?.ChauffeurRate || 0
-        : 0;
-    } else {
-      listingPrice = reservationData?.listing?.PRICE
-        ? parseFloat(reservationData.listing.PRICE) || 0
-        : 0;
-      chauffeurRate = reservationData?.chauffeur
-        ? reservationData?.listing.CHAUFFEUR_RATE || 0
-        : 0;
-    }
-    setChauffeurRate(chauffeurRate);
-
-    const carPrice =
-      reservationData?.selectedCar && reservationData.interestedInCar
-        ? reservationData?.selectedCar?.Price || 0
-        : 0;
-
-    const tourPrice =
-      reservationData?.selectedTour && reservationData.interestedInTour
-        ? reservationData?.selectedTour?.TOUR_PRICE || 0
-        : 0;
-    setSelectedTourPrice(tourPrice);
-
-    const totalListingPrice =
-      (Number(listingPrice) + Number(chauffeurRate)) * duration;
-
-    const totalTourPrice = tourPrice * guests;
+    const totalListingPrice = (listingPrice + chauffeurRate) * duration;
+    const totalTourPrice = tourPrice * (guests || 1);
     const totalVehiclePrice = carPrice * duration;
-
     const subTotal = totalListingPrice + totalTourPrice + totalVehiclePrice;
-    setTotalPriceUSD(subTotal);
-    setServiceFee(subTotal * 0.05);
+    const serviceFee = subTotal * 0.05;
     const grandTotalUSD = subTotal + serviceFee;
     const totalPriceGHS = grandTotalUSD * exchangeRate;
-    setTotalPriceGHS(totalPriceGHS);
 
-    if (
-      reservationData.subTotal !== subTotal ||
-      reservationData.grandTotalUSD !== grandTotalUSD
-    ) {
-      setReservationData({
-        ...reservationData,
-        listingPrice,
-        carPrice,
-        tourPrice,
-        subTotal,
-        grandTotalUSD,
-        duration,
-        serviceFee,
-        totalPriceGHS,
-        specialRequests,
-        chauffeurRate,
-      });
-    }
+    setReservationData((prev) => ({
+      ...prev,
+      listingPrice,
+      carPrice,
+      tourPrice,
+      subTotal,
+      grandTotalUSD,
+      duration,
+      serviceFee,
+      totalPriceGHS,
+      chauffeurRate,
+    }));
+  }, [
+    reservationData?.checkIn,
+    reservationData?.checkOut,
+    reservationData?.listing,
+    reservationData?.selectedCar,
+    reservationData?.interestedInCar,
+    reservationData?.chauffeur,
+    reservationData?.selectedTour,
+    reservationData?.interestedInTour,
+    reservationData?.guests,
+    exchangeRate,
+    page,
+    setReservationData,
+  ]);
 
-    if (!isNaN(grandTotalUSD) && !isNaN(exchangeRate)) {
-      const grandTotalGHS = grandTotalUSD * exchangeRate;
-      setTotalPriceUSD(grandTotalUSD);
-      setTotalPriceGHS(grandTotalGHS);
-    }
-  }, [reservationData, exchangeRate, setReservationData, page]);
   const policy = `We understand that plans can change. If you need to cancel your reservation, please let us know at least 24 hours in advance for a full refund. 
     Cancellations made within 24 hours of the check-in date will incur a one-night charge. No-shows will be charged the full amount of the reservation.`;
 

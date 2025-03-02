@@ -500,6 +500,28 @@ export const blockDates = async ({listing_id,
   return api.get(url);
 };
 
+export const updateBlockDates = async ({listing_id,
+  user_id,
+  booking_date,
+  checkin,
+  checkout,
+  status,
+  host_id}) => {
+  const queryString = new URLSearchParams({
+    listing_id,
+        user_id,
+        booking_date,
+        checkin,
+        checkout,
+        status,
+        host_id
+  }).toString();
+
+  const url = `/property/update_booking_by_user?${queryString}`;
+
+  return api.get(url);
+};
+
 export const fetchBlockedBookings = async (queryString) => {
   return api.get(`/property/blocked_bookings?P_USER_ID=${queryString}`);
 };

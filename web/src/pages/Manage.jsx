@@ -21,10 +21,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import Loader from "../components/Loader";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { formatDate } from "../utils/helpers";
 import { useNavigate } from "react-router-dom";
+import BlockedDatesModal from "../components/BlockDatesModal";
 
 const Manage = () => {
   const { user_id, host_type } = JSON.parse(localStorage.getItem("user"));
@@ -160,8 +160,8 @@ const Manage = () => {
           onClick={() => navigate("/blocked-properties")}
           className="flex items-center my-3 md:my-10 gap-3"
         >
-          <FontAwesomeIcon icon={faEye} />
-          <span className="text-xs text-slate-700">
+          <FontAwesomeIcon icon={faEye} className="text-brand size-5" />
+          <span className="text-xs text-brand-700">
             View Blocked Properties
           </span>
         </button>
@@ -327,33 +327,15 @@ const ListCard = ({ listing, onEdit, onDelete, user_id }) => {
         </div>
       </div>
 
-      {/* Date Picker Modal */}
       {isDatePickerOpen && (
-        <Modal isOpen={isDatePickerOpen} onClose={toggleDatePicker}>
-          <h3 className="text-sm font-bold mb-2 text-center">Block Property</h3>
-          <DatePicker
-            selectsRange={true}
-            startDate={selectedDates[0]}
-            endDate={selectedDates[1]}
-            onChange={handleDateChange}
-            inline
-            minDate={new Date()}
-          />
-          <div className="flex justify-between mt-3">
-            <button
-              onClick={toggleDatePicker}
-              className="px-3 py-1 bg-gray-300 rounded-md text-sm"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleBlockDates}
-              className="px-3 py-1 bg-red-500 text-white rounded-md text-sm"
-            >
-              {loading ? "Blocking..." : "Block"}
-            </button>
-          </div>
-        </Modal>
+        <BlockedDatesModal
+          isOpen={isDatePickerOpen}
+          onClose={toggleDatePicker}
+          selectedDates={selectedDates}
+          handleDateChange={handleDateChange}
+          handleBlockDates={handleBlockDates}
+          loading={loading}
+        />
       )}
     </>
   );
