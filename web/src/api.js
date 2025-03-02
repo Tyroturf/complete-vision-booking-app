@@ -126,7 +126,6 @@ export const saveBooking = (bookingData) => {
 };
 
 export const saveCarBooking = (bookingData) => {
-  console.log(bookingData)
   const queryString = new URLSearchParams(
     Object.entries({
       RENTAL_ID: bookingData.listing?.ID,
@@ -160,7 +159,6 @@ export const saveCarBooking = (bookingData) => {
 };
 
 export const saveTourBooking = (bookingData) => {
-  console.log(bookingData);
   const queryString = new URLSearchParams(
     Object.entries({
       p_TOUR_ID: bookingData.listing?.ID,
@@ -344,7 +342,6 @@ export const fetchTourListing = async (queryString) => {
 };
 
 export const addNewVehicle = async (params) => {
-  console.log(params)
   const queryString = new URLSearchParams({
     p_car_rental_id: params.listingId,
     p_host_id: params.hostId,
@@ -500,21 +497,15 @@ export const blockDates = async ({listing_id,
   return api.get(url);
 };
 
-export const updateBlockDates = async ({listing_id,
-  user_id,
-  booking_date,
+export const updateBlockDates = async ({
   checkin,
   checkout,
-  status,
-  host_id}) => {
+  booking_id
+}) => {
   const queryString = new URLSearchParams({
-    listing_id,
-        user_id,
-        booking_date,
-        checkin,
-        checkout,
-        status,
-        host_id
+        p_BOOKING_ID: booking_id,
+        p_CHECKIN: checkin,
+        p_CHECKOUT: checkout,
   }).toString();
 
   const url = `/property/update_booking_by_user?${queryString}`;

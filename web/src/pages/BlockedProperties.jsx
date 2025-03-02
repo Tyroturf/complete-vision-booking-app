@@ -104,17 +104,12 @@ const BookingCard = ({ booking, fetchBookings, user_id }) => {
     const [checkin, checkout] = selectedDates;
     if (!checkin || !checkout)
       return alert("Please select a valid date range.");
-
     setLoading(true);
     try {
       const params = {
-        listing_id: booking.ID,
-        user_id,
-        booking_date: formatDate(checkin),
+        booking_id: booking.ID,
         checkin: formatDate(checkin),
         checkout: formatDate(checkout),
-        status: "blocked",
-        host_id: booking.HostID,
       };
       const response = await updateBlockDates(params);
 

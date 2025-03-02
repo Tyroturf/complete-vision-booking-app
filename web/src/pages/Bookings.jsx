@@ -32,7 +32,6 @@ const Bookings = () => {
       } else if (activeTab === "Tours") {
         response = await fetchPastTourBookings(user_id);
       }
-      console.log(response.data);
       if (response?.status === 200) {
         setBookingsData(
           response.data.Bookings ||

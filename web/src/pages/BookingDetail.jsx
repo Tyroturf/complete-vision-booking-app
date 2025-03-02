@@ -34,7 +34,6 @@ const BookingDetails = () => {
           response = await fetchBooking(id);
         } else if (type === "rentals") {
           response = await fetchCarBooking(id);
-          console.log("resss", response);
         } else if (type === "tours") {
           response = await fetchTourBooking(id);
         }
