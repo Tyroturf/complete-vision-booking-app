@@ -159,7 +159,7 @@ const Confirmation = ({ bookingDetails, page }) => {
 
         {/* Accommodation */}
         <div>
-          <h2 className="text-xs md:text-sm font-bold">Accommodation</h2>
+          <h2 className="text-xs md:text-sm font-bold">Property</h2>
           <p className="text-xs md:text-sm">
             <span className="font-medium">Listing: </span>
             {listing?.LIST_NAME}

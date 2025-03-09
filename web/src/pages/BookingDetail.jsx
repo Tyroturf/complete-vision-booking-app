@@ -132,141 +132,113 @@ const BookingDetails = () => {
 
   return (
     <div className="p-6 bg-gradient-to-r from-blue-50 via-white to-blue-50 shadow-lg rounded-lg space-y-6 mt-20 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold text-brand border-b-2 border-blue-200 pb-2">
+      <h1 className="text-lg md:text-2xl font-bold text-brand border-b-2 border-blue-200 pb-2 text-center">
         Booking Details
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {booking.FirstName && booking.LastName && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Guest Name:</strong>{" "}
-            {`${booking.FirstName} ${booking.LastName}`}
-          </p>
+          <DetailItem
+            label="Guest Name"
+            value={`${booking.FirstName} ${booking.LastName}`}
+          />
         )}
         {booking["List Name"] && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">List Name:</strong>{" "}
-            {`${booking["List Name"]}`}
-          </p>
+          <DetailItem label="List Name" value={booking["List Name"]} />
         )}
         {booking.Contact && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Contact:</strong> {booking.Contact}
-          </p>
+          <DetailItem label="Contact" value={booking.Contact} />
         )}
-        {booking.Email && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Email:</strong> {booking.Email}
-          </p>
-        )}
+        {booking.Email && <DetailItem label="Email" value={booking.Email} />}
         {booking.Checkin && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Check-in:</strong> {booking.Checkin}
-          </p>
+          <DetailItem label="Check-in" value={booking.Checkin} />
         )}
         {booking.Checkout && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Check-out:</strong>{" "}
-            {booking.Checkout}
-          </p>
+          <DetailItem label="Check-out" value={booking.Checkout} />
         )}
         {booking.NumGuests && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Guests:</strong> {booking.NumGuests}
-          </p>
+          <DetailItem label="Guests" value={booking.NumGuests} />
         )}
         {booking.ListingPrice && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Price:</strong> ${" "}
-            {booking.ListingPrice}
-          </p>
+          <DetailItem label="Price" value={`$${booking.ListingPrice}`} />
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Additional Pricing Information */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {booking.RidePrice && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Ride Price:</strong> ${" "}
-            {booking.RidePrice}
-          </p>
+          <DetailItem label="Ride Price" value={`$${booking.RidePrice}`} />
         )}
-        {booking["List Name"] && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Car Type:</strong> {booking.CarID}
-          </p>
+        {booking.CarID && <DetailItem label="Car Type" value={booking.CarID} />}
+        {booking.TourType && (
+          <DetailItem label="Tour Type" value={booking.TourType} />
         )}
         {booking.TourPrice && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Tour Type:</strong>
-            {booking.TourType}
-          </p>
-        )}
-        {booking.TourPrice && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Tour Price:</strong> ${" "}
-            {booking.TourPrice}
-          </p>
+          <DetailItem label="Tour Price" value={`$${booking.TourPrice}`} />
         )}
         {booking.ChauffuerRate && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Chauffeur Rate:</strong> ${" "}
-            {booking.ChauffuerRate}
-          </p>
+          <DetailItem
+            label="Chauffeur Rate"
+            value={`$${booking.ChauffuerRate}`}
+          />
         )}
         {booking.Fee && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Service Fee:</strong> $ {booking.Fee}
-          </p>
+          <DetailItem label="Service Fee" value={`$${booking.Fee}`} />
         )}
         {booking.SubTotal && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Sub Total:</strong> ${" "}
-            {booking.SubTotal}
-          </p>
+          <DetailItem label="Sub Total" value={`$${booking.SubTotal}`} />
         )}
         {booking.Total && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Total:</strong> GHS {booking.Total}
-          </p>
-        )}
-        {booking.Status && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Status:</strong>{" "}
-            <span
-              className={`font-medium px-3 py-1 rounded-lg ${
-                booking.Status === "success"
-                  ? "bg-green-100 text-green-600"
-                  : booking.Status === "pending"
-                  ? "bg-yellow-100 text-yellow-600"
-                  : "bg-red-100 text-red-600"
-              }`}
-            >
-              {booking.Status}
-            </span>
-          </p>
-        )}
-        {booking.SpecialNote && (
-          <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 col-span-full">
-            <strong className="text-brand">Special Note:</strong>{" "}
-            {booking.SpecialNote}
-          </p>
+          <DetailItem label="Total" value={`GHS ${booking.Total}`} />
         )}
       </div>
 
+      {booking.Status && (
+        <div className="flex justify-center">
+          <span
+            className={`px-4 py-2 text-md md:text-lg font-semibold rounded-lg ${
+              booking.Status === "success"
+                ? "bg-green-100 text-green-600"
+                : booking.Status === "pending"
+                ? "bg-yellow-100 text-yellow-600"
+                : "bg-red-100 text-red-600"
+            }`}
+          >
+            {booking.Status}
+          </span>
+        </div>
+      )}
+
+      {booking.SpecialNote && (
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+          <strong className="text-brand">Special Note:</strong>{" "}
+          {booking.SpecialNote}
+        </div>
+      )}
+
       {booking.Status === "pending" && (
-        <>
+        <div className="flex flex-col space-y-4">
           <PaystackButton {...paystackProps} />
           <button
             onClick={handleCancelBooking}
-            className="w-full bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 transition"
+            className="w-full bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 transition duration-300"
             disabled={isCancelling}
           >
             {isCancelling ? "Cancelling..." : "Cancel Booking"}
           </button>
-        </>
+        </div>
       )}
     </div>
   );
+
+  function DetailItem({ label, value }) {
+    return (
+      <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <strong className="text-brand text-sm md:text-base">{label}:</strong>{" "}
+        <span className="text-xs md:text-sm">{value}</span>
+      </p>
+    );
+  }
 };
 
 export default BookingDetails;

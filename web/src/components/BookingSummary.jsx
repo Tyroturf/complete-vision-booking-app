@@ -61,6 +61,11 @@ const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
     const serviceFee = subTotal * 0.05;
     const grandTotalUSD = subTotal + serviceFee;
     const totalPriceGHS = grandTotalUSD * exchangeRate;
+    setTotalPriceGHS(totalPriceGHS);
+    setTotalPriceUSD(grandTotalUSD);
+    setServiceFee(serviceFee);
+    setChauffeurRate(chauffeurRate);
+    setSelectedTourPrice(tourPrice);
 
     setReservationData((prev) => ({
       ...prev,
