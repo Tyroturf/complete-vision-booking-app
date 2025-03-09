@@ -110,7 +110,7 @@ const BookingDetails = () => {
     text: "Pay Now",
     onSuccess,
     onClose,
-    reference: booking?.ReferenceID,
+    reference: booking?.ReferenceID.toString(),
     className:
       "bg-brand text-xs font-bold text-white w-full px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition",
   };
@@ -224,7 +224,9 @@ const BookingDetails = () => {
             className="w-full bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 transition duration-300"
             disabled={isCancelling}
           >
-            {isCancelling ? "Cancelling..." : "Cancel Booking"}
+            <span className="text-xs py-2">
+              {isCancelling ? "Cancelling..." : "Cancel Booking"}
+            </span>
           </button>
         </div>
       )}
