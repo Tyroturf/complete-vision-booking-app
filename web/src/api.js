@@ -226,8 +226,8 @@ export const saveTourBooking = (bookingData) => {
 
 export const cancelBooking = ({booking_id, status}) => {
   const queryString = new URLSearchParams({
-    booking_id,
-    status
+    p_BOOKING_ID: booking_id,
+    p_STATUS: status
   })
 
   return api.get(`/property/update_booking_by_user?${queryString}`);
