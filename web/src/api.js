@@ -224,13 +224,31 @@ export const saveTourBooking = (bookingData) => {
 //   return api.get(`/property/update_booking_by_user?${queryString}`);
 // };
 
-export const cancelBooking = ({booking_id, status}) => {
+export const cancelPlaceBooking = ({booking_id, status}) => {
   const queryString = new URLSearchParams({
     p_BOOKING_ID: booking_id,
     p_STATUS: status
   })
 
   return api.get(`/property/update_booking_by_user?${queryString}`);
+};
+
+export const cancelCarBooking = ({booking_id, status}) => {
+  const queryString = new URLSearchParams({
+    p_BOOKING_ID: booking_id,
+    p_STATUS: status
+  })
+
+  return api.get(`/carbooking/update_car_booking?${queryString}`);
+};
+
+export const cancelTourBooking = ({booking_id, status}) => {
+  const queryString = new URLSearchParams({
+    p_BOOKING_ID: booking_id,
+    p_STATUS: status
+  })
+
+  return api.get(`/tourbooking/update_tour_booking?${queryString}`);
 };
 
 export const fetchBookingCars = ({check_in, check_out, num_guests}) => {

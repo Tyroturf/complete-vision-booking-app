@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   fetchBooking,
-  cancelBooking,
   verifyPayment,
   fetchTourBooking,
   fetchCarBooking,
+  cancelPlaceBooking,
+  cancelCarBooking,
+  cancelTourBooking,
 } from "../api";
 import Loader from "../components/Loader";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import { PaystackButton } from "react-paystack";
+import Back from "../components/Back";
 
 const BookingDetails = () => {
   const { id } = useParams();
@@ -68,7 +71,15 @@ const BookingDetails = () => {
         booking_id: booking.ID,
         status: "cancelled",
       };
-      const response = await cancelBooking(params);
+
+      let response;
+      if (type === "past stays") {
+        response = await cancelPlaceBooking(params);
+      } else if (type === "rentals") {
+        response = await cancelCarBooking(params);
+      } else if (type === "tours") {
+        response = await cancelTourBooking(params);
+      }
       if (response?.data?.message === "Booking successfully updated.") {
         setBooking((prev) => ({ ...prev, Status: "cancelled" }));
         showSuccessToast("Booking successfully updated");
@@ -131,105 +142,110 @@ const BookingDetails = () => {
   }
 
   return (
-    <div className="p-6 bg-gradient-to-r from-blue-50 via-white to-blue-50 shadow-lg rounded-lg space-y-6 mt-20 max-w-4xl mx-auto">
-      <h1 className="text-lg md:text-2xl font-bold text-brand border-b-2 border-blue-200 pb-2 text-center">
-        Booking Details
-      </h1>
+    <div className="mt-20 max-w-4xl mx-auto">
+      <Back path={"/bookings"} page={"Bookings"} />
+      <div className="p-6 bg-gradient-to-r from-blue-50 via-white to-blue-50 shadow-lg rounded-lg space-y-6 mt-5">
+        <h1 className="text-lg md:text-2xl font-bold text-brand border-b-2 border-blue-200 pb-2 text-center">
+          Booking Details
+        </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {booking.FirstName && booking.LastName && (
-          <DetailItem
-            label="Guest Name"
-            value={`${booking.FirstName} ${booking.LastName}`}
-          />
-        )}
-        {booking["List Name"] && (
-          <DetailItem label="List Name" value={booking["List Name"]} />
-        )}
-        {booking.Contact && (
-          <DetailItem label="Contact" value={booking.Contact} />
-        )}
-        {booking.Email && <DetailItem label="Email" value={booking.Email} />}
-        {booking.Checkin && (
-          <DetailItem label="Check-in" value={booking.Checkin} />
-        )}
-        {booking.Checkout && (
-          <DetailItem label="Check-out" value={booking.Checkout} />
-        )}
-        {booking.NumGuests && (
-          <DetailItem label="Guests" value={booking.NumGuests} />
-        )}
-        {booking.ListingPrice && (
-          <DetailItem label="Price" value={`$${booking.ListingPrice}`} />
-        )}
-      </div>
-
-      {/* Additional Pricing Information */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {booking.RidePrice && (
-          <DetailItem label="Ride Price" value={`$${booking.RidePrice}`} />
-        )}
-        {booking.CarID && <DetailItem label="Car Type" value={booking.CarID} />}
-        {booking.TourType && (
-          <DetailItem label="Tour Type" value={booking.TourType} />
-        )}
-        {booking.TourPrice && (
-          <DetailItem label="Tour Price" value={`$${booking.TourPrice}`} />
-        )}
-        {booking.ChauffuerRate && (
-          <DetailItem
-            label="Chauffeur Rate"
-            value={`$${booking.ChauffuerRate}`}
-          />
-        )}
-        {booking.Fee && (
-          <DetailItem label="Service Fee" value={`$${booking.Fee}`} />
-        )}
-        {booking.SubTotal && (
-          <DetailItem label="Sub Total" value={`$${booking.SubTotal}`} />
-        )}
-        {booking.Total && (
-          <DetailItem label="Total" value={`GHS ${booking.Total}`} />
-        )}
-      </div>
-
-      {booking.Status && (
-        <div className="flex justify-center">
-          <span
-            className={`px-4 py-2 text-md md:text-lg font-semibold rounded-lg ${
-              booking.Status === "success"
-                ? "bg-green-100 text-green-600"
-                : booking.Status === "pending"
-                ? "bg-yellow-100 text-yellow-600"
-                : "bg-red-100 text-red-600"
-            }`}
-          >
-            {booking.Status}
-          </span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {booking.FirstName && booking.LastName && (
+            <DetailItem
+              label="Guest Name"
+              value={`${booking.FirstName} ${booking.LastName}`}
+            />
+          )}
+          {booking["List Name"] && (
+            <DetailItem label="List Name" value={booking["List Name"]} />
+          )}
+          {booking.Contact && (
+            <DetailItem label="Contact" value={booking.Contact} />
+          )}
+          {booking.Email && <DetailItem label="Email" value={booking.Email} />}
+          {booking.Checkin && (
+            <DetailItem label="Check-in" value={booking.Checkin} />
+          )}
+          {booking.Checkout && (
+            <DetailItem label="Check-out" value={booking.Checkout} />
+          )}
+          {booking.NumGuests && (
+            <DetailItem label="Guests" value={booking.NumGuests} />
+          )}
+          {booking.ListingPrice && (
+            <DetailItem label="Price" value={`$${booking.ListingPrice}`} />
+          )}
         </div>
-      )}
 
-      {booking.SpecialNote && (
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <strong className="text-brand">Special Note:</strong>{" "}
-          {booking.SpecialNote}
+        {/* Additional Pricing Information */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {booking.RidePrice && (
+            <DetailItem label="Ride Price" value={`$${booking.RidePrice}`} />
+          )}
+          {booking.CarID && (
+            <DetailItem label="Car Type" value={booking.CarID} />
+          )}
+          {booking.TourType && (
+            <DetailItem label="Tour Type" value={booking.TourType} />
+          )}
+          {booking.TourPrice && (
+            <DetailItem label="Tour Price" value={`$${booking.TourPrice}`} />
+          )}
+          {booking.ChauffuerRate && (
+            <DetailItem
+              label="Chauffeur Rate"
+              value={`$${booking.ChauffuerRate}`}
+            />
+          )}
+          {booking.Fee && (
+            <DetailItem label="Service Fee" value={`$${booking.Fee}`} />
+          )}
+          {booking.SubTotal && (
+            <DetailItem label="Sub Total" value={`$${booking.SubTotal}`} />
+          )}
+          {booking.Total && (
+            <DetailItem label="Total" value={`GHS ${booking.Total}`} />
+          )}
         </div>
-      )}
 
-      {booking.Status === "pending" && (
-        <div className="flex flex-col space-y-4">
-          <PaystackButton {...paystackProps} />
-          <button
-            onClick={handleCancelBooking}
-            className="w-full bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 transition duration-300"
-            disabled={isCancelling}
-          >
-            <span className="text-xs py-2">
-              {isCancelling ? "Cancelling..." : "Cancel Booking"}
+        {booking.Status && (
+          <div className="flex justify-center">
+            <span
+              className={`px-4 py-2 text-md md:text-lg font-semibold rounded-lg ${
+                booking.Status === "success"
+                  ? "bg-green-100 text-green-600"
+                  : booking.Status === "pending"
+                  ? "bg-yellow-100 text-yellow-600"
+                  : "bg-red-100 text-red-600"
+              }`}
+            >
+              {booking.Status}
             </span>
-          </button>
-        </div>
-      )}
+          </div>
+        )}
+
+        {booking.SpecialNote && (
+          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <strong className="text-brand">Special Note:</strong>{" "}
+            {booking.SpecialNote}
+          </div>
+        )}
+
+        {booking.Status === "pending" && (
+          <div className="flex flex-col space-y-4">
+            <PaystackButton {...paystackProps} />
+            <button
+              onClick={handleCancelBooking}
+              className="w-full bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 transition duration-300"
+              disabled={isCancelling}
+            >
+              <span className="text-xs py-2">
+                {isCancelling ? "Cancelling..." : "Cancel Booking"}
+              </span>
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 
