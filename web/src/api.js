@@ -465,8 +465,12 @@ export const fetchAmenities = async () => {
   return api.get("/get/amenities");
 };
 
-export const verifyPayment = async (queryString) => {
-  return api.get(`/verify/paystack?reference_id=${queryString}`);
+export const verifyPayment = async ({booking_id, reference_id}) => {
+  const queryString = new URLSearchParams({
+    booking_id,
+    reference_id
+  })
+  return api.get(`/verify/paystack?${queryString}`);
 };
 
 export const fetchPastStaysBookings = async (queryString) => {

@@ -96,7 +96,12 @@ const BookingDetails = () => {
 
   const onSuccess = async (response) => {
     try {
-      const res = await verifyPayment(response.reference);
+      const params = {
+        booking_id: booking,
+        reference_id: response.reference,
+      };
+
+      const res = await verifyPayment(params);
       if (res.data.status === "success") {
         showSuccessToast("Payment verified successfully!");
         navigate("/thank-you");
