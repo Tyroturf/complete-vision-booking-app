@@ -51,16 +51,20 @@ const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
           ? selectedCar?.ChauffeurRate
           : listing?.CHAUFFEUR_RATE) || 0
       : 0;
-    const carPrice = interestedInCar ? selectedCar?.Price || 0 : 0;
-    const tourPrice = interestedInTour ? selectedTour?.TOUR_PRICE || 0 : 0;
+    const carPrice = interestedInCar ? parseFloat(selectedCar?.Price) || 0 : 0;
+    const tourPrice = interestedInTour
+      ? parseFloat(selectedTour?.TOUR_PRICE) || 0
+      : 0;
 
-    const totalListingPrice = (listingPrice + chauffeurRate) * duration;
+    const totalListingPrice =
+      (listingPrice + parseFloat(chauffeurRate)) * duration;
     const totalTourPrice = tourPrice * (guests || 1);
     const totalVehiclePrice = carPrice * duration;
     const subTotal = totalListingPrice + totalTourPrice + totalVehiclePrice;
     const serviceFee = subTotal * 0.05;
     const grandTotalUSD = subTotal + serviceFee;
     const totalPriceGHS = grandTotalUSD * exchangeRate;
+
     setTotalPriceGHS(totalPriceGHS);
     setTotalPriceUSD(grandTotalUSD);
     setServiceFee(serviceFee);
