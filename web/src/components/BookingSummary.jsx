@@ -49,7 +49,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
     const chauffeurRate = chauffeur
       ? (page === "place"
           ? selectedCar?.ChauffeurRate
-          : listing?.CHAUFFEUR_RATE) || 0
+          : parseFloat(listing?.CHAUFFEUR_RATE)) || 0
       : 0;
     const carPrice = interestedInCar ? parseFloat(selectedCar?.Price) || 0 : 0;
     const tourPrice = interestedInTour
@@ -63,7 +63,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
     const subTotal = totalListingPrice + totalTourPrice + totalVehiclePrice;
     const serviceFee = subTotal * 0.05;
     const grandTotalUSD = subTotal + serviceFee;
-    const totalPriceGHS = grandTotalUSD * exchangeRate;
+    const totalPriceGHS = grandTotalUSD * parseFloat(exchangeRate);
 
     setTotalPriceGHS(totalPriceGHS);
     setTotalPriceUSD(grandTotalUSD);
@@ -149,12 +149,14 @@ const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
               </div>
             )}
 
-          {reservationData?.chauffeur && reservationData.interestedInCar && (
-            <div className="flex justify-between">
-              <span className="text-xs">Chauffeur Price </span>
-              <span className="text-xs font-medium">$ {chauffeurRate}</span>
-            </div>
-          )}
+          {reservationData?.chauffeur &&
+            reservationData.interestedInCar &&
+            page !== "tour" && (
+              <div className="flex justify-between">
+                <span className="text-xs">Chauffeur Price </span>
+                <span className="text-xs font-medium">$ {chauffeurRate}</span>
+              </div>
+            )}
 
           {reservationData?.interestedInTour &&
             reservationData.selectedTour && (

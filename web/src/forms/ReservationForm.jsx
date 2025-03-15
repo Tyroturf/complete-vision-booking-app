@@ -728,24 +728,31 @@ const ReservationForm = ({
                       {drivingOptionError}
                     </div>
                   )}
-
-                  <br />
                   {page === "place" &&
                     user.DL_PHOTO_URL &&
-                    touched.driverLicense && (
-                      <div className="text-green-500 text-xs mt-1">
+                    drivingOption === "self-driving" && (
+                      <a
+                        href={user.DL_PHOTO_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-green-500 text-xs mt-1 underline cursor-pointer block"
+                      >
                         Driver's Licence already uploaded.
-                      </div>
+                      </a>
                     )}
                   <br />
                   {page === "place" &&
                     user.SELFIE_PHOTO_URL &&
-                    touched.selfie && (
-                      <div className="text-green-500 text-xs mt-1">
+                    drivingOption === "self-driving" && (
+                      <a
+                        href={user.SELFIE_PHOTO_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-green-500 text-xs mt-1 underline cursor-pointer block"
+                      >
                         Selfie already uploaded.
-                      </div>
+                      </a>
                     )}
-
                   {/* Interested in Tour Section */}
                   <div className="flex flex-col col-span-1 md:col-span-2">
                     <span className="font-bold text-sm my-5">Private tour</span>
@@ -1013,20 +1020,30 @@ const ReservationForm = ({
                   {drivingOptionError}
                 </div>
               )}
-              <br />
               {page === "car" && user.DL_PHOTO_URL && touched.selfDriving && (
-                <div className="text-green-500 text-xs mt-1">
+                <a
+                  href={user.DL_PHOTO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green-500 text-xs mt-1 underline cursor-pointer"
+                >
                   Driver's Licence already uploaded.
-                </div>
+                </a>
               )}
 
               {page === "car" &&
                 user.SELFIE_PHOTO_URL &&
                 touched.selfDriving && (
-                  <div className="text-green-500 text-xs mt-1">
+                  <a
+                    href={user.SELFIE_PHOTO_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-green-500 text-xs mt-1 underline cursor-pointer"
+                  >
                     Selfie already uploaded.
-                  </div>
+                  </a>
                 )}
+
               <div className="col-span-1 md:col-span-2 w-full flex justify-center">
                 <button
                   type="submit"
