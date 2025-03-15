@@ -56,8 +56,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
       ? parseFloat(selectedTour?.TOUR_PRICE) || 0
       : 0;
 
-    const totalListingPrice =
-      (listingPrice + parseFloat(chauffeurRate)) * duration;
+    const totalListingPrice = (listingPrice + chauffeurRate) * duration;
     const totalTourPrice = tourPrice * (guests || 1);
     const totalVehiclePrice = carPrice * duration;
     const subTotal = totalListingPrice + totalTourPrice + totalVehiclePrice;
