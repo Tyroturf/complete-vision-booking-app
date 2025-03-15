@@ -148,7 +148,7 @@ const BookingDetails = () => {
 
   return (
     <div className="mt-20 max-w-4xl mx-auto">
-      <Back path={"/bookings"} page={"Bookings"} />
+      <Back path={`/bookings?type=${type}`} page={"Bookings"} />
       <div className="p-6 bg-gradient-to-r from-blue-50 via-white to-blue-50 shadow-lg rounded-lg space-y-6 mt-5">
         <h1 className="text-lg md:text-2xl font-bold text-brand border-b-2 border-blue-200 pb-2 text-center">
           Booking Details

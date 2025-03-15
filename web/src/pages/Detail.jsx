@@ -91,13 +91,12 @@ const Detail = ({ fetchDetail, type }) => {
         </div>
       </div>
 
-      {/* Image Gallery */}
       <ImageGallery images={images} />
 
       <div className="lg:hidden flex justify-between items-center p-5 pt-10">
         <div className="flex-col items-center justify-center text-gray-700">
           <span className="font-bold text-sm">{item?.LIST_NAME}</span>
-          {/* <RatingSummary /> */}
+          <br />
           <span className="text-xs font-thin">{item?.LOCATION}</span>
         </div>
         <div className="flex flex-col gap-y-4">

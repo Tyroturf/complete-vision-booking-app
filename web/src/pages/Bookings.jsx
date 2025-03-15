@@ -5,19 +5,40 @@ import {
   fetchPastCarBookings,
   fetchPastTourBookings,
 } from "../api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { formatWithCommas } from "../utils/helpers";
 import { Nav } from "./Dashboard";
 
 const Bookings = () => {
   const { user_id } = JSON.parse(localStorage.getItem("user"));
-  const [activeTab, setActiveTab] = useState("Past Stays");
-  const [bookingsData, setBookingsData] = useState([]);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const typeParam = queryParams.get("type");
+
+  const typeToTabMap = {
+    "past stays": "Past Stays",
+    rentals: "Rentals",
+    tours: "Tours",
+  };
+
+  const [activeTab, setActiveTab] = useState(
+    typeToTabMap[typeParam] || "Past Stays"
+  );
+
+  // Cache booking data for each tab
+  const [bookingsCache, setBookingsCache] = useState({
+    "Past Stays": null,
+    Rentals: null,
+    Tours: null,
+  });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchBookings();
+    if (!bookingsCache[activeTab]) {
+      fetchBookings();
+    }
   }, [activeTab]);
 
   const fetchBookings = async () => {
@@ -33,11 +54,13 @@ const Bookings = () => {
         response = await fetchPastTourBookings(user_id);
       }
       if (response?.status === 200) {
-        setBookingsData(
-          response.data.Bookings ||
+        setBookingsCache((prev) => ({
+          ...prev,
+          [activeTab]:
+            response.data.Bookings ||
             response.data.CarBookings ||
-            response.data.TourBookings
-        );
+            response.data.TourBookings,
+        }));
       } else {
         setError("Failed to load bookings. Please try again.");
       }
@@ -58,12 +81,18 @@ const Bookings = () => {
       <div className="p-4">
         {loading && <Loader />}
         {error && <p className="text-red-500">{error}</p>}
-        {!loading && !error && bookingsData.length === 0 && (
-          <p>No bookings found for {activeTab}.</p>
-        )}
         {!loading &&
           !error &&
-          bookingsData.map((booking, index) => (
+          (!bookingsCache[activeTab] ||
+            bookingsCache[activeTab].length === 0) && (
+            <p className="text-gray-800 text-xs md:text-sm p-5">
+              No past bookings
+            </p>
+          )}
+        {!loading &&
+          !error &&
+          bookingsCache[activeTab] &&
+          bookingsCache[activeTab].map((booking, index) => (
             <BookingCard key={index} booking={booking} activeTab={activeTab} />
           ))}
       </div>

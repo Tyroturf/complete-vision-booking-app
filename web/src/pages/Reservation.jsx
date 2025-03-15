@@ -10,6 +10,8 @@ import { fetchPlace, fetchCar, fetchTour, fetchUser, uploadDocs } from "../api";
 import { useReservation } from "../contexts/ReservationContext";
 import { formatDate } from "../utils/helpers";
 import axios from "axios";
+import { showErrorToast, showSuccessToast } from "../utils/toast";
+import ImageModal from "../components/ImageModal";
 
 const Reservation = ({ type }) => {
   const today = new Date();
@@ -24,6 +26,8 @@ const Reservation = ({ type }) => {
   const params = new URLSearchParams(location.search);
   const [showFullPolicy, setShowFullPolicy] = useState(false);
   const [data, setData] = useState({});
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { reservationData, setReservationData } = useReservation();
   const [initialValues, setInitialValues] = useState({
@@ -39,6 +43,14 @@ const Reservation = ({ type }) => {
     selectedTour: null,
     selectedCar: null,
   });
+
+  const handleImageClick = () => {
+    setIsImageModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setIsImageModalOpen(false);
+  };
 
   const fetchUserDetails = async () => {
     const { user_id } = JSON.parse(localStorage.getItem("user"));
@@ -182,10 +194,10 @@ const Reservation = ({ type }) => {
 
         const response = await uploadDocs(queryString);
         await fetchUserDetails();
-        alert("Driver License uploaded successfully");
+        showSuccessToast("Driver License uploaded successfully");
       } catch (error) {
         console.error("Error uploading driver licence", error);
-        alert("Failed to upload driver licence");
+        showErrorToast("Failed to upload driver licence");
       }
     } else {
       throw new Error("Upload failed with status " + response.status);
@@ -218,10 +230,10 @@ const Reservation = ({ type }) => {
 
         const response = await uploadDocs(queryString);
         await fetchUserDetails();
-        alert("Selfie uploaded successfully");
+        showSuccessToast("Selfie uploaded successfully");
       } catch (error) {
         console.error("Error uploading selfie", error);
-        alert("Failed to upload selfie");
+        showErrorToast("Failed to upload selfie");
       }
     } else {
       throw new Error("Upload failed with status " + response.status);
@@ -237,7 +249,23 @@ const Reservation = ({ type }) => {
               src={data?.IMAGE1_URL}
               className="w-1/2 h-28 lg:h-56 object-cover rounded-lg"
               alt={data?.LIST_NAME || "icon"}
+              onClick={() => handleImageClick()}
             />
+            {isImageModalOpen && (
+              <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+                <button
+                  className="absolute top-4 right-4 text-white text-3xl font-bold"
+                  onClick={() => closeImageModal()}
+                >
+                  ✕
+                </button>
+                <img
+                  src={data?.IMAGE1_URL}
+                  className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
+                  alt={data?.LIST_NAME || "image"}
+                />
+              </div>
+            )}
             <div className="flex flex-col justify-center gap-y-1">
               <span className="font-medium text-sm">{data?.LIST_NAME}</span>
               {/* <RatingSummary /> */}

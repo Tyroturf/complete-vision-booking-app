@@ -897,7 +897,7 @@ const ReservationForm = ({
                     }}
                     className="mr-2"
                   />
-                  <label htmlFor="pickupLocation" className="text-xs">
+                  <label htmlFor="self-driving" className="text-xs">
                     Self-driving
                   </label>
                   <ErrorMessage
