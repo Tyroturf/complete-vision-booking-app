@@ -11,7 +11,6 @@ import { useReservation } from "../contexts/ReservationContext";
 import { formatDate } from "../utils/helpers";
 import axios from "axios";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
-import ImageModal from "../components/ImageModal";
 
 const Reservation = ({ type }) => {
   const today = new Date();
@@ -27,8 +26,10 @@ const Reservation = ({ type }) => {
   const [showFullPolicy, setShowFullPolicy] = useState(false);
   const [data, setData] = useState({});
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-
+  const [isUploading, setIsUploading] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showDLUploadModal, setShowDLUploadModal] = useState(false);
+  const [showSelfieUploadModal, setShowSelfieUploadModal] = useState(false);
   const { reservationData, setReservationData } = useReservation();
   const [initialValues, setInitialValues] = useState({
     firstName: user.first_name || "",
@@ -42,6 +43,8 @@ const Reservation = ({ type }) => {
     pickupLocation: "",
     selectedTour: null,
     selectedCar: null,
+    driverLicense: user.DL_PHOTO_URL || "",
+    selfie: user.SELFIE_PHOTO_URL || "",
   });
 
   const handleImageClick = () => {
@@ -66,10 +69,12 @@ const Reservation = ({ type }) => {
           lastName: userDetails.LAST_NAME || "",
           phoneNumber: userDetails.CONTACT || "",
           email: userDetails.USERNAME || "",
-          driverLicense: userDetails.DLFILETYPE ? userDetails.DLFILETYPE : null,
-          selfie: userDetails.SELFIEFILETYPE
-            ? userDetails.SELFIEFILETYPE
-            : null,
+          driverLicense: userDetails.DL_PHOTO_URL
+            ? userDetails.DL_PHOTO_URL
+            : "",
+          selfie: userDetails.SELFIE_PHOTO_URL
+            ? userDetails.SELFIE_PHOTO_URL
+            : "",
         }));
 
         setReservationData((prevData) => ({
@@ -78,10 +83,12 @@ const Reservation = ({ type }) => {
           lastName: userDetails.last_name || "",
           phoneNumber: userDetails.contact || "",
           email: userDetails.email || "",
-          driverLicense: userDetails.DLFILETYPE ? userDetails.DLFILETYPE : null,
-          selfie: userDetails.SELFIEFILETYPE
-            ? userDetails.SELFIEFILETYPE
-            : null,
+          driverLicense: userDetails.DL_PHOTO_URL
+            ? userDetails.DL_PHOTO_URL
+            : "",
+          selfie: userDetails.SELFIE_PHOTO_URL
+            ? userDetails.SELFIE_PHOTO_URL
+            : "",
         }));
       } catch (err) {
         console.error("Failed to fetch user details:", err);
@@ -176,6 +183,7 @@ const Reservation = ({ type }) => {
       "https://objectstorage.af-johannesburg-1.oraclecloud.com/p/suIO1K3vlc1QnyW-2BPxWaaHUDuky1kg0oCvk6N19db2Qd_jUv9nEM7oqCgT1Uv6/n/axw84jvjnipe/b/bucket1/o/";
 
     const uploadUrl = `${bucketUrl}${user_id}_dl`;
+    setIsUploading(true);
 
     const r = await axios.put(uploadUrl, driverLicense, {
       headers: {
@@ -198,6 +206,9 @@ const Reservation = ({ type }) => {
       } catch (error) {
         console.error("Error uploading driver licence", error);
         showErrorToast("Failed to upload driver licence");
+      } finally {
+        setIsUploading(false);
+        setShowDLUploadModal(false);
       }
     } else {
       throw new Error("Upload failed with status " + response.status);
@@ -212,6 +223,7 @@ const Reservation = ({ type }) => {
       "https://objectstorage.af-johannesburg-1.oraclecloud.com/p/suIO1K3vlc1QnyW-2BPxWaaHUDuky1kg0oCvk6N19db2Qd_jUv9nEM7oqCgT1Uv6/n/axw84jvjnipe/b/bucket1/o/";
 
     const uploadUrl = `${bucketUrl}${user_id}_selfie`;
+    setIsUploading(true);
 
     const r = await axios.put(uploadUrl, selfie, {
       headers: {
@@ -234,6 +246,9 @@ const Reservation = ({ type }) => {
       } catch (error) {
         console.error("Error uploading selfie", error);
         showErrorToast("Failed to upload selfie");
+      } finally {
+        setIsUploading(false);
+        setShowSelfieUploadModal(false);
       }
     } else {
       throw new Error("Upload failed with status " + response.status);
@@ -283,6 +298,11 @@ const Reservation = ({ type }) => {
               page={page}
               uploadDL={uploadDL}
               uploadSelfie={uploadSelfie}
+              isUploading={isUploading}
+              showDLUploadModal={showDLUploadModal}
+              showSelfieUploadModal={showSelfieUploadModal}
+              setShowDLUploadModal={setShowDLUploadModal}
+              setShowSelfieUploadModal={setShowSelfieUploadModal}
             />
           </div>
         </div>

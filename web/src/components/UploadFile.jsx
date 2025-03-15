@@ -2,8 +2,9 @@ import React from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useReservation } from "../contexts/ReservationContext";
+import Loader from "./Loader";
 
-const UploadFile = ({ fieldName, label, handleSubmit }) => {
+const UploadFile = ({ fieldName, label, handleSubmit, isUploading }) => {
   const { reservationData, setReservationData } = useReservation();
 
   const validationSchema = Yup.object({
@@ -52,7 +53,7 @@ const UploadFile = ({ fieldName, label, handleSubmit }) => {
                 type="submit"
                 className="bg-brand text-white px-4 py-2 rounded-md"
               >
-                Upload
+                {isUploading ? <Loader /> : "Upload"}
               </button>
             </div>
           </Form>

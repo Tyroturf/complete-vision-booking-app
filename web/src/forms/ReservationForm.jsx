@@ -19,6 +19,11 @@ const ReservationForm = ({
   page,
   uploadDL,
   uploadSelfie,
+  isUploading,
+  showDLUploadModal,
+  showSelfieUploadModal,
+  setShowDLUploadModal,
+  setShowSelfieUploadModal,
 }) => {
   const [interestedInCar, setInterestedInCar] = useState(false);
   const [selectedCar, setSelectedCar] = useState("");
@@ -30,9 +35,10 @@ const ReservationForm = ({
   const [tourTypes, setTourType] = useState("");
   const [selectedTour, setSelectedTour] = useState("");
   const { reservationData, setReservationData } = useReservation();
-  const [showDLUploadModal, setShowDLUploadModal] = useState(false);
-  const [showSelfieUploadModal, setShowSelfieUploadModal] = useState(false);
 
+  const [selfieError, setSelfieError] = useState("");
+  const [DLError, setDLError] = useState("");
+  const [drivingOptionError, setDrivingOptionError] = useState("");
   let reservationSchema = null;
 
   const commonFields = {
@@ -92,7 +98,7 @@ const ReservationForm = ({
           is: (interestedInCar, drivingOption) =>
             interestedInCar &&
             drivingOption === "self-driving" &&
-            !user.DLFILETYPE,
+            !user.DL_PHOTO_URL,
           then: () =>
             Yup.mixed().required(
               "Driver's license is required for self-driving"
@@ -105,7 +111,7 @@ const ReservationForm = ({
           is: (interestedInCar, drivingOption) =>
             interestedInCar &&
             drivingOption === "self-driving" &&
-            !user.SELFIEFILETYPE,
+            !user.SELFIE_PHOTO_URL,
           then: () =>
             Yup.mixed().required("Selfie is required for self-driving"),
           otherwise: () => Yup.mixed().notRequired(),
@@ -122,11 +128,12 @@ const ReservationForm = ({
   };
 
   const createCarSchema = () => {
-    const needsDriverLicense = !user.DLFILETYPE;
-    const needsSelfie = !user.SELFIEFILETYPE;
+    const needsDriverLicense = !user.DL_PHOTO_URL;
+    const needsSelfie = !user.SELFIE_PHOTO_URL;
 
     return Yup.object().shape({
       ...commonFields,
+      drivingOption: Yup.string().required("Please select a driving option"),
       pickupLocation: Yup.string().when("drivingOption", {
         is: "chauffeur",
         then: () =>
@@ -136,21 +143,21 @@ const ReservationForm = ({
         otherwise: () => Yup.string().notRequired(),
       }),
       dropoffLocation: Yup.string().required("Drop-off location is required"),
-      driverLicense: Yup.mixed().when(
-        "drivingOption",
-        (drivingOption, schema) => {
-          if (drivingOption === "self-driving" && needsDriverLicense) {
-            return schema.required("Driver's license is required");
-          }
-          return schema.notRequired();
-        }
-      ),
-
-      selfie: Yup.mixed().when("drivingOption", (drivingOption, schema) => {
-        if (drivingOption === "self-driving" && needsSelfie) {
-          return schema.required("Selfie is required");
-        }
-        return schema.notRequired();
+      driverLicense: Yup.string().when("drivingOption", {
+        is: "self-driving",
+        then: () =>
+          needsDriverLicense
+            ? Yup.string().required("Driver's license is required")
+            : Yup.string().notRequired(),
+        otherwise: () => Yup.string().notRequired(),
+      }),
+      selfie: Yup.string().when("drivingOption", {
+        is: "self-driving",
+        then: () =>
+          needsSelfie
+            ? Yup.string().required("Selfie is required")
+            : Yup.string().notRequired(),
+        otherwise: () => Yup.string().notRequired(),
       }),
     });
   };
@@ -246,727 +253,798 @@ const ReservationForm = ({
           setSubmitting(false);
         }}
       >
-        {({ isSubmitting, values, setFieldValue, errors }) => (
-          <Form className="rounded-xl grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* First Name */}
-            <div className="relative">
-              <Field
-                type="text"
-                name="firstName"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                placeholder=" "
-                value={reservationData.firstName}
-                onChange={(e) => {
-                  setReservationData({
-                    ...reservationData,
-                    firstName: e.target.value,
-                  });
-                  setFieldValue("firstName", e.target.value);
-                }}
-              />
-              <label
-                htmlFor="firstName"
-                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
-              >
-                First Name
-              </label>
-              <ErrorMessage
-                name="firstName"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
+        {({ isSubmitting, values, setFieldValue, errors, touched }) => {
+          console.log("touched", touched);
+          setSelfieError(errors.selfie || "");
+          setDLError(errors.driverLicense || "");
+          setDrivingOptionError(errors.drivingOption || "");
 
-            <div className="relative">
-              <Field
-                type="text"
-                name="lastName"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                placeholder=" "
-                value={reservationData.lastName}
-                onChange={(e) => {
-                  setReservationData({
-                    ...reservationData,
-                    lastName: e.target.value,
-                  });
-                  setFieldValue("lastName", e.target.value);
-                }}
-              />
-              <label
-                htmlFor="lastName"
-                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
-              >
-                Last Name
-              </label>
-              <ErrorMessage
-                name="lastName"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
+          return (
+            <Form className="rounded-xl grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* First Name */}
+              <div className="relative">
+                <Field
+                  type="text"
+                  name="firstName"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                  placeholder=" "
+                  value={reservationData.firstName}
+                  onChange={(e) => {
+                    setReservationData({
+                      ...reservationData,
+                      firstName: e.target.value,
+                    });
+                    setFieldValue("firstName", e.target.value);
+                  }}
+                />
+                <label
+                  htmlFor="firstName"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                >
+                  First Name
+                </label>
+                <ErrorMessage
+                  name="firstName"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
 
-            <div className="relative">
-              <Field
-                type="number"
-                name="guests"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                placeholder=" "
-                min={1}
-                max={6}
-                value={reservationData.guests}
-                onChange={(e) => {
-                  setReservationData({
-                    ...reservationData,
-                    guests: e.target.value,
-                  });
-                  setFieldValue("guests", e.target.value);
-                }}
-              />
-              <label
-                htmlFor="guests"
-                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
-              >
-                Guests
-              </label>
-              <ErrorMessage
-                name="guests"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
+              <div className="relative">
+                <Field
+                  type="text"
+                  name="lastName"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                  placeholder=" "
+                  value={reservationData.lastName}
+                  onChange={(e) => {
+                    setReservationData({
+                      ...reservationData,
+                      lastName: e.target.value,
+                    });
+                    setFieldValue("lastName", e.target.value);
+                  }}
+                />
+                <label
+                  htmlFor="lastName"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                >
+                  Last Name
+                </label>
+                <ErrorMessage
+                  name="lastName"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
 
-            <div className="relative">
-              <Field
-                type="text"
-                name="phoneNumber"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                placeholder=" "
-                value={reservationData.phoneNumber}
-                onChange={(e) => {
-                  setReservationData({
-                    ...reservationData,
-                    phoneNumber: e.target.value,
-                  });
-                  setFieldValue("phoneNumber", e.target.value);
-                }}
-              />
-              <label
-                htmlFor="phoneNumber"
-                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
-              >
-                Phone Number
-              </label>
-              <ErrorMessage
-                name="phoneNumber"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
+              <div className="relative">
+                <Field
+                  type="number"
+                  name="guests"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                  placeholder=" "
+                  min={1}
+                  max={6}
+                  value={reservationData.guests}
+                  onChange={(e) => {
+                    setReservationData({
+                      ...reservationData,
+                      guests: e.target.value,
+                    });
+                    setFieldValue("guests", e.target.value);
+                  }}
+                />
+                <label
+                  htmlFor="guests"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                >
+                  Guests
+                </label>
+                <ErrorMessage
+                  name="guests"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
 
-            <div className="relative">
-              <Field
-                type="email"
-                name="email"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                placeholder=" "
-                value={reservationData.email}
-                onChange={(e) => {
-                  setReservationData({
-                    ...reservationData,
-                    email: e.target.value,
-                  });
-                  setFieldValue("email", e.target.value);
-                }}
-              />
-              <label
-                htmlFor="email"
-                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
-              >
-                Email
-              </label>
-              <ErrorMessage
-                name="email"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
+              <div className="relative">
+                <Field
+                  type="text"
+                  name="phoneNumber"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                  placeholder=" "
+                  value={reservationData.phoneNumber}
+                  onChange={(e) => {
+                    setReservationData({
+                      ...reservationData,
+                      phoneNumber: e.target.value,
+                    });
+                    setFieldValue("phoneNumber", e.target.value);
+                  }}
+                />
+                <label
+                  htmlFor="phoneNumber"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                >
+                  Phone Number
+                </label>
+                <ErrorMessage
+                  name="phoneNumber"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
 
-            {/* Date Picker */}
-            <div className="relative col-span-1 md:col-span-2">
-              <DatePicker
-                id="reservation-dates"
-                minDate={new Date()}
-                selected={
-                  reservationData.checkIn
-                    ? new Date(reservationData.checkIn)
-                    : null
-                }
-                onChange={(dates) => {
-                  const [start, end] = dates;
-                  setReservationData({
-                    ...reservationData,
-                    checkIn: start ? formatDate(start) : null,
-                    checkOut: end ? formatDate(end) : null,
-                  });
-                  setFieldValue("checkIn", start ? formatDate(start) : null);
-                  setFieldValue("checkOut", end ? formatDate(end) : null);
-                }}
-                startDate={
-                  reservationData.checkIn
-                    ? new Date(reservationData.checkIn)
-                    : null
-                }
-                endDate={
-                  reservationData.checkOut
-                    ? new Date(reservationData.checkOut)
-                    : null
-                }
-                selectsRange
-                className="w-full border text-gray-600 border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-xs text-center sm:text-left"
-                wrapperClassName="customDatePickerWidth"
-              />
-              <label
-                htmlFor="reservation-dates"
-                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
-              >
-                Select Dates
-              </label>
-              <ErrorMessage
-                name="checkIn"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-              <ErrorMessage
-                name="checkOut"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
+              <div className="relative">
+                <Field
+                  type="email"
+                  name="email"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                  placeholder=" "
+                  value={reservationData.email}
+                  onChange={(e) => {
+                    setReservationData({
+                      ...reservationData,
+                      email: e.target.value,
+                    });
+                    setFieldValue("email", e.target.value);
+                  }}
+                />
+                <label
+                  htmlFor="email"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                >
+                  Email
+                </label>
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
 
-            {page === "place" && (
-              <>
-                <div className="flex flex-col col-span-1 md:col-span-2">
-                  <span className="font-bold text-sm my-5">
-                    Add to your stay
-                  </span>
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="interestedInCar"
-                      checked={interestedInCar}
-                      onChange={() => {
-                        setInterestedInCar(!interestedInCar);
-                        setReservationData({
-                          ...reservationData,
-                          interestedInCar: !interestedInCar,
-                        });
-                        setFieldValue("interestedInCar", !interestedInCar);
-                      }}
-                      className="mr-2"
-                    />
-                    <label htmlFor="interestedInCar" className="text-xs">
-                      Interested in renting a car?
-                    </label>
-                  </div>
+              {/* Date Picker */}
+              <div className="relative col-span-1 md:col-span-2">
+                <DatePicker
+                  id="reservation-dates"
+                  minDate={new Date()}
+                  selected={
+                    reservationData.checkIn
+                      ? new Date(reservationData.checkIn)
+                      : null
+                  }
+                  onChange={(dates) => {
+                    const [start, end] = dates;
+                    setReservationData({
+                      ...reservationData,
+                      checkIn: start ? formatDate(start) : null,
+                      checkOut: end ? formatDate(end) : null,
+                    });
+                    setFieldValue("checkIn", start ? formatDate(start) : null);
+                    setFieldValue("checkOut", end ? formatDate(end) : null);
+                  }}
+                  startDate={
+                    reservationData.checkIn
+                      ? new Date(reservationData.checkIn)
+                      : null
+                  }
+                  endDate={
+                    reservationData.checkOut
+                      ? new Date(reservationData.checkOut)
+                      : null
+                  }
+                  selectsRange
+                  className="w-full border text-gray-600 border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-xs text-center sm:text-left"
+                  wrapperClassName="customDatePickerWidth"
+                />
+                <label
+                  htmlFor="reservation-dates"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                >
+                  Select Dates
+                </label>
+                <ErrorMessage
+                  name="checkIn"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+                <ErrorMessage
+                  name="checkOut"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
 
-                  {interestedInCar && (
-                    <>
-                      <div className="mt-4">
-                        <span className="text-gray-600 text-xs mb-2 block">
-                          Select Car
-                        </span>
-                        <Field
-                          as="select"
-                          name="selectedCar"
-                          value={selectedCar}
-                          onChange={(e) => {
-                            const selectedCarId = Number(e.target.value);
-                            const selectedCarObject = carList.find((car) => {
-                              return car.ID === selectedCarId;
-                            });
-                            setFieldValue("selectedCar", selectedCarObject);
+              {page === "place" && (
+                <>
+                  <div className="flex flex-col col-span-1 md:col-span-2">
+                    <span className="font-bold text-sm my-5">
+                      Add to your stay
+                    </span>
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="interestedInCar"
+                        checked={interestedInCar}
+                        onChange={() => {
+                          setInterestedInCar(!interestedInCar);
+                          setReservationData({
+                            ...reservationData,
+                            interestedInCar: !interestedInCar,
+                          });
+                          setFieldValue("interestedInCar", !interestedInCar);
+                        }}
+                        className="mr-2"
+                      />
+                      <label htmlFor="interestedInCar" className="text-xs">
+                        Interested in renting a car?
+                      </label>
+                    </div>
 
-                            if (selectedCarObject) {
-                              setSelectedCar(selectedCarObject.ID);
-                              setReservationData((prevData) => ({
-                                ...prevData,
-                                selectedCar: selectedCarObject,
-                              }));
-                            } else {
-                              console.error("Selected car not found");
-                            }
-                          }}
-                          className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
-                        >
-                          <option value="" disabled>
+                    {interestedInCar && (
+                      <>
+                        <div className="mt-4">
+                          <span className="text-gray-600 text-xs mb-2 block">
                             Select Car
-                          </option>
-                          {carList?.length > 0 ? (
-                            carList?.map((car) => (
-                              <option key={car.ID} value={car.ID}>
-                                {car.ListName}
-                              </option>
-                            ))
-                          ) : (
-                            <option value="" disabled>
-                              No cars available
-                            </option>
-                          )}
-                        </Field>
-                        <ErrorMessage
-                          name="selectedCar"
-                          component="div"
-                          className="text-red-500 text-xs mt-1"
-                        />
-                      </div>
-
-                      <div className="flex flex-col mt-4">
-                        <span className="font-bold text-sm my-5">
-                          Driving Option
-                        </span>
-                        <ErrorMessage
-                          name="drivingOption"
-                          component="div"
-                          className="text-red-500 text-xs mt-1"
-                        />
-                        <div className="flex items-center">
-                          <input
-                            type="radio"
-                            id="chauffeur"
-                            name="drivingOption"
-                            value="chauffeur"
-                            checked={chauffeur}
-                            onChange={() => {
-                              setFieldValue("drivingOption", "chauffeur");
-                              setDrivingOption("chauffeur");
-                              setChauffeur(true);
-                              setReservationData((prevData) => ({
-                                ...prevData,
-                                chauffeur: true,
-                                drivingOption: "chauffeur",
-                              }));
-                            }}
-                            className="mr-2"
-                          />
-                          <label htmlFor="chauffeur" className="text-xs">
-                            Chauffeur
-                          </label>
-                        </div>
-
-                        {drivingOption === "chauffeur" && (
-                          <>
-                            <div className="relative my-4">
-                              <Field
-                                type="text"
-                                name="pickupLocation"
-                                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                                placeholder="Ex: Home Address"
-                                value={reservationData.pickupLocation}
-                                onChange={(e) => {
-                                  setReservationData({
-                                    ...reservationData,
-                                    pickupLocation: e.target.value,
-                                  });
-                                  setFieldValue(
-                                    "pickupLocation",
-                                    e.target.value
-                                  );
-                                }}
-                              />
-                              <label
-                                htmlFor="pickupLocation"
-                                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
-                              >
-                                Pick-up Location
-                              </label>
-                              <ErrorMessage
-                                name="pickupLocation"
-                                component="div"
-                                className="text-red-500 text-xs mt-1"
-                              />
-                            </div>
-                            <div className="relative my-4">
-                              <Field
-                                type="text"
-                                name="dropoffLocation"
-                                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                                placeholder=" "
-                                value={reservationData.dropoffLocation}
-                                onChange={(e) => {
-                                  setReservationData({
-                                    ...reservationData,
-                                    dropoffLocation: e.target.value,
-                                  });
-                                  setFieldValue(
-                                    "dropoffLocation",
-                                    e.target.value
-                                  );
-                                }}
-                              />
-                              <label
-                                htmlFor="dropoffLocation"
-                                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
-                              >
-                                Drop-off Location
-                              </label>
-                              <ErrorMessage
-                                name="dropoffLocation"
-                                component="div"
-                                className="text-red-500 text-xs mt-1"
-                              />
-                            </div>
-                          </>
-                        )}
-
-                        <div className="flex items-center mt-4">
-                          <input
-                            type="radio"
-                            id="drivingOption"
-                            name="drivingOption"
-                            value="self-driving"
-                            checked={drivingOption === "self-driving"}
+                          </span>
+                          <Field
+                            as="select"
+                            name="selectedCar"
+                            value={selectedCar}
                             onChange={(e) => {
-                              setChauffeur(false);
-                              setDrivingOption("self-driving");
-                              setReservationData((prevData) => ({
-                                ...prevData,
-                                chauffeur: false,
-                                drivingOption: "self-driving",
-                              }));
-                              setFieldValue("drivingOption", "self-driving");
+                              const selectedCarId = Number(e.target.value);
+                              const selectedCarObject = carList.find((car) => {
+                                return car.ID === selectedCarId;
+                              });
+                              setFieldValue("selectedCar", selectedCarObject);
+
+                              if (selectedCarObject) {
+                                setSelectedCar(selectedCarObject.ID);
+                                setReservationData((prevData) => ({
+                                  ...prevData,
+                                  selectedCar: selectedCarObject,
+                                }));
+                              } else {
+                                console.error("Selected car not found");
+                              }
                             }}
-                            className="mr-2"
-                          />
-                          <label htmlFor="pickupLocation" className="text-xs">
-                            Self-driving
-                          </label>
+                            className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
+                          >
+                            <option value="" disabled>
+                              Select Car
+                            </option>
+                            {carList?.length > 0 ? (
+                              carList?.map((car) => (
+                                <option key={car.ID} value={car.ID}>
+                                  {car.ListName}
+                                </option>
+                              ))
+                            ) : (
+                              <option value="" disabled>
+                                No cars available
+                              </option>
+                            )}
+                          </Field>
                           <ErrorMessage
-                            name="drivingOption"
+                            name="selectedCar"
                             component="div"
                             className="text-red-500 text-xs mt-1"
                           />
                         </div>
 
-                        {drivingOption === "self-driving" && (
-                          <>
-                            <div className="relative mt-8">
-                              <Field
-                                type="text"
-                                name="dropoffLocation"
-                                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                                placeholder="Ex: Home Address"
-                                value={reservationData.dropoffLocation}
-                                onChange={(e) => {
-                                  setDropoffLocation(e.target.value);
-                                  setReservationData((prevData) => ({
-                                    ...prevData,
-                                    dropoffLocation: e.target.value,
-                                  }));
-                                  setFieldValue(
-                                    "dropoffLocation",
-                                    e.target.value
-                                  );
-                                }}
-                              />
-                              <label
-                                htmlFor="dropoffLocation"
-                                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
-                              >
-                                Drop-off Location
-                              </label>
-                              <ErrorMessage
-                                name="dropoffLocation"
-                                component="div"
-                                className="text-red-500 text-xs mt-1"
-                              />
-                            </div>
-                            {!user.DLFILETYPE && (
-                              <button
-                                type="button"
-                                onClick={() => setShowDLUploadModal(true)}
-                                className="border text-brand px-4 py-2 rounded-md my-5 text-xs hover:scale-105 transition"
-                              >
-                                Upload Driver Licence
-                              </button>
-                            )}
+                        <div className="flex flex-col mt-4">
+                          <span className="font-bold text-sm my-5">
+                            Driving Option
+                          </span>
+                          <ErrorMessage
+                            name="drivingOption"
+                            component="div"
+                            className="text-red-500 text-xs mt-1"
+                          />
+                          <div className="flex items-center">
+                            <input
+                              type="radio"
+                              id="chauffeur"
+                              name="drivingOption"
+                              value="chauffeur"
+                              checked={chauffeur}
+                              onChange={() => {
+                                setFieldValue("drivingOption", "chauffeur");
+                                setDrivingOption("chauffeur");
+                                setChauffeur(true);
+                                setReservationData((prevData) => ({
+                                  ...prevData,
+                                  chauffeur: true,
+                                  drivingOption: "chauffeur",
+                                }));
+                              }}
+                              className="mr-2"
+                            />
+                            <label htmlFor="chauffeur" className="text-xs">
+                              Chauffeur
+                            </label>
+                          </div>
 
-                            {!user.SELFIEFILETYPE && (
-                              <button
-                                type="button"
-                                onClick={() => setShowSelfieUploadModal(true)}
-                                className="border text-brand px-4 py-2 rounded-md text-xs hover:scale-105 transition"
-                              >
-                                Upload Selfie
-                              </button>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </>
-                  )}
-                </div>
+                          {drivingOption === "chauffeur" && (
+                            <>
+                              <div className="relative my-4">
+                                <Field
+                                  type="text"
+                                  name="pickupLocation"
+                                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                                  placeholder="Ex: Home Address"
+                                  value={reservationData.pickupLocation}
+                                  onChange={(e) => {
+                                    setReservationData({
+                                      ...reservationData,
+                                      pickupLocation: e.target.value,
+                                    });
+                                    setFieldValue(
+                                      "pickupLocation",
+                                      e.target.value
+                                    );
+                                  }}
+                                />
+                                <label
+                                  htmlFor="pickupLocation"
+                                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                                >
+                                  Pick-up Location
+                                </label>
+                                <ErrorMessage
+                                  name="pickupLocation"
+                                  component="div"
+                                  className="text-red-500 text-xs mt-1"
+                                />
+                              </div>
+                              <div className="relative my-4">
+                                <Field
+                                  type="text"
+                                  name="dropoffLocation"
+                                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                                  placeholder=" "
+                                  value={reservationData.dropoffLocation}
+                                  onChange={(e) => {
+                                    setReservationData({
+                                      ...reservationData,
+                                      dropoffLocation: e.target.value,
+                                    });
+                                    setFieldValue(
+                                      "dropoffLocation",
+                                      e.target.value
+                                    );
+                                  }}
+                                />
+                                <label
+                                  htmlFor="dropoffLocation"
+                                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                                >
+                                  Drop-off Location
+                                </label>
+                                <ErrorMessage
+                                  name="dropoffLocation"
+                                  component="div"
+                                  className="text-red-500 text-xs mt-1"
+                                />
+                              </div>
+                            </>
+                          )}
 
-                {/* Interested in Tour Section */}
-                <div className="flex flex-col col-span-1 md:col-span-2">
-                  <span className="font-bold text-sm my-5">Private tour</span>
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="interestedInTour"
-                      checked={interestedInTour}
-                      onChange={() => {
-                        setInterestedInTour(!interestedInTour);
-                        setReservationData((prevData) => ({
-                          ...prevData,
-                          interestedInTour: !interestedInTour,
-                        }));
-                        setFieldValue("interestedInTour", !interestedInTour);
-                      }}
-                      className="mr-2"
-                    />
-                    <label htmlFor="interestedInTour" className="text-xs">
-                      Interested in a private tour?
-                    </label>
-                    <ErrorMessage
-                      name="interestedInTour"
-                      component="div"
-                      className="text-red-500 text-xs mt-1"
-                    />
+                          <div className="flex items-center mt-4">
+                            <input
+                              type="radio"
+                              id="self-driving"
+                              name="self-driving"
+                              value="self-driving"
+                              checked={drivingOption === "self-driving"}
+                              onChange={(e) => {
+                                setChauffeur(false);
+                                setDrivingOption("self-driving");
+                                setReservationData((prevData) => ({
+                                  ...prevData,
+                                  chauffeur: false,
+                                  drivingOption: "self-driving",
+                                }));
+                                setFieldValue("drivingOption", "self-driving");
+                              }}
+                              className="mr-2"
+                            />
+                            <label htmlFor="self-driving" className="text-xs">
+                              Self-driving
+                            </label>
+                            <ErrorMessage
+                              name="self-driving"
+                              component="div"
+                              className="text-red-500 text-xs mt-1"
+                            />
+                          </div>
+
+                          {drivingOption === "self-driving" && (
+                            <>
+                              <div className="relative mt-8">
+                                <Field
+                                  type="text"
+                                  name="dropoffLocation"
+                                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                                  placeholder="Ex: Home Address"
+                                  value={reservationData.dropoffLocation}
+                                  onChange={(e) => {
+                                    setDropoffLocation(e.target.value);
+                                    setReservationData((prevData) => ({
+                                      ...prevData,
+                                      dropoffLocation: e.target.value,
+                                    }));
+                                    setFieldValue(
+                                      "dropoffLocation",
+                                      e.target.value
+                                    );
+                                  }}
+                                />
+                                <label
+                                  htmlFor="dropoffLocation"
+                                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                                >
+                                  Drop-off Location
+                                </label>
+                                <ErrorMessage
+                                  name="dropoffLocation"
+                                  component="div"
+                                  className="text-red-500 text-xs mt-1"
+                                />
+                              </div>
+                              {!user.DL_PHOTO_URL && (
+                                <button
+                                  type="button"
+                                  onClick={() => setShowDLUploadModal(true)}
+                                  className="border text-brand px-4 py-2 rounded-md my-5 text-xs hover:scale-105 transition"
+                                >
+                                  Upload Driver Licence
+                                </button>
+                              )}
+                              {!user.SELFIE_PHOTO_URL && (
+                                <button
+                                  type="button"
+                                  onClick={() => setShowSelfieUploadModal(true)}
+                                  className="border text-brand px-4 py-2 rounded-md text-xs hover:scale-105 transition mt-4"
+                                >
+                                  Upload Selfie
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </>
+                    )}
                   </div>
-
-                  {/* Tour Type Selection */}
-                  {interestedInTour && (
-                    <div className="mt-4">
-                      <span className="text-gray-600 text-xs mb-2 block">
-                        Select Tour Type
-                      </span>
-                      <Field
-                        as="select"
-                        name="selectedTour"
-                        value={selectedTour}
-                        onChange={(e) => {
-                          const selectedTourId = Number(e.target.value);
-
-                          const selectedTourObject = tourTypes.find((tour) => {
-                            return tour.ID === selectedTourId;
-                          });
-                          setFieldValue("selectedTour", selectedTourObject);
-
-                          if (selectedTourObject) {
-                            setSelectedTour(selectedTourObject);
-                            setReservationData((prevData) => ({
-                              ...prevData,
-                              selectedTour: selectedTourObject,
-                            }));
-                          } else {
-                            console.error("Selected tour not found");
-                          }
-                        }}
-                        className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
-                      >
-                        <option value="" disabled>
-                          Select Tour Type
-                        </option>
-                        {tourTypes.length > 0 ? (
-                          tourTypes.map((tour) => (
-                            <option key={tour.ID} value={tour.ID}>
-                              {tour.LIST_NAME}
-                            </option>
-                          ))
-                        ) : (
-                          <option value="" disabled>
-                            No tour types available
-                          </option>
-                        )}
-                      </Field>
-                      <ErrorMessage
-                        name="selectedTour"
-                        component="div"
-                        className="text-red-500 text-xs mt-1"
-                      />
+                  {page === "place" && selfieError && touched.selfie && (
+                    <div className="text-red-500 text-xs">{selfieError}</div>
+                  )}
+                  {page === "place" && DLError && touched.driverLicense && (
+                    <div className="text-red-500 text-xs mt-1">{DLError}</div>
+                  )}
+                  {page === "place" && drivingOptionError && (
+                    <div className="text-red-500 text-xs mt-1">
+                      {drivingOptionError}
                     </div>
                   )}
-                </div>
-              </>
-            )}
 
-            {page === "car" && (
-              <div className="flex flex-col mt-4 md:col-span-2">
-                <span className="font-bold text-sm my-5">Driving Option</span>
-                <ErrorMessage
-                  name="drivingOption"
-                  component="div"
-                  className="text-red-500 text-xs mt-1"
-                />
-                <div className="flex items-center">
-                  <input
-                    type="radio"
-                    id="chauffeur"
-                    name="drivingOption"
-                    value="chauffeur"
-                    checked={drivingOption === "chauffeur"}
-                    onChange={() => {
-                      setFieldValue("drivingOption", "chauffeur");
-                      setDrivingOption("chauffeur");
-                      setChauffeur(true);
-                      setReservationData((prevData) => ({
-                        ...prevData,
-                        chauffeur: true,
-                        drivingOption: "chauffeur",
-                      }));
-                    }}
-                    className="mr-2"
-                  />
-                  <label htmlFor="chauffeur" className="text-xs">
-                    Chauffeur
-                  </label>
-                </div>
+                  <br />
+                  {page === "place" &&
+                    user.DL_PHOTO_URL &&
+                    touched.driverLicense && (
+                      <div className="text-green-500 text-xs mt-1">
+                        Driver's Licence already uploaded.
+                      </div>
+                    )}
+                  <br />
+                  {page === "place" &&
+                    user.SELFIE_PHOTO_URL &&
+                    touched.selfie && (
+                      <div className="text-green-500 text-xs mt-1">
+                        Selfie already uploaded.
+                      </div>
+                    )}
 
-                {drivingOption === "chauffeur" && (
-                  <>
-                    <div className="relative my-4">
-                      <Field
-                        type="text"
-                        name="pickupLocation"
-                        className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                        placeholder="Ex: Home Address"
-                        value={reservationData.pickupLocation}
-                        onChange={(e) => {
-                          setReservationData({
-                            ...reservationData,
-                            pickupLocation: e.target.value,
-                          });
-                          setFieldValue("pickupLocation", e.target.value);
+                  {/* Interested in Tour Section */}
+                  <div className="flex flex-col col-span-1 md:col-span-2">
+                    <span className="font-bold text-sm my-5">Private tour</span>
+                    <div className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id="interestedInTour"
+                        checked={interestedInTour}
+                        onChange={() => {
+                          setInterestedInTour(!interestedInTour);
+                          setReservationData((prevData) => ({
+                            ...prevData,
+                            interestedInTour: !interestedInTour,
+                          }));
+                          setFieldValue("interestedInTour", !interestedInTour);
                         }}
+                        className="mr-2"
                       />
-                      <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]">
-                        Pick-up Location
+                      <label htmlFor="interestedInTour" className="text-xs">
+                        Interested in a private tour?
                       </label>
                       <ErrorMessage
-                        name="pickupLocation"
+                        name="interestedInTour"
                         component="div"
                         className="text-red-500 text-xs mt-1"
                       />
                     </div>
-                    <div className="relative my-4">
-                      <Field
-                        type="text"
-                        name="dropoffLocation"
-                        className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                        placeholder=" "
-                        value={reservationData.dropoffLocation}
-                        onChange={(e) => {
-                          setReservationData({
-                            ...reservationData,
-                            dropoffLocation: e.target.value,
-                          });
-                          setFieldValue("dropoffLocation", e.target.value);
-                        }}
-                      />
-                      <label
-                        htmlFor="dropoffLocation"
-                        className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
-                      >
-                        Drop-off Location
-                      </label>
-                      <ErrorMessage
-                        name="dropoffLocation"
-                        component="div"
-                        className="text-red-500 text-xs mt-1"
-                      />
-                    </div>
-                  </>
-                )}
 
-                <div className="flex items-center mt-4">
-                  <input
-                    type="radio"
-                    id="self-driving"
-                    name="drivingOption"
-                    value="self-driving"
-                    checked={drivingOption === "self-driving"}
-                    onChange={() => {
-                      setChauffeur(false);
-                      setDrivingOption("self-driving");
-                      setReservationData((prevData) => ({
-                        ...prevData,
-                        chauffeur: false,
-                        drivingOption: "self-driving",
-                      }));
-                      setFieldValue("drivingOption", "self-driving");
-                    }}
-                    className="mr-2"
-                  />
-                  <label htmlFor="self-driving" className="text-xs">
-                    Self-driving
-                  </label>
+                    {/* Tour Type Selection */}
+                    {interestedInTour && (
+                      <div className="mt-4">
+                        <span className="text-gray-600 text-xs mb-2 block">
+                          Select Tour Type
+                        </span>
+                        <Field
+                          as="select"
+                          name="selectedTour"
+                          value={selectedTour}
+                          onChange={(e) => {
+                            const selectedTourId = Number(e.target.value);
+
+                            const selectedTourObject = tourTypes.find(
+                              (tour) => {
+                                return tour.ID === selectedTourId;
+                              }
+                            );
+                            setFieldValue("selectedTour", selectedTourObject);
+
+                            if (selectedTourObject) {
+                              setSelectedTour(selectedTourObject);
+                              setReservationData((prevData) => ({
+                                ...prevData,
+                                selectedTour: selectedTourObject,
+                              }));
+                            } else {
+                              console.error("Selected tour not found");
+                            }
+                          }}
+                          className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
+                        >
+                          <option value="" disabled>
+                            Select Tour Type
+                          </option>
+                          {tourTypes.length > 0 ? (
+                            tourTypes.map((tour) => (
+                              <option key={tour.ID} value={tour.ID}>
+                                {tour.LIST_NAME}
+                              </option>
+                            ))
+                          ) : (
+                            <option value="" disabled>
+                              No tour types available
+                            </option>
+                          )}
+                        </Field>
+                        <ErrorMessage
+                          name="selectedTour"
+                          component="div"
+                          className="text-red-500 text-xs mt-1"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {page === "car" && (
+                <div className="flex flex-col mt-4 md:col-span-2">
+                  <span className="font-bold text-sm my-5">Driving Option</span>
                   <ErrorMessage
                     name="drivingOption"
                     component="div"
                     className="text-red-500 text-xs mt-1"
                   />
-                </div>
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      id="chauffeur"
+                      name="drivingOption"
+                      value="chauffeur"
+                      checked={drivingOption === "chauffeur"}
+                      onChange={() => {
+                        setFieldValue("drivingOption", "chauffeur");
+                        setDrivingOption("chauffeur");
+                        setChauffeur(true);
+                        setReservationData((prevData) => ({
+                          ...prevData,
+                          chauffeur: true,
+                          drivingOption: "chauffeur",
+                        }));
+                      }}
+                      className="mr-2"
+                    />
+                    <label htmlFor="chauffeur" className="text-xs">
+                      Chauffeur
+                    </label>
+                  </div>
 
-                {drivingOption === "self-driving" && (
-                  <>
-                    <div className="relative mt-8">
-                      <Field
-                        type="text"
-                        name="dropoffLocation"
-                        className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                        placeholder="Ex: Home Address"
-                        value={reservationData.dropoffLocation}
-                        onChange={(e) => {
-                          setDropoffLocation(e.target.value);
-                          setReservationData((prevData) => ({
-                            ...prevData,
-                            dropoffLocation: e.target.value,
-                          }));
-                          setFieldValue("dropoffLocation", e.target.value);
-                        }}
-                      />
-                      <label
-                        htmlFor="dropoffLocation"
-                        className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
-                      >
-                        Drop-off Location
-                      </label>
-                      <ErrorMessage
-                        name="dropoffLocation"
-                        component="div"
-                        className="text-red-500 text-xs mt-1"
-                      />
-                    </div>
-                    {!user.DLFILETYPE && !user.SELFIEFILETYPE && (
-                      <button
-                        type="button"
-                        onClick={() => setShowDLUploadModal(true)}
-                        className="border text-brand px-4 py-2 rounded-md my-5 text-xs hover:scale-105 transition"
-                      >
-                        Upload Documents
-                      </button>
-                    )}
-                  </>
+                  {drivingOption === "chauffeur" && (
+                    <>
+                      <div className="relative my-4">
+                        <Field
+                          type="text"
+                          name="pickupLocation"
+                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                          placeholder="Ex: Home Address"
+                          value={reservationData.pickupLocation}
+                          onChange={(e) => {
+                            setReservationData({
+                              ...reservationData,
+                              pickupLocation: e.target.value,
+                            });
+                            setFieldValue("pickupLocation", e.target.value);
+                          }}
+                        />
+                        <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]">
+                          Pick-up Location
+                        </label>
+                        <ErrorMessage
+                          name="pickupLocation"
+                          component="div"
+                          className="text-red-500 text-xs mt-1"
+                        />
+                      </div>
+                      <div className="relative my-4">
+                        <Field
+                          type="text"
+                          name="dropoffLocation"
+                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                          placeholder=" "
+                          value={reservationData.dropoffLocation}
+                          onChange={(e) => {
+                            setReservationData({
+                              ...reservationData,
+                              dropoffLocation: e.target.value,
+                            });
+                            setFieldValue("dropoffLocation", e.target.value);
+                          }}
+                        />
+                        <label
+                          htmlFor="dropoffLocation"
+                          className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                        >
+                          Drop-off Location
+                        </label>
+                        <ErrorMessage
+                          name="dropoffLocation"
+                          component="div"
+                          className="text-red-500 text-xs mt-1"
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  <div className="flex items-center mt-4">
+                    <input
+                      type="radio"
+                      id="self-driving"
+                      name="drivingOption"
+                      value="self-driving"
+                      checked={drivingOption === "self-driving"}
+                      onChange={() => {
+                        setChauffeur(false);
+                        setDrivingOption("self-driving");
+                        setReservationData((prevData) => ({
+                          ...prevData,
+                          chauffeur: false,
+                          drivingOption: "self-driving",
+                        }));
+                        setFieldValue("drivingOption", "self-driving");
+                      }}
+                      className="mr-2"
+                    />
+                    <label htmlFor="self-driving" className="text-xs">
+                      Self-driving
+                    </label>
+                    <ErrorMessage
+                      name="drivingOption"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                  </div>
+
+                  {drivingOption === "self-driving" && (
+                    <>
+                      <div className="relative mt-8">
+                        <Field
+                          type="text"
+                          name="dropoffLocation"
+                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                          placeholder="Ex: Home Address"
+                          value={reservationData.dropoffLocation}
+                          onChange={(e) => {
+                            setDropoffLocation(e.target.value);
+                            setReservationData((prevData) => ({
+                              ...prevData,
+                              dropoffLocation: e.target.value,
+                            }));
+                            setFieldValue("dropoffLocation", e.target.value);
+                          }}
+                        />
+                        <label
+                          htmlFor="dropoffLocation"
+                          className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                        >
+                          Drop-off Location
+                        </label>
+                        <ErrorMessage
+                          name="dropoffLocation"
+                          component="div"
+                          className="text-red-500 text-xs mt-1"
+                        />
+                      </div>
+                      {!user.DL_PHOTO_URL && (
+                        <button
+                          type="button"
+                          onClick={() => setShowDLUploadModal(true)}
+                          className="border text-brand px-4 py-2 rounded-md my-5 text-xs hover:scale-105 transition"
+                        >
+                          Upload Driver's License
+                        </button>
+                      )}
+
+                      {!user.SELFIE_PHOTO_URL && (
+                        <button
+                          type="button"
+                          onClick={() => setShowSelfieUploadModal(true)}
+                          className="border text-brand px-4 py-2 rounded-md my-5 text-xs hover:scale-105 transition"
+                        >
+                          Upload Selfie
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+              {page === "car" && selfieError && touched.selfie && (
+                <div className="text-red-500 text-xs">{selfieError}</div>
+              )}
+              {page === "car" && DLError && touched.driverLicense && (
+                <div className="text-red-500 text-xs mt-1">{DLError}</div>
+              )}
+              {page === "car" && drivingOptionError && (
+                <div className="text-red-500 text-xs mt-1">
+                  {drivingOptionError}
+                </div>
+              )}
+              <br />
+              {page === "car" && user.DL_PHOTO_URL && touched.selfDriving && (
+                <div className="text-green-500 text-xs mt-1">
+                  Driver's Licence already uploaded.
+                </div>
+              )}
+
+              {page === "car" &&
+                user.SELFIE_PHOTO_URL &&
+                touched.selfDriving && (
+                  <div className="text-green-500 text-xs mt-1">
+                    Selfie already uploaded.
+                  </div>
                 )}
+              <div className="col-span-1 md:col-span-2 w-full flex justify-center">
+                <button
+                  type="submit"
+                  className="bg-brand-5xl w-full text-white text-xs font-bold p-4 rounded mt-4 hover:scale-105 transition"
+                  disabled={isSubmitting}
+                >
+                  Submit Reservation
+                </button>
               </div>
-            )}
-            <div className="col-span-1 md:col-span-2 w-full flex justify-center">
-              <button
-                type="submit"
-                className="bg-brand-5xl w-full text-white text-xs font-bold p-4 rounded mt-4 hover:scale-105 transition"
-                disabled={isSubmitting}
-              >
-                Submit Reservation
-              </button>
-            </div>
-          </Form>
-        )}
+            </Form>
+          );
+        }}
       </Formik>
       <Modal isOpen={showDLUploadModal} onClose={toggleUploadDLModal}>
-        <UploadDL handleSubmit={uploadDL} />
+        <UploadDL handleSubmit={uploadDL} isUploading={isUploading} />
       </Modal>
       <Modal isOpen={showSelfieUploadModal} onClose={toggleUploadSelfieModal}>
-        <UploadSelfie handleSubmit={uploadSelfie} />
+        <UploadSelfie handleSubmit={uploadSelfie} isUploading={isUploading} />
       </Modal>
     </>
   );
