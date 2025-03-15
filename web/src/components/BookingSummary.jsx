@@ -48,7 +48,7 @@ const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
     const listingPrice = parseFloat(listing?.PRICE) || 0;
     const chauffeurRate = chauffeur
       ? (page === "place"
-          ? selectedCar?.ChauffeurRate
+          ? parseFloat(selectedCar?.ChauffeurRate)
           : parseFloat(listing?.CHAUFFEUR_RATE)) || 0
       : 0;
     const carPrice = interestedInCar ? parseFloat(selectedCar?.Price) || 0 : 0;
