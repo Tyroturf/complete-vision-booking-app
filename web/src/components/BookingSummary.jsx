@@ -46,11 +46,22 @@ const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
         : calculateDays(checkIn, checkOut);
 
     const listingPrice = parseFloat(listing?.PRICE) || 0;
-    const chauffeurRate = chauffeur
-      ? (page === "place"
-          ? parseFloat(selectedCar?.ChauffeurRate)
-          : parseFloat(listing?.CHAUFFEUR_RATE)) || 0
-      : 0;
+    let chauffeurRate;
+
+    if (chauffeur) {
+      if (page === "place") {
+        chauffeurRate =
+          typeof selectedCar?.ChauffeurRate === "string"
+            ? parseFloat(selectedCar.ChauffeurRate) || 0
+            : selectedCar?.ChauffeurRate || 0;
+      } else {
+        chauffeurRate =
+          typeof listing?.CHAUFFEUR_RATE === "string"
+            ? parseFloat(listing.CHAUFFEUR_RATE) || 0
+            : listing?.CHAUFFEUR_RATE || 0;
+      }
+    }
+
     const carPrice = interestedInCar ? parseFloat(selectedCar?.Price) || 0 : 0;
     const tourPrice = interestedInTour
       ? parseFloat(selectedTour?.TOUR_PRICE) || 0
