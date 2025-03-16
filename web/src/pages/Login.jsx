@@ -33,7 +33,7 @@ export const Login = () => {
         sessionStorage.removeItem("redirectAfterLogin");
         navigate(redirectPath);
       } else {
-        showErrorToast("Failed to login. Please try again");
+        showErrorToast("Incorrect credentials. Please try again");
       }
     } catch (error) {
       console.error("Failed to log in", error);

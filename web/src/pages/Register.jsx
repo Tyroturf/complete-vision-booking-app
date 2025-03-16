@@ -47,13 +47,14 @@ export const Register = () => {
         role,
       });
 
-      if (res.data.error) {
-        showErrorToast("An account with this email already exists");
+      if (res.data.error === "error") {
+        showErrorToast("An account with this email/contact already exists");
         return;
       }
-
-      showSuccessToast("Sign up successful");
-      navigate("/login");
+      if (res.data.success === "User registered successfully.") {
+        showSuccessToast("Sign up successful");
+        navigate("/login");
+      }
     } catch (error) {
       showErrorToast(error);
     }
