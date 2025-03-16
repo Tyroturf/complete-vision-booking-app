@@ -85,7 +85,7 @@ export const HostRegister = () => {
       }
       if (
         res.data.status === "success" ||
-        res.data.status === "User registered successfully."
+        res.data.success === "User registered successfully."
       ) {
         showSuccessToast("Sign up successful");
         navigate("/login");
