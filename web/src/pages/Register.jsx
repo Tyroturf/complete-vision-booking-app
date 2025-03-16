@@ -18,10 +18,6 @@ const validationSchema = Yup.object({
   password: Yup.string()
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
-  terms: Yup.boolean().oneOf(
-    [true],
-    "You must accept the terms and conditions"
-  ),
 });
 
 export const Register = () => {
@@ -71,7 +67,6 @@ export const Register = () => {
               contact: "",
               email: "",
               password: "",
-              terms: false,
             }}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}

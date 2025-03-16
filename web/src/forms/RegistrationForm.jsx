@@ -17,6 +17,7 @@ const FormComponent = ({
   //   // Placeholder for Google login functionality
   //   console.log("Google login clicked");
   // };
+
   return (
     <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
       <Link
@@ -189,7 +190,7 @@ const FormComponent = ({
                 <div className="relative">
                   <Field
                     type="checkbox"
-                    name="terms"
+                    name="termsAccepted"
                     className="mr-2"
                     checked={termsAccepted}
                     onChange={(e) => {

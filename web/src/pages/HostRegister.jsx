@@ -21,17 +21,12 @@ const validationSchema = Yup.object({
   password: Yup.string()
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
-  terms: Yup.boolean().oneOf(
-    [true],
-    "You must accept the terms and conditions"
-  ),
 });
 
 export const HostRegister = () => {
   const [showTerms, setShowTerms] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
-  const { register } = useAuth();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -81,7 +76,6 @@ export const HostRegister = () => {
               contact: user?.contact || "",
               email: user?.email || "",
               password: "",
-              terms: false,
             }}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
