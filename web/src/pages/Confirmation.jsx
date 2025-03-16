@@ -93,6 +93,8 @@ const Confirmation = ({ bookingDetails, page }) => {
   };
 
   const onSuccess = async (response) => {
+    setIsLoading(true);
+
     try {
       const params = {
         booking_id: booking,
@@ -109,6 +111,8 @@ const Confirmation = ({ bookingDetails, page }) => {
     } catch (error) {
       showErrorToast("Error verifying payment.");
       console.error("Error verifying payment:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -121,7 +125,7 @@ const Confirmation = ({ bookingDetails, page }) => {
     amount: totalPriceGHS * 100,
     currency: "GHS",
     publicKey: paystackPublicKey,
-    text: "Pay Now",
+    text: isLoading ? "Paying" : "Pay Now",
     onSuccess,
     onClose,
     reference: paymentReference,

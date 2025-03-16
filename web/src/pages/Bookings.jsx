@@ -102,7 +102,7 @@ const Bookings = () => {
 
 export default Bookings;
 
-const BookingCard = ({ booking, activeTab }) => {
+export const BookingCard = ({ booking, activeTab }) => {
   const navigate = useNavigate();
 
   return (
@@ -119,7 +119,7 @@ const BookingCard = ({ booking, activeTab }) => {
       />
 
       <div className="flex flex-col md:m-5 mt-5 p-4 w-full">
-        <div className="flex justify-between items-start">
+        <div className="flex justify-between items-center">
           <div className="flex flex-col gap-3">
             <h3 className="font-bold text-lg cursor-pointer">
               {`${
@@ -128,17 +128,25 @@ const BookingCard = ({ booking, activeTab }) => {
                 booking["List Image 1"]
               }`}
             </h3>
-            <p className="text-sm text-gray-500">
+            {booking.FirstName && (
+              <p className="text-xs md:text-sm text-gray-500">
+                User:{" "}
+                <span className="font-medium">
+                  {booking.FirstName} {booking.LastName}
+                </span>
+              </p>
+            )}
+            <p className="text-xs md:text-sm text-gray-500">
               Booking Date:{" "}
               <span className="font-medium">{booking.BookingDate}</span>
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-xs md:text-sm text-gray-500">
               Check-in: <span className="font-medium">{booking.Checkin}</span>
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-xs md:text-sm text-gray-500">
               Check-out: <span className="font-medium">{booking.Checkout}</span>
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-xs md:text-sm text-gray-500">
               Total Guests:{" "}
               <span className="font-medium">{booking.NumGuests}</span>
             </p>
@@ -168,7 +176,7 @@ const BookingCard = ({ booking, activeTab }) => {
             {booking.Status}
           </span>
           <button
-            className="bg-brand text-white px-6 py-2 text-sm font-medium rounded-lg"
+            className="bg-brand text-white px-6 py-2 text-xs font-medium rounded-lg"
             onClick={(e) => {
               e.stopPropagation();
               navigate(

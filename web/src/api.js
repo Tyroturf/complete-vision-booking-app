@@ -359,6 +359,18 @@ export const fetchTourListing = async (queryString) => {
   return api.get(`/tour/tour_host_listing?host_id=${queryString}`);
 };
 
+export const fetchPlaceBookings = async (queryString) => {
+  return api.get(`/property/host_bookings?P_USER_ID=${queryString}`);
+};
+
+export const fetchCarBookings = async (queryString) => {
+  return api.get(`/carbooking/host_bookings?P_USER_ID=${queryString}`);
+};
+
+export const fetchTourBookings = async (queryString) => {
+  return api.get(`/tourbooking/host_bookings?P_USER_ID=${queryString}`);
+};
+
 export const addNewVehicle = async (params) => {
   const queryString = new URLSearchParams({
     p_car_rental_id: params.listingId,

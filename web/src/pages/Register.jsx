@@ -11,7 +11,10 @@ import CustomerTermsAndConditions from "../components/tncs/CustomerTermsAndCondi
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First name is required"),
   lastName: Yup.string().required("Last name is required"),
-  contact: Yup.string().required("Contact is required"),
+  contact: Yup.string()
+    .length(10, "Contact must be exactly 10 digits")
+    .matches(/^\d{10}$/, "Phone number is not valid")
+    .required("Phone number is required"),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),

@@ -48,6 +48,7 @@ const ReservationForm = ({
       .min(1, "At least one guest is required")
       .required("Number of guests is required"),
     phoneNumber: Yup.string()
+      .length(10, "Phone number must be exactly 10 digits")
       .matches(/^\d{10}$/, "Phone number is not valid")
       .required("Phone number is required"),
     email: Yup.string()
@@ -490,7 +491,7 @@ const ReservationForm = ({
                           <Field
                             as="select"
                             name="selectedCar"
-                            value={selectedCar}
+                            value={selectedCar.ID}
                             onChange={(e) => {
                               const selectedCarId = Number(e.target.value);
                               const selectedCarObject = carList.find((car) => {
@@ -792,7 +793,7 @@ const ReservationForm = ({
                         <Field
                           as="select"
                           name="selectedTour"
-                          value={selectedTour}
+                          value={selectedTour.ID}
                           onChange={(e) => {
                             const selectedTourId = Number(e.target.value);
 

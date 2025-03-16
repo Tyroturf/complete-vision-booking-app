@@ -20,13 +20,17 @@ const BlockedDatesModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/30">
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50 bg-black/30"
+      onClick={onClose}
+    >
       <motion.div
         variants={modalVariants}
         initial="hidden"
         animate="visible"
         exit="exit"
         className="bg-white p-4 shadow-lg rounded-md"
+        onClick={(e) => e.stopPropagation()}
       >
         <h3 className="text-sm font-bold mb-2 text-center">Block Property</h3>
         <DatePicker
@@ -40,13 +44,13 @@ const BlockedDatesModal = ({
         <div className="flex justify-between mt-3">
           <button
             onClick={onClose}
-            className="px-3 py-1 bg-gray-300 rounded-md text-sm"
+            className="px-3 py-1 bg-gray-300 rounded-md text-xs"
           >
             Cancel
           </button>
           <button
             onClick={handleBlockDates}
-            className="px-3 py-1 bg-brand text-white rounded-md text-sm"
+            className="px-3 py-1 bg-brand text-white rounded-md text-xs"
           >
             {loading ? "Blocking..." : "Block"}
           </button>

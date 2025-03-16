@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ProfileHero } from "./Dashboard";
 import hero from "../assets/g.jpg";
 import Modal from "../components/Modal";
@@ -8,6 +8,7 @@ import {
   faTrash,
   faEye,
   faCancel,
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   fetchListings,
@@ -36,7 +37,9 @@ const Manage = () => {
   const [listings, setListings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedListing, setSelectedListing] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const dropdownRef = useRef(null);
   const getFullHostType = (type) => {
     switch (type) {
       case "V":
@@ -47,8 +50,22 @@ const Manage = () => {
         return "listing";
     }
   };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
+    setDropdownOpen(false);
   };
 
   const toggleConfirmModal = () => {
@@ -154,16 +171,65 @@ const Manage = () => {
   return (
     <div className="flex flex-col">
       <ProfileHero imageUrl={hero} />
-      <div className="flex gap-5">
+      <div className="md:hidden relative" ref={dropdownRef}>
+        <button
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+          className="flex items-center gap-3 text-brand font-bold px-4 py-2 rounded-md"
+        >
+          <FontAwesomeIcon icon={faBars} className="size-3" />
+          <span className="text-xs">Actions</span>
+        </button>
+
+        {dropdownOpen && (
+          <div className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md z-50 py-2">
+            <ul className="flex flex-col">
+              <li>
+                <button
+                  onClick={openAddModal}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-xs"
+                >
+                  {getAddButtonText()}
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/blocked-properties")}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-xs flex items-center gap-2"
+                >
+                  View Blocked Properties
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/listing-bookings")}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 text-xs flex items-center gap-2"
+                >
+                  View Listing Bookings
+                </button>
+              </li>
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {/* Regular Layout for Desktop */}
+      <div className="hidden md:flex gap-5">
         <NewList openAddModal={openAddModal} buttonText={getAddButtonText()} />
         <button
           onClick={() => navigate("/blocked-properties")}
           className="flex items-center my-3 md:my-10 gap-3"
         >
-          <FontAwesomeIcon icon={faEye} className="text-brand size-5" />
+          <FontAwesomeIcon icon={faCancel} className="text-brand size-5" />
           <span className="text-xs text-brand-700">
             View Blocked Properties
           </span>
+        </button>
+        <button
+          onClick={() => navigate("/listing-bookings")}
+          className="flex items-center my-3 md:my-10 gap-3 ml-7"
+        >
+          <FontAwesomeIcon icon={faEye} className="text-brand size-5" />
+          <span className="text-xs text-brand-700">View Listing Bookings</span>
         </button>
       </div>
 
@@ -287,7 +353,7 @@ const ListCard = ({ listing, onEdit, onDelete, user_id }) => {
   };
   return (
     <>
-      <div className="cursor-pointer overflow-hidden rounded-md transform transition-transform duration-300 hover:scale-105">
+      <div className="cursor-pointer overflow-hidden rounded-md transform transition-transform duration-300 hover:scale-105 mt-5 md:mt-0">
         <div className="relative w-full h-60 overflow-hidden rounded-lg">
           <img
             src={imageUrl}

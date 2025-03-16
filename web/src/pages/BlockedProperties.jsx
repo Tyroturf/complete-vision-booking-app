@@ -10,6 +10,7 @@ import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import BlockedDatesModal from "../components/BlockDatesModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
+import Back from "../components/Back";
 
 const BlockedProperties = () => {
   const { user_id } = JSON.parse(localStorage.getItem("user"));
@@ -42,11 +43,12 @@ const BlockedProperties = () => {
 
   return (
     <div className="mt-20">
+      <Back path={"/manage"} page={"Manage Listings"} />
       <div className="p-4">
         {loading && <Loader />}
         {error && <p className="text-red-500">{error}</p>}
         {!loading && !error && bookingsData.length === 0 && (
-          <p>No blocked properties</p>
+          <p className="text-xs">No blocked properties</p>
         )}
         {!loading &&
           !error &&

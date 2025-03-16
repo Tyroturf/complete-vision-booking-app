@@ -31,6 +31,7 @@ import ThankYou from "./pages/ThankYou";
 import BookingDetails from "./pages/BookingDetail";
 import Bookings from "./pages/Bookings";
 import BlockedProperties from "./pages/BlockedProperties";
+import ListingBookings from "./pages/ListingBookings";
 
 const renderWithLayout = (Component) => (
   <Layout>
@@ -93,7 +94,10 @@ const App = () => {
                 path="/blocked-properties"
                 element={renderPrivateRoute(BlockedProperties)}
               />
-
+              <Route
+                path="/listing-bookings"
+                element={renderPrivateRoute(ListingBookings)}
+              />
               {/* Redirect unknown routes to home */}
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
