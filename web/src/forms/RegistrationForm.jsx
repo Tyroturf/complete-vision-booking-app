@@ -221,30 +221,34 @@ const FormComponent = ({
           );
         }}
       </Formik>
-      <p className="text-xs text-center text-gray-500 mt-3">
-        {isRegister ? "Already have an account?" : "Don't have an account?"}{" "}
-        <Link
-          to={isRegister ? "/login" : "/register"}
-          className="mx-5 text-brand rounded-lg transition"
-        >
-          {isRegister ? "Login" : "Register"}
-        </Link>
-      </p>
-      <div className="flex flex-col items-center mt-4 w-full">
-        <div className="relative w-full flex justify-center items-center">
-          <span className="absolute bg-white px-2 text-gray-500 text-xs">
-            or
-          </span>
-          <div className="border-t border-gray-300 w-full"></div>
-        </div>
-        {/* <button
+      {title !== "Become A Host" && (
+        <p className="text-xs text-center text-gray-500 mt-3">
+          {isRegister ? "Already have an account?" : "Don't have an account?"}{" "}
+          <Link
+            to={isRegister ? "/login" : "/register"}
+            className="mx-5 text-brand rounded-lg transition"
+          >
+            {isRegister ? "Login" : "Register"}
+          </Link>
+        </p>
+      )}
+      {title !== "Become A Host" && (
+        <div className="flex flex-col items-center mt-4 w-full">
+          <div className="relative w-full flex justify-center items-center">
+            <span className="absolute bg-white px-2 text-gray-500 text-xs">
+              or
+            </span>
+            <div className="border-t border-gray-300 w-full"></div>
+          </div>
+          {/* <button
           onClick={handleGoogleLogin}
           className="mt-4 w-full bg-[white] border border-gray-300 text-gray-700 py-2 rounded-md flex justify-center items-center hover:bg-gray-100 transition text-xs"
         >
           <FontAwesomeIcon icon={faGoogle} className="mr-2" />
           Continue with Google
         </button> */}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
