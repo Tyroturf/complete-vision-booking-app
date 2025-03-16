@@ -253,8 +253,7 @@ const ReservationForm = ({
           setSubmitting(false);
         }}
       >
-        {({ isSubmitting, values, setFieldValue, errors, touched }) => {
-          console.log("touched", touched);
+        {({ isSubmitting, setFieldValue, errors, touched }) => {
           setSelfieError(errors.selfie || "");
           setDLError(errors.driverLicense || "");
           setDrivingOptionError(errors.drivingOption || "");
@@ -717,17 +716,20 @@ const ReservationForm = ({
                       </>
                     )}
                   </div>
-                  {page === "place" && selfieError && touched.selfie && (
-                    <div className="text-red-500 text-xs">{selfieError}</div>
-                  )}
-                  {page === "place" && DLError && touched.driverLicense && (
-                    <div className="text-red-500 text-xs mt-1">{DLError}</div>
-                  )}
-                  {page === "place" && drivingOptionError && (
-                    <div className="text-red-500 text-xs mt-1">
-                      {drivingOptionError}
-                    </div>
-                  )}
+                  <div className="flex flex-col gap-4">
+                    {page === "place" && selfieError && touched.selfie && (
+                      <div className="text-red-500 text-xs">{selfieError}</div>
+                    )}
+                    {page === "place" && DLError && touched.driverLicense && (
+                      <div className="text-red-500 text-xs mt-1">{DLError}</div>
+                    )}
+                    {page === "place" && drivingOptionError && (
+                      <div className="text-red-500 text-xs mt-1">
+                        {drivingOptionError}
+                      </div>
+                    )}
+                  </div>
+                  <br />
                   {page === "place" &&
                     user.DL_PHOTO_URL &&
                     drivingOption === "self-driving" && (
@@ -990,7 +992,7 @@ const ReservationForm = ({
                         <button
                           type="button"
                           onClick={() => setShowDLUploadModal(true)}
-                          className="border text-brand px-4 py-2 rounded-md my-5 text-xs hover:scale-105 transition"
+                          className="border text-brand px-4 py-2 rounded-md my-2 text-xs hover:scale-105 transition"
                         >
                           Upload Driver's License
                         </button>
@@ -1000,7 +1002,7 @@ const ReservationForm = ({
                         <button
                           type="button"
                           onClick={() => setShowSelfieUploadModal(true)}
-                          className="border text-brand px-4 py-2 rounded-md my-5 text-xs hover:scale-105 transition"
+                          className="border text-brand px-4 py-2 rounded-md my-2 text-xs hover:scale-105 transition"
                         >
                           Upload Selfie
                         </button>
@@ -1009,40 +1011,47 @@ const ReservationForm = ({
                   )}
                 </div>
               )}
-              {page === "car" && selfieError && touched.selfie && (
-                <div className="text-red-500 text-xs">{selfieError}</div>
-              )}
-              {page === "car" && DLError && touched.driverLicense && (
-                <div className="text-red-500 text-xs mt-1">{DLError}</div>
-              )}
-              {page === "car" && drivingOptionError && (
-                <div className="text-red-500 text-xs mt-1">
-                  {drivingOptionError}
-                </div>
-              )}
-              {page === "car" && user.DL_PHOTO_URL && touched.selfDriving && (
-                <a
-                  href={user.DL_PHOTO_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-green-500 text-xs mt-1 underline cursor-pointer"
-                >
-                  Driver's Licence already uploaded.
-                </a>
-              )}
-
-              {page === "car" &&
-                user.SELFIE_PHOTO_URL &&
-                touched.selfDriving && (
-                  <a
-                    href={user.SELFIE_PHOTO_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green-500 text-xs mt-1 underline cursor-pointer"
-                  >
-                    Selfie already uploaded.
-                  </a>
+              <div className="flex flex-col gap-4">
+                {page === "car" && selfieError && touched.selfie && (
+                  <div className="text-red-500 text-xs">{selfieError}</div>
                 )}
+                {page === "car" && DLError && touched.driverLicense && (
+                  <div className="text-red-500 text-xs mt-1">{DLError}</div>
+                )}
+                {page === "car" && drivingOptionError && (
+                  <div className="text-red-500 text-xs mt-1">
+                    {drivingOptionError}
+                  </div>
+                )}
+              </div>
+              <br />
+              <div className="flex flex-col gap-4">
+                {page === "car" &&
+                  user.DL_PHOTO_URL &&
+                  drivingOption === "self-driving" && (
+                    <a
+                      href={user.DL_PHOTO_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-500 text-xs mt-1 underline cursor-pointer"
+                    >
+                      Driver's Licence already uploaded.
+                    </a>
+                  )}
+
+                {page === "car" &&
+                  user.SELFIE_PHOTO_URL &&
+                  drivingOption === "self-driving" && (
+                    <a
+                      href={user.SELFIE_PHOTO_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-500 text-xs mt-1 underline cursor-pointer"
+                    >
+                      Selfie already uploaded.
+                    </a>
+                  )}
+              </div>
 
               <div className="col-span-1 md:col-span-2 w-full flex justify-center">
                 <button
