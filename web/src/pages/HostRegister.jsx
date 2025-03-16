@@ -65,7 +65,7 @@ export const HostRegister = () => {
           email,
           role,
           hostType,
-          user,
+          user: user.user_id,
         });
       } else {
         res = await becomeAHosRegister({
