@@ -644,7 +644,7 @@ const AddNewListForm = ({
             {/* Upload Images Field */}
             <div className="relative mb-4 md:col-span-2 grid grid-cols-1 gap-2">
               <label className="text-gray-600 text-xs mb-1 block">
-                Upload Images
+                Upload 5 Images
               </label>
               <input
                 type="file"
