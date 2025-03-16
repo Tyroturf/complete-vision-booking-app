@@ -12,12 +12,8 @@ const FormComponent = ({
   setShowTerms,
   termsAccepted,
   setTermsAccepted,
+  user,
 }) => {
-  // const handleGoogleLogin = () => {
-  //   // Placeholder for Google login functionality
-  //   console.log("Google login clicked");
-  // };
-
   return (
     <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
       <Link
@@ -144,26 +140,32 @@ const FormComponent = ({
                   className="text-red-500 text-xs mt-1"
                 />
               </div>
-              <div className="relative">
-                <Field
-                  type="password"
-                  name="password"
-                  id="password"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor="password"
-                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
-                >
-                  Password
-                </label>
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="text-red-500 text-xs mt-1"
-                />
-              </div>
+              {(user === null ||
+                user === undefined ||
+                Object.keys(user).length === 0 ||
+                title !== "Become A Host") && (
+                <div className="relative">
+                  <Field
+                    type="password"
+                    name="password"
+                    id="password"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                    placeholder=" "
+                  />
+                  <label
+                    htmlFor="password"
+                    className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                  >
+                    Password
+                  </label>
+                  <ErrorMessage
+                    name="password"
+                    component="div"
+                    className="text-red-500 text-xs mt-1"
+                  />
+                </div>
+              )}
+
               {/* {isRegister && (
               <div className="relative">
                 <Field

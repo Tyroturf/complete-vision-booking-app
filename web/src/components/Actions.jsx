@@ -58,7 +58,7 @@ const DropdownMenu = ({ openAddModal, getAddButtonText }) => {
                 }}
                 className="w-full text-left px-4 py-2 hover:bg-gray-100 text-xs flex items-center gap-2"
               >
-                View Listing Bookings
+                View Bookings
               </button>
             </li>
           </ul>

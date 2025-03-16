@@ -204,7 +204,7 @@ const Manage = () => {
                   onClick={() => navigate("/listing-bookings")}
                   className="w-full text-left px-4 py-2 hover:bg-gray-100 text-xs flex items-center gap-2"
                 >
-                  View Listing Bookings
+                  View Bookings
                 </button>
               </li>
             </ul>
@@ -229,7 +229,7 @@ const Manage = () => {
           className="flex items-center my-3 md:my-10 gap-3 ml-7"
         >
           <FontAwesomeIcon icon={faEye} className="text-brand size-5" />
-          <span className="text-xs text-brand-700">View Listing Bookings</span>
+          <span className="text-xs text-brand-700">View Bookings</span>
         </button>
       </div>
 

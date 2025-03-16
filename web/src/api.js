@@ -276,7 +276,23 @@ export const uploadDocs = async (queryString) => {
   return api.get(`/user/update_user_details?${queryString}`);
 };
 
-export const becomeAHost = ({ firstName, lastName, contact, email, password, role = "H", hostType }) => {
+export const becomeAHost = ({ firstName, lastName, contact, email, role = "H", hostType, user_id }) => {
+  const queryString = new URLSearchParams({
+    p_first_name: firstName,
+    p_last_name: lastName,
+    p_contact: contact,
+    p_username: email,
+    p_role: role,
+    p_host_type: hostType,
+    p_user_id: user_id
+  }).toString();
+
+  const url = `/user/update_user_details?${queryString}`;
+
+  return api.get(url);
+};
+
+export const becomeAHosRegister = ({ firstName, lastName, contact, email, password, role = "H", hostType }) => {
   const queryString = new URLSearchParams({
     first_name: firstName,
     last_name: lastName,

@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
-import { becomeAHost } from "../api";
+import { becomeAHosRegister, becomeAHost } from "../api";
 import ListingHostTermsAndConditions from "../components/tncs/ListingHostTermsAndConditions";
 import CarHostTermsAndConditions from "../components/tncs/CarHostTermsAndConditions";
 import TourHostTermsAndConditions from "../components/tncs/TourHostTermsAndConditions";
@@ -26,6 +26,18 @@ const validationSchema = Yup.object({
     .required("Password is required"),
 });
 
+const validationSchema1 = Yup.object({
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
+  contact: Yup.string()
+    .length(10, "Contact must be exactly 10 digits")
+    .matches(/^\d{10}$/, "Phone number is not valid")
+    .required("Phone number is required"),
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+});
+
 export const HostRegister = () => {
   const [showTerms, setShowTerms] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -44,24 +56,40 @@ export const HostRegister = () => {
       }
       const { firstName, lastName, contact, email, password } = values;
       const role = "H"; // Default role for hosts
-
-      const res = await becomeAHost({
-        firstName,
-        lastName,
-        contact,
-        email,
-        password,
-        role,
-        hostType,
-      });
+      let res;
+      if (user) {
+        res = await becomeAHost({
+          firstName,
+          lastName,
+          contact,
+          email,
+          role,
+          hostType,
+          user,
+        });
+      } else {
+        res = await becomeAHosRegister({
+          firstName,
+          lastName,
+          contact,
+          email,
+          password,
+          role,
+          hostType,
+        });
+      }
 
       if (res.data.error) {
         showErrorToast("An account with this email already exists");
         return;
       }
-
-      showSuccessToast("Sign up successful");
-      navigate("/login");
+      if (
+        res.data.status === "success" ||
+        res.data.status === "User registered successfully."
+      ) {
+        showSuccessToast("Sign up successful");
+        navigate("/login");
+      }
     } catch (error) {
       showErrorToast(error.message || "An error occurred");
     }
@@ -80,7 +108,7 @@ export const HostRegister = () => {
               email: user?.email || "",
               password: "",
             }}
-            validationSchema={validationSchema}
+            validationSchema={user ? validationSchema1 : validationSchema}
             onSubmit={handleSubmit}
             buttonText="Register"
             isRegister
@@ -88,6 +116,7 @@ export const HostRegister = () => {
             termsAccepted={termsAccepted}
             setTermsAccepted={setTermsAccepted}
             setShowTerms={setShowTerms}
+            user={user}
           />
 
           <img
