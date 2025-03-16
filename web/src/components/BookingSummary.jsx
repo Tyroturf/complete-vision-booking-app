@@ -46,19 +46,19 @@ const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
         : calculateDays(checkIn, checkOut);
 
     const listingPrice = parseFloat(listing?.PRICE) || 0;
-    let chauffeurRate;
+    let chauffeurRate = 0;
 
     if (chauffeur) {
       if (page === "place") {
         chauffeurRate =
-          typeof selectedCar?.ChauffeurRate === "string"
-            ? parseFloat(selectedCar.ChauffeurRate) || 0
-            : selectedCar?.ChauffeurRate || 0;
+          typeof selectedCar?.ChauffeurRate !== "string"
+            ? selectedCar?.ChauffeurRate || 0
+            : parseFloat(selectedCar.ChauffeurRate) || 0;
       } else {
         chauffeurRate =
-          typeof listing?.CHAUFFEUR_RATE === "string"
-            ? parseFloat(listing.CHAUFFEUR_RATE) || 0
-            : listing?.CHAUFFEUR_RATE || 0;
+          typeof listing?.CHAUFFEUR_RATE !== "string"
+            ? listing?.CHAUFFEUR_RATE || 0
+            : parseFloat(listing.CHAUFFEUR_RATE) || 0;
       }
     }
 
@@ -148,7 +148,8 @@ const BookingSummary = ({ showFullPolicy, togglePolicy, page }) => {
             </span>
           </div>
 
-          {reservationData?.interestedInCar &&
+          {page === "place" &&
+            reservationData?.interestedInCar &&
             reservationData.selectedCar &&
             reservationData.selectedCar?.Price && (
               <div className="flex justify-between">

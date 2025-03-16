@@ -8,8 +8,8 @@ import { fetchBookingCars, fetchTourTypes } from "../api";
 import { useReservation } from "../contexts/ReservationContext";
 import { formatDate } from "../utils/helpers";
 import Modal from "../components/Modal";
-import UploadSelfie from "../components/UploadSelfie";
-import UploadDL from "../components/UploadDL";
+import UploadSelfie from "../components/upload/UploadSelfie";
+import UploadDL from "../components/upload/UploadDL";
 
 const ReservationForm = ({
   initialValues,

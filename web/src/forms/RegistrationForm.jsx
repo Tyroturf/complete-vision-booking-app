@@ -1,8 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 const FormComponent = ({
   title,
@@ -11,12 +9,14 @@ const FormComponent = ({
   onSubmit,
   buttonText,
   isRegister,
+  setShowTerms,
+  termsAccepted,
+  setTermsAccepted,
 }) => {
-  const handleGoogleLogin = () => {
-    // Placeholder for Google login functionality
-    console.log("Google login clicked");
-  };
-
+  // const handleGoogleLogin = () => {
+  //   // Placeholder for Google login functionality
+  //   console.log("Google login clicked");
+  // };
   return (
     <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
       <Link
@@ -29,78 +29,79 @@ const FormComponent = ({
         {title}
       </h3>
       <Formik
-        initialValues={initialValues}
+        initialValues={{ ...initialValues }}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
-        {({ isSubmitting }) => (
-          <Form className="space-y-4">
-            {isRegister && (
-              <>
-                <div className="relative">
-                  <Field
-                    type="text"
-                    name="firstName"
-                    id="firstName"
-                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
-                    placeholder=" "
-                  />
-                  <label
-                    htmlFor="firstName"
-                    className=" pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
-                  >
-                    First Name
-                  </label>
-                  <ErrorMessage
-                    name="firstName"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
+        {({ isSubmitting }) => {
+          return (
+            <Form className="space-y-4">
+              {isRegister && (
+                <>
+                  <div className="relative">
+                    <Field
+                      type="text"
+                      name="firstName"
+                      id="firstName"
+                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                      placeholder=" "
+                    />
+                    <label
+                      htmlFor="firstName"
+                      className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                    >
+                      First Name
+                    </label>
+                    <ErrorMessage
+                      name="firstName"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                  </div>
 
-                <div className="relative">
-                  <Field
-                    type="text"
-                    name="lastName"
-                    id="lastName"
-                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
-                    placeholder=" "
-                  />
-                  <label
-                    htmlFor="lastName"
-                    className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
-                  >
-                    Last Name
-                  </label>
-                  <ErrorMessage
-                    name="lastName"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
+                  <div className="relative">
+                    <Field
+                      type="text"
+                      name="lastName"
+                      id="lastName"
+                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                      placeholder=" "
+                    />
+                    <label
+                      htmlFor="lastName"
+                      className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                    >
+                      Last Name
+                    </label>
+                    <ErrorMessage
+                      name="lastName"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                  </div>
 
-                <div className="relative">
-                  <Field
-                    type="text"
-                    name="contact"
-                    id="contact"
-                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
-                    placeholder=" "
-                  />
-                  <label
-                    htmlFor="contact"
-                    className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
-                  >
-                    Contact
-                  </label>
-                  <ErrorMessage
-                    name="contact"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div>
+                  <div className="relative">
+                    <Field
+                      type="text"
+                      name="contact"
+                      id="contact"
+                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                      placeholder=" "
+                    />
+                    <label
+                      htmlFor="contact"
+                      className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                    >
+                      Contact
+                    </label>
+                    <ErrorMessage
+                      name="contact"
+                      component="div"
+                      className="text-red-500 text-xs mt-1"
+                    />
+                  </div>
 
-                {/* <div className="relative">
+                  {/* <div className="relative">
                   <Field
                     type="text"
                     name="username"
@@ -120,49 +121,49 @@ const FormComponent = ({
                     className="text-red-500 text-xs mt-1"
                   />
                 </div> */}
-              </>
-            )}
-            <div className="relative">
-              <Field
-                type="email"
-                name="email"
-                id="email"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
-                placeholder=" "
-              />
-              <label
-                htmlFor="email"
-                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
-              >
-                Email
-              </label>
-              <ErrorMessage
-                name="email"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
-            <div className="relative">
-              <Field
-                type="password"
-                name="password"
-                id="password"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
-                placeholder=" "
-              />
-              <label
-                htmlFor="password"
-                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
-              >
-                Password
-              </label>
-              <ErrorMessage
-                name="password"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
-            {/* {isRegister && (
+                </>
+              )}
+              <div className="relative">
+                <Field
+                  type="email"
+                  name="email"
+                  id="email"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                  placeholder=" "
+                />
+                <label
+                  htmlFor="email"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                >
+                  Email
+                </label>
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
+              <div className="relative">
+                <Field
+                  type="password"
+                  name="password"
+                  id="password"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                  placeholder=" "
+                />
+                <label
+                  htmlFor="password"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                >
+                  Password
+                </label>
+                <ErrorMessage
+                  name="password"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
+              {/* {isRegister && (
               <div className="relative">
                 <Field
                   type="password"
@@ -184,15 +185,40 @@ const FormComponent = ({
                 />
               </div>
             )} */}
-            <button
-              type="submit"
-              className="w-full bg-brand text-white py-2 rounded-md font-bold hover:scale-105 transition-transform duration-200 text-xs"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? `${buttonText}ing...` : buttonText}
-            </button>
-          </Form>
-        )}
+              {(title === "Register" || title === "Become A Host") && (
+                <div className="relative">
+                  <Field
+                    type="checkbox"
+                    name="terms"
+                    className="mr-2"
+                    checked={termsAccepted}
+                    onChange={(e) => {
+                      setTermsAccepted(e.target.checked);
+                    }}
+                  />
+                  <span className="text-xs">
+                    I agree to the
+                    {"  "}
+                    <span
+                      className="text-brand underline cursor-pointer"
+                      onClick={() => setShowTerms(true)}
+                    >
+                      terms and conditions
+                    </span>
+                  </span>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="w-full bg-brand text-white py-2 rounded-md font-bold hover:scale-105 transition-transform duration-200 text-xs"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? `${buttonText}ing...` : buttonText}
+              </button>
+            </Form>
+          );
+        }}
       </Formik>
       <p className="text-xs text-center text-gray-500 mt-3">
         {isRegister ? "Already have an account?" : "Don't have an account?"}{" "}

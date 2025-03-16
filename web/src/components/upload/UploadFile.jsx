@@ -1,8 +1,8 @@
 import React from "react";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useReservation } from "../contexts/ReservationContext";
-import Loader from "./Loader";
+import { useReservation } from "../../contexts/ReservationContext";
+import Loader from "../Loader";
 
 const UploadFile = ({ fieldName, label, handleSubmit, isUploading }) => {
   const { reservationData, setReservationData } = useReservation();
