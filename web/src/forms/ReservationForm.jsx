@@ -30,7 +30,6 @@ const ReservationForm = ({
   const [carList, setCarList] = useState([]);
   const [chauffeur, setChauffeur] = useState(false);
   const [drivingOption, setDrivingOption] = useState("");
-  const [dropoffLocation, setDropoffLocation] = useState(listing?.LIST_NAME);
   const [interestedInTour, setInterestedInTour] = useState(false);
   const [tourTypes, setTourType] = useState("");
   const [selectedTour, setSelectedTour] = useState("");
@@ -670,7 +669,6 @@ const ReservationForm = ({
                                   placeholder="Ex: Home Address"
                                   value={reservationData.dropoffLocation}
                                   onChange={(e) => {
-                                    setDropoffLocation(e.target.value);
                                     setReservationData((prevData) => ({
                                       ...prevData,
                                       dropoffLocation: e.target.value,
@@ -967,7 +965,6 @@ const ReservationForm = ({
                           placeholder="Ex: Home Address"
                           value={reservationData.dropoffLocation}
                           onChange={(e) => {
-                            setDropoffLocation(e.target.value);
                             setReservationData((prevData) => ({
                               ...prevData,
                               dropoffLocation: e.target.value,
