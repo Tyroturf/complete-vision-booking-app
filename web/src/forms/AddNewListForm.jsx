@@ -583,17 +583,22 @@ const AddNewListForm = ({
             {hostType === "V" && (
               <div className="relative mb-4">
                 <Field
-                  type="text"
+                  as="select"
                   name="carType"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor="carType"
-                  className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                  value={values.carType || ""}
+                  onChange={(e) => {
+                    const selectedCarType = e.target.value;
+                    setFieldValue("carType", selectedCarType);
+                  }}
+                  className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
                 >
-                  Car Type
-                </label>
+                  <option value="" disabled>
+                    Select Car Type
+                  </option>
+                  <option value="SUV">SUV</option>
+                  <option value="Sedan">Sedan</option>
+                  <option value="Coupe">Coupe</option>
+                </Field>
                 <ErrorMessage
                   name="carType"
                   component="div"
