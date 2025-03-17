@@ -485,22 +485,22 @@ const ReservationForm = ({
                     {interestedInCar && (
                       <>
                         <div className="mt-4">
-                          <span className="text-gray-600 text-xs mb-2 block">
-                            Select Car
-                          </span>
                           <Field
                             as="select"
                             name="selectedCar"
-                            value={selectedCar.ID}
+                            value={selectedCar?.ID || ""}
                             onChange={(e) => {
                               const selectedCarId = Number(e.target.value);
-                              const selectedCarObject = carList.find((car) => {
-                                return car.ID === selectedCarId;
-                              });
-                              setFieldValue("selectedCar", selectedCarObject);
+                              const selectedCarObject = carList.find(
+                                (car) => car.ID === selectedCarId
+                              );
 
                               if (selectedCarObject) {
-                                setSelectedCar(selectedCarObject.ID);
+                                setFieldValue(
+                                  "selectedCar",
+                                  selectedCarObject.ID
+                                );
+                                setSelectedCar(selectedCarObject);
                                 setReservationData((prevData) => ({
                                   ...prevData,
                                   selectedCar: selectedCarObject,
@@ -515,7 +515,7 @@ const ReservationForm = ({
                               Select Car
                             </option>
                             {carList?.length > 0 ? (
-                              carList?.map((car) => (
+                              carList.map((car) => (
                                 <option key={car.ID} value={car.ID}>
                                   {car.ListName}
                                 </option>
@@ -787,13 +787,11 @@ const ReservationForm = ({
                     {/* Tour Type Selection */}
                     {interestedInTour && (
                       <div className="mt-4">
-                        <span className="text-gray-600 text-xs mb-2 block">
-                          Select Tour Type
-                        </span>
                         <Field
                           as="select"
                           name="selectedTour"
-                          value={selectedTour.ID}
+                          value={selectedTour?.ID || ""}
+                          placeholder="Select Tour"
                           onChange={(e) => {
                             const selectedTourId = Number(e.target.value);
 
@@ -802,9 +800,9 @@ const ReservationForm = ({
                                 return tour.ID === selectedTourId;
                               }
                             );
-                            setFieldValue("selectedTour", selectedTourObject);
 
                             if (selectedTourObject) {
+                              setFieldValue("selectedTour", selectedTourObject);
                               setSelectedTour(selectedTourObject);
                               setReservationData((prevData) => ({
                                 ...prevData,
