@@ -14,7 +14,6 @@ import UploadDL from "../components/upload/UploadDL";
 const ReservationForm = ({
   initialValues,
   onSubmit,
-  listing,
   user,
   page,
   uploadDL,

@@ -9,17 +9,23 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { formatWithCommas } from "../utils/helpers";
 import { Nav } from "./Dashboard";
 
-const Bookings = () => {
+const Bookings = ({ page }) => {
   const { user_id } = JSON.parse(localStorage.getItem("user"));
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const typeParam = queryParams.get("type");
 
-  const typeToTabMap = {
-    "past stays": "Past Stays",
-    rentals: "Rentals",
-    tours: "Tours",
-  };
+  const typeToTabMap = page
+    ? {
+        place: "Past Stays",
+        car: "Rentals",
+        tour: "Tours",
+      }
+    : {
+        "past stays": "Past Stays",
+        rentals: "Rentals",
+        tours: "Tours",
+      };
 
   const [activeTab, setActiveTab] = useState(
     typeToTabMap[typeParam] || "Past Stays"

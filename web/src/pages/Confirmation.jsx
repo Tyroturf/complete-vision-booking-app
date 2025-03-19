@@ -14,7 +14,10 @@ const Confirmation = ({ bookingDetails, page }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [booking, setBooking] = useState(null);
   const [paymentReference, setPaymentReference] = useState(null);
-  const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
+  const paystackPublicKey =
+    import.meta.env.NODE_ENV === "production"
+      ? import.meta.env.VITE_PAYSTACK_LIVE_KEY
+      : import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
   const { user_id } = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
 
@@ -130,7 +133,7 @@ const Confirmation = ({ bookingDetails, page }) => {
     onClose,
     reference: paymentReference,
     className:
-      "bg-brand text-xs font-bold text-white px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition",
+      "bg-green-500 text-xs font-bold text-white px-4 py-2 rounded hover:bg-green-600 hover:scale-105 transition",
   };
 
   return (

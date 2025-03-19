@@ -11,6 +11,7 @@ import { useReservation } from "../contexts/ReservationContext";
 import { formatDate } from "../utils/helpers";
 import axios from "axios";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
+import BookingNotFound from "./BookingNotFound";
 
 const Reservation = ({ type }) => {
   const today = new Date();
@@ -256,70 +257,76 @@ const Reservation = ({ type }) => {
   };
 
   return (
-    <div className="container mx-auto mt-20 p-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="space-y-5 md:border border-brand md:p-6 rounded-lg">
-          <div className="flex justify-between gap-x-3">
-            <img
-              src={data?.IMAGE1_URL}
-              className="w-1/2 h-28 lg:h-56 object-cover rounded-lg"
-              alt={data?.LIST_NAME || "icon"}
-              onClick={() => handleImageClick()}
-            />
-            {isImageModalOpen && (
-              <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-                <button
-                  className="absolute top-4 right-4 text-white text-3xl font-bold"
-                  onClick={() => closeImageModal()}
-                >
-                  ✕
-                </button>
+    <>
+      {data ? (
+        <div className="container mx-auto mt-20 p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-5 md:border border-brand md:p-6 rounded-lg">
+              <div className="flex justify-between gap-x-3">
                 <img
                   src={data?.IMAGE1_URL}
-                  className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
-                  alt={data?.LIST_NAME || "image"}
+                  className="w-1/2 h-28 lg:h-56 object-cover rounded-lg"
+                  alt={data?.LIST_NAME || "icon"}
+                  onClick={() => handleImageClick()}
+                />
+                {isImageModalOpen && (
+                  <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+                    <button
+                      className="absolute top-4 right-4 text-white text-3xl font-bold"
+                      onClick={() => closeImageModal()}
+                    >
+                      ✕
+                    </button>
+                    <img
+                      src={data?.IMAGE1_URL}
+                      className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
+                      alt={data?.LIST_NAME || "image"}
+                    />
+                  </div>
+                )}
+                <div className="flex flex-col justify-center gap-y-1">
+                  <span className="font-medium text-sm">{data?.LIST_NAME}</span>
+                  {/* <RatingSummary /> */}
+                  <span className="font-thin text-xs">{data?.LOCATION}</span>
+                </div>
+              </div>
+
+              <div className="space-y-5">
+                <span className="font-bold text-sm">Enter your details</span>
+                <ReservationForm
+                  initialValues={initialValues}
+                  onSubmit={handleSubmit}
+                  listing={data}
+                  user={userDetails}
+                  page={page}
+                  uploadDL={uploadDL}
+                  uploadSelfie={uploadSelfie}
+                  isUploading={isUploading}
+                  showDLUploadModal={showDLUploadModal}
+                  showSelfieUploadModal={showSelfieUploadModal}
+                  setShowDLUploadModal={setShowDLUploadModal}
+                  setShowSelfieUploadModal={setShowSelfieUploadModal}
                 />
               </div>
-            )}
-            <div className="flex flex-col justify-center gap-y-1">
-              <span className="font-medium text-sm">{data?.LIST_NAME}</span>
-              {/* <RatingSummary /> */}
-              <span className="font-thin text-xs">{data?.LOCATION}</span>
+            </div>
+
+            <div className="flex items-center">
+              <BookingSummary
+                page={page}
+                showFullPolicy={showFullPolicy}
+                togglePolicy={togglePolicy}
+              />
             </div>
           </div>
 
-          <div className="space-y-5">
-            <span className="font-bold text-sm">Enter your details</span>
-            <ReservationForm
-              initialValues={initialValues}
-              onSubmit={handleSubmit}
-              listing={data}
-              user={userDetails}
-              page={page}
-              uploadDL={uploadDL}
-              uploadSelfie={uploadSelfie}
-              isUploading={isUploading}
-              showDLUploadModal={showDLUploadModal}
-              showSelfieUploadModal={showSelfieUploadModal}
-              setShowDLUploadModal={setShowDLUploadModal}
-              setShowSelfieUploadModal={setShowSelfieUploadModal}
-            />
-          </div>
+          <Modal isOpen={showConfirmation} onClose={closeConfirmation}>
+            <Confirmation bookingDetails={reservationData} page={page} />
+          </Modal>
         </div>
-
-        <div className="flex items-center">
-          <BookingSummary
-            page={page}
-            showFullPolicy={showFullPolicy}
-            togglePolicy={togglePolicy}
-          />
-        </div>
-      </div>
-
-      <Modal isOpen={showConfirmation} onClose={closeConfirmation}>
-        <Confirmation bookingDetails={reservationData} page={page} />
-      </Modal>
-    </div>
+      ) : (
+        <BookingNotFound page={page} />
+      )}
+    </>
   );
 };
 
