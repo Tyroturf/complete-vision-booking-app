@@ -15,6 +15,7 @@ import * as Yup from "yup";
 import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
+import { getColor, getHeadingText, getInitials } from "../utils/helpers";
 
 const TotalBookings = ({ totalBookings }) => {
   const { ref, inView } = useInView({
@@ -300,7 +301,7 @@ export const Nav = ({
 
 export const Dashboard = () => {
   const [activeSection, setActiveSection] = useState("home");
-  const { first_name, last_name, role } = JSON.parse(
+  const { first_name, last_name, role, host_type } = JSON.parse(
     localStorage.getItem("user")
   );
 
@@ -323,8 +324,10 @@ export const Dashboard = () => {
     <div className="flex flex-col">
       <ProfileHero
         imageUrl={hero}
-        username={first_name + " " + last_name}
         role={roleFull}
+        first_name={first_name}
+        last_name={last_name}
+        host_type={host_type}
       />
       <Nav setActiveSection={setActiveSection} activeSection={activeSection} />
       <div className="relative overflow-hidden">{renderSection()}</div>
@@ -332,23 +335,37 @@ export const Dashboard = () => {
   );
 };
 
-export const ProfileHero = ({ imageUrl, username, role }) => (
-  <>
-    <img
-      src={imageUrl}
-      alt="profileHero"
-      className="relative bg-cover bg-bottom lg:h-80 md:h-64 h-48 mt-8 md:mt-12 rounded-sm object-cover"
-    />
-    <div className="text-center -mt-12 z-0">
+export const ProfileHero = ({
+  imageUrl,
+  first_name,
+  last_name,
+  role,
+  host_type,
+}) => {
+  const username = first_name + " " + last_name;
+
+  return (
+    <>
       <img
-        src="https://tailus.io/sources/blocks/stats-cards/preview/images/second_user.webp"
-        alt=""
-        className="w-20 h-20 m-auto rounded-full object-cover md:w-28 md:h-28 border-4 border-brand hover:scale-110 transition"
+        src={imageUrl}
+        alt="profileHero"
+        className="relative bg-cover bg-bottom lg:h-80 md:h-64 h-48 mt-8 md:mt-12 rounded-sm object-cover"
       />
-      <h5 className="mt-4 md:text-xl text-xs font-semibold text-gray-600">
-        {username}
-      </h5>
-      <span className="text-xs text-gray-400 lg:block">{role}</span>
-    </div>
-  </>
-);
+      <div className="text-center -mt-12 z-0">
+        <div
+          className={`w-20 h-20 md:w-28 md:h-28 m-auto rounded-full flex items-center justify-center text-white font-bold text-xl md:text-2xl border-4 border-gray-300 hover:scale-110 transition ${getColor(
+            first_name
+          )}`}
+        >
+          {getInitials(first_name, last_name)}
+        </div>
+        <h5 className="mt-4 md:text-xl text-xs font-semibold text-gray-600">
+          {username}
+        </h5>
+        <span className="text-xs text-gray-400 lg:block">
+          {getHeadingText(host_type)} {role}
+        </span>
+      </div>
+    </>
+  );
+};
