@@ -96,9 +96,8 @@ const AddPaymentForm = ({ handleSubmit, isLoading }) => {
         </Form>
       </Formik>
       <p className="text-xs text-center text-gray-600">
-        By adding your card, you allow Complete Vision GH to charge your card
-        for this payment and future payments in accordance with their terms. You
-        will not be able to edit card details. Contact Customer Service
+        This is the designated bank where Complete Vision GH will process and
+        transfer all your future earnings and payouts.
       </p>
     </div>
   );
