@@ -21,6 +21,7 @@ import { fetchUser, updateUserDetails } from "../api";
 import EditableProfileForm from "../forms/EditableProfileForm";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import Loader from "../components/Loader";
+import Payment from "../components/Payment";
 
 const TotalBookings = ({ totalBookings }) => {
   const { ref, inView } = useInView({
@@ -289,8 +290,6 @@ const Account = ({ user, fetchUserDetails, id }) => {
   );
 };
 
-const Payment = () => <div>Manage payment information...</div>;
-
 export const Nav = ({
   setActiveSection,
   activeSection,
@@ -342,6 +341,9 @@ export const Dashboard = () => {
           host_type: userDetails.HOST_TYPE,
           driver_license: userDetails.DL_PHOTO_URL,
           selfie: userDetails.SELFIE_PHOTO_URL,
+          bank_name: userDetails.BANK_NAME,
+          bank_type: userDetails.BANK_TYPE,
+          bank_account_number: userDetails.BANK_ACCOUNT_NUM,
         });
       }
     } catch (err) {
@@ -372,7 +374,13 @@ export const Dashboard = () => {
           />
         );
       case "payment":
-        return <Payment />;
+        return (
+          <Payment
+            p_user_id={user_id}
+            fetchUserDetails={fetchUserDetails}
+            user={user}
+          />
+        );
       default:
         return <Home />;
     }
@@ -420,8 +428,9 @@ export const ProfileHero = ({
         <h5 className="mt-4 md:text-xl text-xs font-semibold text-gray-600">
           {username}
         </h5>
+
         <span className="text-xs text-gray-400 lg:block">
-          {getHeadingText(host_type)} {role}
+          {host_type ? getHeadingText(host_type) : ""} {role}
         </span>
       </div>
     </>

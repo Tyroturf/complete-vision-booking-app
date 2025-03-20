@@ -586,3 +586,21 @@ export const updateUserDetails = ({ firstName, lastName, contact, email, id }) =
 
   return api.get(url);
 };
+
+export const addBankAccount = ({
+  p_bank_account_num,
+  p_bank_type,
+  p_bank_name,
+  p_user_id
+}) => {
+  const queryString = new URLSearchParams({
+      p_bank_account_num,
+      p_bank_type,
+      p_bank_name,
+      p_user_id
+    }).toString();
+
+  const url = `/user/update_user_details?${queryString}`;
+
+  return api.get(url);
+};
