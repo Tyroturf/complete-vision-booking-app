@@ -13,7 +13,7 @@ import { showErrorToast, showSuccessToast } from "../utils/toast";
 
 const Card = ({ children, className }) => (
   <div
-    className={`w-full flex flex-col justify-between max-w-sm bg-[#f7b735] shadow-lg rounded-2xl p-6 h-52 ${className}`}
+    className={`w-full flex flex-col justify-between max-w-sm bg-[#f7b735] shadow-lg rounded-2xl p-6 h-44 md:h-52 ${className}`}
   >
     {children}
   </div>
@@ -75,32 +75,32 @@ const Payment = ({ p_user_id, fetchUserDetails, user }) => {
       <div className="flex flex-wrap items-center justify-center gap-10 p-4">
         {bank_account_number ? (
           <Card>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center ">
               <div className="flex flex-col font-bold">
                 <p className="text-white">**** **** ****</p>
-                <p className="text-white text-2xl">{card.last4}</p>
+                <p className="text-white text-lg md:text-2xl">{card.last4}</p>
               </div>
             </div>
             <div className="flex justify-between text-white">
-              <div className="flex flex-col">
-                <p className="text-xs">Bank</p>
+              <div className="flex flex-col text-xs md:text-sm">
+                <p>Bank</p>
                 <p className="font-bold">{bank_name}</p>
               </div>
               <FontAwesomeIcon
-                className="size-10"
+                className="size-8 md:size-10"
                 icon={getCardBrandIcon(card.brand)}
               />
             </div>
             <div className="flex justify-between text-white">
-              <div className="flex flex-col">
-                <p className="text-xs">Account Type</p>
+              <div className="flex flex-col text-xs md:text-sm">
+                <p>Account Type</p>
                 <p className="font-bold">{bank_type}</p>
               </div>
             </div>
           </Card>
         ) : (
           <button
-            className="w-full flex flex-col gap-5 items-center justify-center max-w-sm border-2 border-dashed border-[#f7b735] shadow-lg rounded-2xl p-4 h-52"
+            className="w-full flex flex-col gap-5 items-center justify-center max-w-sm border-2 border-dashed border-[#f7b735] shadow-lg rounded-2xl p-4 h-44 md:h-52"
             onClick={() => setIsModalOpen(true)}
           >
             <FontAwesomeIcon
