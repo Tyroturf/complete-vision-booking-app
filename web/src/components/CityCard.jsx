@@ -20,9 +20,6 @@ const CityCard = ({ city }) => {
           <span className="text-slate-500 font-bold tracking-wide text-xs lg:text-sm">
             {city.name}
           </span>
-          <span className="text-slate-500 text-xs tracking-wide">
-            {city.count} places
-          </span>
         </div>
       </div>
     </Link>

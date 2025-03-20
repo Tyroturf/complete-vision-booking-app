@@ -598,6 +598,7 @@ const AddNewListForm = ({
                   <option value="SUV">SUV</option>
                   <option value="Sedan">Sedan</option>
                   <option value="Coupe">Coupe</option>
+                  <option value="Bus">Bus</option>
                 </Field>
                 <ErrorMessage
                   name="carType"

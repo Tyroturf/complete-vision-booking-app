@@ -10,12 +10,17 @@ import {
 } from "recharts";
 import hero from "../assets/g.jpg";
 import "../styles.css";
-import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CountUp from "react-countup";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
 import { getColor, getHeadingText, getInitials } from "../utils/helpers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { fetchUser, updateUserDetails } from "../api";
+import EditableProfileForm from "../forms/EditableProfileForm;";
+import { showErrorToast, showSuccessToast } from "../utils/toast";
+import Loader from "../components/Loader";
 
 const TotalBookings = ({ totalBookings }) => {
   const { ref, inView } = useInView({
@@ -113,160 +118,173 @@ const Home = () => {
   );
 };
 
-const Account = () => {
+const Account = ({ user, fetchUserDetails, id }) => {
+  const {
+    first_name,
+    last_name,
+    contact,
+    role,
+    username,
+    host_type,
+    driver_license,
+    selfie,
+  } = user;
+  const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const toggleEdit = () => setIsEditing(!isEditing);
+
   const initialValues = {
-    username: "currentUsername",
-    email: "currentEmail@example.com",
+    firstName: first_name,
+    lastName: last_name,
+    contact: contact,
+    email: username,
     currentPassword: "",
     newPassword: "",
     confirmNewPassword: "",
   };
 
   const validationSchema = Yup.object({
-    username: Yup.string().required("Username is required"),
-    email: Yup.string()
-      .email("Invalid email format")
-      .required("Email is required"),
-    currentPassword: Yup.string().required("Current password is required"),
-    newPassword: Yup.string().min(
-      6,
-      "Password should be at least 6 characters"
-    ),
+    firstName: Yup.string(),
+    lastName: Yup.string(),
+    contact: Yup.string()
+      .length(10, "Contact must be exactly 10 digits")
+      .matches(/^\d{10}$/, "Phone number is not valid"),
+    email: Yup.string().email("Invalid email address"),
+
+    currentPassword: Yup.string(),
+
+    newPassword: Yup.string()
+      .min(6, "Password should be at least 6 characters")
+      .when("currentPassword", {
+        is: (val) => Boolean(val),
+        then: (schema) => schema.required("New password is required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+
     confirmNewPassword: Yup.string()
       .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
-      .when("newPassword", {
-        is: (val) => val && val.length > 0,
-        then: Yup.string().required("Please confirm your new password"),
-      }),
+      .when(
+        ["currentPassword", "newPassword"],
+        ([currentPassword, newPassword], schema) => {
+          return currentPassword && newPassword
+            ? schema.required("Please confirm your new password")
+            : schema.notRequired();
+        }
+      ),
   });
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    console.log("Account details updated", values);
-    setSubmitting(false);
+  const handleSubmit = async (values) => {
+    try {
+      const {
+        firstName,
+        lastName,
+        contact,
+        email,
+        currentPassword,
+        confirmNewPassword,
+        newPassword,
+      } = values;
+      setIsLoading(true);
+      const res = await updateUserDetails({
+        firstName,
+        lastName,
+        contact,
+        email,
+        currentPassword,
+        id,
+      });
+
+      if (
+        res.data.status === "success" ||
+        res.data.success === "User registered successfully."
+      ) {
+        showSuccessToast("Account updated succcessfully");
+        fetchUserDetails();
+        setIsEditing(false);
+      } else {
+        showErrorToast("Account update failed.");
+      }
+    } catch (error) {
+      showErrorToast(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  useEffect(() => {
+    if (!isEditing) fetchUserDetails();
+  }, [isEditing]);
+
   return (
-    <div className="w-full md:w-1/2 p-8 flex flex-col justify-center mx-auto">
-      <h3 className="text-base md:text-lg font-semibold mb-4 text-slate-500">
-        Edit Account Information
-      </h3>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting }) => (
-          <Form className="space-y-4">
-            <div className="relative">
-              <Field
-                type="text"
-                name="username"
-                id="username"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                placeholder=" "
-              />
-              <label
-                htmlFor="username"
-                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+    <div className="w-full md:w-1/2 p-8 flex flex-col justify-center mx-auto border rounded-lg shadow-lg bg-white mt-10">
+      <div className="flex justify-between items-center mb-10">
+        <h3 className="text-lg font-semibold text-slate-600">
+          Account Information
+        </h3>
+        <button
+          onClick={toggleEdit}
+          className="text-brand hover:text-brand-dark transition"
+        >
+          <FontAwesomeIcon icon={isEditing ? faTimes : faEdit} size="lg" />
+        </button>
+      </div>
+      {isEditing ? (
+        <EditableProfileForm
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          handleSubmit={handleSubmit}
+          isEditing={isEditing}
+          isLoading={isLoading}
+          setIsEditing={setIsEditing}
+        />
+      ) : (
+        <div className="space-y-8 text-sm text-slate-700">
+          <p>
+            <strong>First Name:</strong> {first_name}
+          </p>
+          <p>
+            <strong>Last Name:</strong> {last_name}
+          </p>
+          <p>
+            <strong>Contact:</strong> {contact}
+          </p>
+          <p>
+            <strong>Email:</strong> {username}
+          </p>
+          {host_type && (
+            <p>
+              <strong>Host Type:</strong> {getHeadingText(host_type)}
+            </p>
+          )}
+          {selfie && (
+            <p>
+              <span className="font-semibold">Selfie:</span>{" "}
+              <a
+                href={selfie}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand"
               >
-                Username
-              </label>
-              <ErrorMessage
-                name="username"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
-            <div className="relative">
-              <Field
-                type="email"
-                name="email"
-                id="email"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                placeholder=" "
-              />
-              <label
-                htmlFor="email"
-                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+                Click here to view
+              </a>
+            </p>
+          )}
+          {driver_license && (
+            <p>
+              <span className="font-semibold">Driver’s License:</span>{" "}
+              <a
+                href={driver_license}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand"
               >
-                Email
-              </label>
-              <ErrorMessage
-                name="email"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
-            <div className="relative">
-              <Field
-                type="password"
-                name="currentPassword"
-                id="currentPassword"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                placeholder=" "
-              />
-              <label
-                htmlFor="currentPassword"
-                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
-              >
-                Current Password
-              </label>
-              <ErrorMessage
-                name="currentPassword"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
-            <div className="relative">
-              <Field
-                type="password"
-                name="newPassword"
-                id="newPassword"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                placeholder=" "
-              />
-              <label
-                htmlFor="newPassword"
-                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
-              >
-                New Password
-              </label>
-              <ErrorMessage
-                name="newPassword"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
-            <div className="relative">
-              <Field
-                type="password"
-                name="confirmNewPassword"
-                id="confirmNewPassword"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
-                placeholder=" "
-              />
-              <label
-                htmlFor="confirmNewPassword"
-                className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
-              >
-                Confirm New Password
-              </label>
-              <ErrorMessage
-                name="confirmNewPassword"
-                component="div"
-                className="text-red-500 text-xs mt-1"
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-brand text-white py-2 rounded-md font-bold hover:scale-105 transition-transform duration-200 text-xs"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Updating..." : "Update Account"}
-            </button>
-          </Form>
-        )}
-      </Formik>
+                Click here to view
+              </a>
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -301,18 +319,58 @@ export const Nav = ({
 
 export const Dashboard = () => {
   const [activeSection, setActiveSection] = useState("home");
-  const { first_name, last_name, role, host_type } = JSON.parse(
-    localStorage.getItem("user")
-  );
+  const [user, setUser] = useState(null);
 
-  let roleFull = role === "G" ? "Guest" : "Host";
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const user_id = storedUser?.user_id;
+
+  const fetchUserDetails = async () => {
+    if (!user_id) return;
+
+    try {
+      const response = await fetchUser(`p_user_id=${user_id}`);
+      const userDetails = response.data["User Details"]?.[0];
+
+      if (userDetails) {
+        setUser({
+          first_name: userDetails.FIRST_NAME,
+          last_name: userDetails.LAST_NAME,
+          contact: userDetails.CONTACT,
+          username: userDetails.USERNAME,
+          role: userDetails.ROLE,
+          balance: userDetails.BALANCE,
+          host_type: userDetails.HOST_TYPE,
+          driver_license: userDetails.DL_PHOTO_URL,
+          selfie: userDetails.SELFIE_PHOTO_URL,
+        });
+      }
+    } catch (err) {
+      console.error("Failed to fetch user details:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, [user_id]);
+
+  if (!user) {
+    return <Loader />;
+  }
+
+  const roleFull = user.role === "G" ? "Guest" : "Host";
 
   const renderSection = () => {
     switch (activeSection) {
       case "home":
         return <Home />;
       case "account":
-        return <Account />;
+        return (
+          <Account
+            user={user}
+            id={user_id}
+            fetchUserDetails={fetchUserDetails}
+          />
+        );
       case "payment":
         return <Payment />;
       default:
@@ -325,9 +383,9 @@ export const Dashboard = () => {
       <ProfileHero
         imageUrl={hero}
         role={roleFull}
-        first_name={first_name}
-        last_name={last_name}
-        host_type={host_type}
+        first_name={user.first_name}
+        last_name={user.last_name}
+        host_type={user.host_type}
       />
       <Nav setActiveSection={setActiveSection} activeSection={activeSection} />
       <div className="relative overflow-hidden">{renderSection()}</div>

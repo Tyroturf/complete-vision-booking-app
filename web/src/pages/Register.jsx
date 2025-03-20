@@ -59,6 +59,7 @@ export const Register = () => {
       showErrorToast(error);
     }
   };
+
   return (
     <>
       <div className="min-h-screen flex justify-center items-center bg-gray-100 p-4">

@@ -16,11 +16,8 @@ const CarRentalCard = ({ car }) => {
 
         <div className="absolute inset-0 flex flex-col justify-end p-2 transition-opacity duration-300 bg-black bg-opacity-10 hover:bg-opacity-30">
           <div className="flex justify-between mb-2 text-xs lg:text-sm text-white mx-auto">
-            <p className="font-bold">{car.name}</p>
+            <p className="font-bold text-sm md:text-lg">{car.name}</p>
           </div>
-          <button className="text-white text-xs lg:text-sm w-full md:w-48 mx-auto p-2 bg-brand rounded-md font-medium hover:scale-105">
-            Rent a car
-          </button>
         </div>
       </div>
     </Link>

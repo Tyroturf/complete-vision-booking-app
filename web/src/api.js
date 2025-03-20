@@ -570,3 +570,19 @@ export const fetchBlockedBookings = async (queryString) => {
 export const deleteBlockedBooking = async (queryString) => {
   return api.get(`/property/delete_booking?P_BOOKING_ID=${queryString}`);
 };
+
+export const updateUserDetails = ({ firstName, lastName, contact, email, id }) => {
+  const queryString = new URLSearchParams(
+    Object.entries({
+      p_first_name: firstName,
+      p_last_name: lastName,
+      p_contact: contact,
+      p_username: email,
+      p_user_id: id
+    }).filter(([_, value]) => value !== undefined && value !== "")
+  ).toString();
+
+  const url = `/user/update_user_details?${queryString}`;
+
+  return api.get(url);
+};

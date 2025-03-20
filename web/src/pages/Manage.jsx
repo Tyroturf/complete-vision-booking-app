@@ -28,7 +28,9 @@ import { useNavigate } from "react-router-dom";
 import BlockedDatesModal from "../components/BlockDatesModal";
 
 const Manage = () => {
-  const { user_id, host_type } = JSON.parse(localStorage.getItem("user"));
+  const { user_id, host_type, first_name, last_name } = JSON.parse(
+    localStorage.getItem("user")
+  );
 
   const navigate = useNavigate();
 
@@ -170,7 +172,11 @@ const Manage = () => {
 
   return (
     <div className="flex flex-col">
-      <ProfileHero imageUrl={hero} />
+      <ProfileHero
+        imageUrl={hero}
+        first_name={first_name}
+        last_name={last_name}
+      />
       <div className="md:hidden relative" ref={dropdownRef}>
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -271,7 +277,7 @@ const Manage = () => {
       {isLoading ? (
         <Loader />
       ) : listings.length === 0 ? (
-        <p className="text-center py-4 text-sm md:text-lg">
+        <p className="text-center py-4 text-xs md:text-sm md:text-lg">
           No listings available.
         </p>
       ) : (
