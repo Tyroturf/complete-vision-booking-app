@@ -18,7 +18,7 @@ import { getColor, getHeadingText, getInitials } from "../utils/helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { fetchUser, updateUserDetails } from "../api";
-import EditableProfileForm from "../forms/EditableProfileForm;";
+import EditableProfileForm from "../forms/EditableProfileForm";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import Loader from "../components/Loader";
 
