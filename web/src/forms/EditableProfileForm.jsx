@@ -175,7 +175,6 @@ const EditableProfileForm = ({
                 </>
               )}
 
-              {/* Selfie and DL Upload */}
               <div className="flex flex-col">
                 <button
                   type="button"
@@ -194,14 +193,13 @@ const EditableProfileForm = ({
                 </button>
               </div>
 
-              {/* Submit Button */}
               {isEditing && (
                 <button
                   type="submit"
-                  className="w-full bg-brand text-white py-2 rounded-md font-bold hover:scale-105 transition-transform duration-200 text-sm flex justify-center items-center gap-2"
+                  className="w-full bg-brand text-white py-2 rounded-md font-bold hover:scale-105 transition-transform duration-200 text-xs flex justify-center items-center gap-2"
                   disabled={isSubmitting}
                 >
-                  {isLoading ? <Loader /> : "Save Changes"}
+                  {isLoading ? <Loader /> : "Save"}
                 </button>
               )}
             </Form>
