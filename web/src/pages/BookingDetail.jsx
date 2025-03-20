@@ -163,10 +163,6 @@ const BookingDetails = () => {
     <div className="mt-20 mx-auto">
       <Back path={backPath} page={"Bookings"} />
       <div className="p-6 shadow-lg rounded-lg space-y-6">
-        <h1 className="text-md md:text-xl font-bold text-brand border-b-2 pb-2 text-center">
-          Booking Details
-        </h1>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
           {booking.FirstName && booking.LastName && (
             <DetailItem
@@ -218,7 +214,7 @@ const BookingDetails = () => {
 
         <div className="flex justify-center">
           <span
-            className={`px-4 py-2 text-md md:text-lg font-semibold rounded-lg ${
+            className={`px-4 py-2 text-sm md:text-md font-semibold rounded-lg ${
               booking.Status === "success"
                 ? "bg-green-100 text-green-600"
                 : booking.Status === "pending"
