@@ -17,15 +17,18 @@ import Back from "../components/Back";
 const BookingDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
 
   const { search } = useLocation();
+  const { host_type } = JSON.parse(localStorage.getItem("user"));
   const queryParams = new URLSearchParams(search);
   const type = queryParams.get("type");
   const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
+  const backPath = type ? `/bookings?type=${type}` : `/listing-bookings`;
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -33,12 +36,22 @@ const BookingDetails = () => {
       setError(null);
       try {
         let response;
-        if (type === "past stays") {
-          response = await fetchBooking(id);
-        } else if (type === "rentals") {
-          response = await fetchCarBooking(id);
-        } else if (type === "tours") {
-          response = await fetchTourBooking(id);
+        if (type) {
+          if (type === "past stays") {
+            response = await fetchBooking(id);
+          } else if (type === "rentals") {
+            response = await fetchCarBooking(id);
+          } else if (type === "tours") {
+            response = await fetchTourBooking(id);
+          }
+        } else {
+          if (host_type === "L") {
+            response = await fetchBooking(id);
+          } else if (host_type === "V") {
+            response = await fetchCarBooking(id);
+          } else if (host_type === "T") {
+            response = await fetchTourBooking(id);
+          }
         }
 
         if (response?.status === 200) {
@@ -126,9 +139,9 @@ const BookingDetails = () => {
     text: "Pay Now",
     onSuccess,
     onClose,
-    reference: booking?.ReferenceID.toString(),
+    reference: booking?.ReferenceID?.toString(),
     className:
-      "bg-brand text-xs font-bold text-white w-full px-4 py-2 rounded hover:bg-brand-4xl hover:scale-105 transition",
+      "bg-brand text-xs font-bold text-white w-full px-4 py-2 rounded-lg hover:bg-brand-4xl hover:scale-105 transition",
   };
 
   if (loading) return <Loader />;
@@ -147,14 +160,14 @@ const BookingDetails = () => {
   }
 
   return (
-    <div className="mt-20 max-w-4xl mx-auto">
-      <Back path={`/bookings?type=${type}`} page={"Bookings"} />
-      <div className="p-6 bg-gradient-to-r from-blue-50 via-white to-blue-50 shadow-lg rounded-lg space-y-6 mt-5">
-        <h1 className="text-lg md:text-2xl font-bold text-brand border-b-2 border-blue-200 pb-2 text-center">
+    <div className="mt-20 mx-auto">
+      <Back path={backPath} page={"Bookings"} />
+      <div className="p-6 shadow-lg rounded-lg space-y-6">
+        <h1 className="text-md md:text-xl font-bold text-brand border-b-2 pb-2 text-center">
           Booking Details
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
           {booking.FirstName && booking.LastName && (
             <DetailItem
               label="Guest Name"
@@ -177,74 +190,55 @@ const BookingDetails = () => {
           {booking.NumGuests && (
             <DetailItem label="Guests" value={booking.NumGuests} />
           )}
-          {booking.ListingPrice && (
-            <DetailItem label="Price" value={`$${booking.ListingPrice}`} />
+          {booking.BookingDate && (
+            <DetailItem label="Booking Date" value={booking.BookingDate} />
           )}
-        </div>
-
-        {/* Additional Pricing Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {booking.RidePrice && (
-            <DetailItem label="Ride Price" value={`$${booking.RidePrice}`} />
+          {booking.ReferenceID && (
+            <DetailItem label="Reference ID" value={booking.ReferenceID} />
           )}
-          {booking.CarID && (
-            <DetailItem label="Car Type" value={booking.CarID} />
-          )}
-          {booking.TourType && (
-            <DetailItem label="Tour Type" value={booking.TourType} />
-          )}
-          {booking.TourPrice && (
-            <DetailItem label="Tour Price" value={`$${booking.TourPrice}`} />
-          )}
-          {booking.ChauffuerRate && (
+          {booking.HostFirstName && booking.HostLastName && (
             <DetailItem
-              label="Chauffeur Rate"
-              value={`$${booking.ChauffuerRate}`}
+              label="Host Name"
+              value={`${booking.HostFirstName} ${booking.HostLastName}`}
             />
           )}
+          {booking.HostContact && (
+            <DetailItem label="Host Contact" value={booking.HostContact} />
+          )}
           {booking.Fee && (
-            <DetailItem label="Service Fee" value={`$${booking.Fee}`} />
+            <DetailItem label="Service Fee" value={`GHS ${booking.Fee}`} />
           )}
           {booking.SubTotal && (
-            <DetailItem label="Sub Total" value={`$${booking.SubTotal}`} />
+            <DetailItem label="Sub Total" value={`GHS ${booking.SubTotal}`} />
           )}
           {booking.Total && (
             <DetailItem label="Total" value={`GHS ${booking.Total}`} />
           )}
         </div>
 
-        {booking.Status && (
-          <div className="flex justify-center">
-            <span
-              className={`px-4 py-2 text-md md:text-lg font-semibold rounded-lg ${
-                booking.Status === "success"
-                  ? "bg-green-100 text-green-600"
-                  : booking.Status === "pending"
-                  ? "bg-yellow-100 text-yellow-600"
-                  : "bg-red-100 text-red-600"
-              }`}
-            >
-              {booking.Status}
-            </span>
-          </div>
-        )}
-
-        {booking.SpecialNote && (
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <strong className="text-brand">Special Note:</strong>{" "}
-            {booking.SpecialNote}
-          </div>
-        )}
+        <div className="flex justify-center">
+          <span
+            className={`px-4 py-2 text-md md:text-lg font-semibold rounded-lg ${
+              booking.Status === "success"
+                ? "bg-green-100 text-green-600"
+                : booking.Status === "pending"
+                ? "bg-yellow-100 text-yellow-600"
+                : "bg-red-100 text-red-600"
+            }`}
+          >
+            {booking.Status}
+          </span>
+        </div>
 
         {booking.Status === "pending" && (
-          <div className="flex flex-col space-y-4">
+          <div className="flex flex-col md:flex-row gap-4">
             <PaystackButton {...paystackProps} />
             <button
               onClick={handleCancelBooking}
-              className="w-full bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 transition duration-300"
+              className="w-full bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 hover:scale-105 transition duration-300"
               disabled={isCancelling}
             >
-              <span className="text-xs py-2">
+              <span className="text-xs py-2 font-bold">
                 {isCancelling ? "Cancelling..." : "Cancel Booking"}
               </span>
             </button>
@@ -255,9 +249,12 @@ const BookingDetails = () => {
   );
 
   function DetailItem({ label, value }) {
+    if (!value) return null;
     return (
-      <p className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-        <strong className="text-brand text-sm md:text-base">{label}:</strong>{" "}
+      <p className="p-2 rounded-lg shadow-sm border border-gray-200">
+        <strong className="text-brand text-xs md:text-sm font-bold">
+          {label}:
+        </strong>{" "}
         <span className="text-xs md:text-sm">{value}</span>
       </p>
     );

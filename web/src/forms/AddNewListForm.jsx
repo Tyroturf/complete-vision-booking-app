@@ -665,10 +665,9 @@ const AddNewListForm = ({
                 className="text-red-500 text-xs mt-1"
               />
             </div>
-            {/* Submit Button */}
             <button
               type="submit"
-              className="bg-brand text-white py-2 px-4 rounded-md mt-4 text-xs md:text-sm md:col-span-2"
+              className="bg-brand text-white py-2 px-4 rounded-md mt-4 text-xs font-bold md:col-span-2"
             >
               {loading ? <Loader /> : "Submit"}
             </button>

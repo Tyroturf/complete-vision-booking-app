@@ -45,7 +45,7 @@ const ListingBookings = () => {
   };
 
   return (
-    <div className="mt-20 p-4">
+    <div className="mt-10 md:mt-20 p-4">
       <Back path={"/manage"} page={"Manage Listings"} />
       {loading && <Loader />}
       {error && <p className="text-red-500">{error}</p>}

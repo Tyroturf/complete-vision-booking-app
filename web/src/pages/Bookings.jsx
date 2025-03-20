@@ -185,9 +185,12 @@ export const BookingCard = ({ booking, activeTab }) => {
             className="bg-brand text-white px-6 py-2 text-xs font-medium rounded-lg"
             onClick={(e) => {
               e.stopPropagation();
-              navigate(
-                `/booking-details/${booking.ID}?type=${activeTab.toLowerCase()}`
-              );
+              const path = activeTab
+                ? `/booking-details/${
+                    booking.ID
+                  }?type=${activeTab.toLowerCase()}`
+                : `/booking-details/${booking.ID}`;
+              navigate(path);
             }}
           >
             View Details

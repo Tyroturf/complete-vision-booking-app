@@ -42,7 +42,7 @@ const BlockedProperties = () => {
   };
 
   return (
-    <div className="mt-20">
+    <div className="mt-10 md:mt-20">
       <Back path={"/manage"} page={"Manage Listings"} />
       <div className="p-4">
         {loading && <Loader />}
@@ -128,7 +128,7 @@ const BookingCard = ({ booking, fetchBookings, user_id }) => {
     }
   };
   return (
-    <div className="p-4">
+    <div className="mt-10 md:mt-20 p-4">
       <Back path={"/manage"} page={"Manage Listings"} />
       <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg mb-7 cursor-pointer hover:shadow-lg transition-shadow">
         <img

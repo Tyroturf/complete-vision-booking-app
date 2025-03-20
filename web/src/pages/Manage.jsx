@@ -368,7 +368,7 @@ const ListCard = ({ listing, onEdit, onDelete, user_id }) => {
           />
 
           <div className="absolute inset-0 flex flex-col justify-end p-2 transition-opacity duration-300 bg-black bg-opacity-10 hover:bg-opacity-50">
-            <div className="flex justify-between gap-10 mb-2 text-xs lg:text-sm text-white mx-auto">
+            <div className="flex justify-between mb-2 text-xs lg:text-sm text-white mx-auto">
               <p className="font-bold">{listing.ListName}</p>
               <p className="font-bold">${listing.Price}</p>
             </div>

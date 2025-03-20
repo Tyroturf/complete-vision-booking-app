@@ -173,7 +173,7 @@ export const saveTourBooking = (bookingData) => {
       p_CHECKIN: bookingData.checkIn,
       p_CHECKOUT: bookingData.checkOut,
       p_TOTAL: bookingData.totalPriceGHS,
-      p_NO_DAYS: bookingData.nights,
+      p_NO_DAYS: bookingData.duration,
       p_STATUS: bookingData.status,
       p_SPECIAL_NOTE: bookingData.specialNote,
       p_HOST: bookingData.listing?.HOST_ID,
