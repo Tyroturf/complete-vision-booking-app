@@ -290,11 +290,7 @@ const Account = ({ user, fetchUserDetails, id }) => {
   );
 };
 
-export const Nav = ({
-  setActiveSection,
-  activeSection,
-  sections = ["home", "account", "payment"],
-}) => {
+export const Nav = ({ setActiveSection, activeSection, sections }) => {
   return (
     <div className="flex justify-around items-center p-4 mt-4 relative shadow-sm">
       {sections.map((section, index) => (
@@ -320,8 +316,7 @@ export const Dashboard = () => {
   const [activeSection, setActiveSection] = useState("home");
   const [user, setUser] = useState(null);
 
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  const user_id = storedUser?.user_id;
+  const { user_id, host_type } = JSON.parse(localStorage.getItem("user"));
 
   const fetchUserDetails = async () => {
     if (!user_id) return;
@@ -360,6 +355,9 @@ export const Dashboard = () => {
   }
 
   const roleFull = user.role === "G" ? "Guest" : "Host";
+  const sections = host_type
+    ? ["home", "account", "payment"]
+    : ["home", "account"];
 
   const renderSection = () => {
     switch (activeSection) {
@@ -395,7 +393,11 @@ export const Dashboard = () => {
         last_name={user.last_name}
         host_type={user.host_type}
       />
-      <Nav setActiveSection={setActiveSection} activeSection={activeSection} />
+      <Nav
+        setActiveSection={setActiveSection}
+        activeSection={activeSection}
+        sections={sections}
+      />
       <div className="relative overflow-hidden">{renderSection()}</div>
     </div>
   );

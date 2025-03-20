@@ -80,15 +80,6 @@ const Payment = ({ p_user_id, fetchUserDetails, user }) => {
                 <p className="text-white">**** **** ****</p>
                 <p className="text-white text-2xl">{card.last4}</p>
               </div>
-              {/* <FontAwesomeIcon
-                className="text-white size-5 hover:cursor-pointer hover:transition hover:scale-105"
-                icon={faTrash}
-                onClick={() =>
-                  showErrorToast(
-                    "Cannot delete or edit bank account. Contact Customer Service"
-                  )
-                }
-              /> */}
             </div>
             <div className="flex justify-between text-white">
               <div className="flex flex-col">
