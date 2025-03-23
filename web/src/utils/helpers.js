@@ -28,6 +28,7 @@ export const getInitialValues = (hostType, initialValues, isEditMode) => {
   const defaultValues = {
     listName: initialValues?.ListName || "",
     location: initialValues?.Location || "",
+    city: initialValues?.City || "",
     guests: initialValues?.MaxGuests || "",
     price: initialValues?.Price || "",
     description: initialValues?.Description || "",

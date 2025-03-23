@@ -24,28 +24,38 @@ const Home = () => {
   const { setCurrentPage, updateSearchParams } = useSearch();
 
   const cities = [
-    { id: 1, name: "Accra", image: vill, count: 2 },
-    { id: 2, name: "Kumasi", image: scrape, count: 10 },
-    { id: 3, name: "Aburi", image: ab, count: 2 },
-    { id: 4, name: "Cape Coast", image: hall, count: 10 },
+    { id: 1, name: "Accra", image: vill },
+    { id: 2, name: "Kumasi", image: scrape },
+    { id: 3, name: "Aburi", image: ab },
+    { id: 4, name: "Cape Coast", image: hall },
   ];
 
   const cars = [
-    { id: 1, name: "Sedan", image: benz, price: 2000 },
-    { id: 3, name: "SUV", image: suv, price: 21000 },
-    { id: 4, name: "Bus", image: bus, price: 2000 },
-    { id: 2, name: "Coupe", image: porshe, price: 1000 },
+    { id: 1, name: "Sedan", image: benz },
+    { id: 3, name: "SUV", image: suv },
+    { id: 4, name: "Bus", image: bus },
+    { id: 2, name: "Coupe", image: porshe },
   ];
 
   const tours = [
-    { id: 1, name: "Galleria Tour", image: gall, price: 2000 },
-    { id: 2, name: "Historical Tour", image: hist, price: 1000 },
-    { id: 3, name: "Fun Experiences", image: beach, price: 21000 },
+    { id: 1, name: "Galleria Tour", image: gall },
+    { id: 2, name: "Historical Tour", image: hist },
+    { id: 3, name: "Fun Experiences", image: beach },
   ];
 
   const handleCityClick = (cityName) => {
     updateSearchParams({ location: cityName });
     setCurrentPage("places");
+  };
+
+  const handleCarClick = (car) => {
+    updateSearchParams({ location: car });
+    setCurrentPage("cars");
+  };
+
+  const handleTourClick = (tour) => {
+    updateSearchParams({ location: tour });
+    setCurrentPage("tours");
   };
 
   const handleClick = () => {
@@ -54,7 +64,6 @@ const Home = () => {
 
   return (
     <>
-      {/* Book Tour Section */}
       <div
         className="relative flex flex-col p-4 md:p-7 my-10 shadow-md gap-y-3 rounded-md bg-cover bg-center"
         style={{
@@ -87,7 +96,6 @@ const Home = () => {
         </button>
       </div>
 
-      {/* Latest Destination Section */}
       <div className="space-y-3 m-1 pt-5  md:pt-10 rounded-lg shadow-md p-2 md:p-4 lg:p-7">
         <div className="flex justify-between">
           <span className="text-xs md:text-base font-bold text-slate-600">
@@ -106,12 +114,12 @@ const Home = () => {
               key={city.id}
               city={city}
               onClick={() => handleCityClick(city.name)}
+              navigate={navigate}
             />
           ))}
         </div>
       </div>
 
-      {/* Car Rental Section */}
       <div className="space-y-3 m-1 pt-5 mt-2 md:mt-3 md:pt-10 shadow-md p-2 md:p-4 lg:p-7">
         <span className="text-xs md:text-base font-bold text-slate-600">
           Car Rentals
@@ -131,12 +139,16 @@ const Home = () => {
         </div>
         <div className="flex gap-1 md:gap-2 lg:gap-3 overflow-x-auto py-2">
           {cars.map((car) => (
-            <CarRentalCard key={car.id} car={car} />
+            <CarRentalCard
+              key={car.id}
+              car={car}
+              onClick={() => handleCarClick(car.name)}
+              navigate={navigate}
+            />
           ))}
         </div>
       </div>
 
-      {/* Tours Section */}
       <div className="space-y-3 m-1 pt-5 mt-2 md:mt-3 md:pt-10 shadow-md p-2 md:p-4 lg:p-7">
         <span className="text-xs md:text-base font-bold text-slate-600">
           Popular Tours
@@ -155,7 +167,12 @@ const Home = () => {
         </div>
         <div className="flex gap-1 md:gap-2 lg:gap-3 overflow-x-auto py-2">
           {tours.map((tour) => (
-            <TourCard key={tour.id} item={tour} />
+            <TourCard
+              key={tour.id}
+              tour={tour}
+              onClick={handleTourClick}
+              navigate={navigate}
+            />
           ))}
         </div>
       </div>

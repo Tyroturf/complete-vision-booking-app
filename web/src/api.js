@@ -76,13 +76,13 @@ export const fetchPlace = (params) => {
 };
 
 export const fetchCar = (params) => {
-  const queryString = new URLSearchParams({ p_rental_id: params.id }).toString();
+  const queryString = new URLSearchParams({ p_rental_id: params.id,  p_check_in: params.checkIn, p_check_out: params.checkOut }).toString();
   
   return api.get(`/vehicle/rental?${queryString}`);
 };
 
 export const fetchTour = (params) => {
-  const queryString = new URLSearchParams({ p_tour_id: params.id }).toString();
+  const queryString = new URLSearchParams({ p_tour_id: params.id,  p_check_in: params.checkIn, p_check_out: params.checkOut }).toString();
   
   return api.get(`/tour/tours?${queryString}`);
 };
@@ -313,6 +313,7 @@ export const addNewList = async (params) => {
     p_host_id: params.hostId,
     p_list_name: params.listName,
     p_location: params.location,
+    p_city: params.city,
     p_description: params.description,
     p_amenities: params.amenities,
     p_max_guests: params.guests,
@@ -338,6 +339,7 @@ export const updateList = async (params) => {
     p_host_id: params.hostId,
     p_list_name: params.listName,
     p_location: params.location,
+    p_city: params.city,
     p_description: params.description,
     p_amenities: params.amenities,
     p_max_guests: params.guests,
@@ -393,6 +395,7 @@ export const addNewVehicle = async (params) => {
     p_host_id: params.hostId,
     p_list_name: params.listName,
     p_location: params.location,
+    p_city: params.city,
     p_description: params.description,
     p_features: params.features,
     p_max_guests: params.guests,
@@ -417,6 +420,7 @@ export const updateVehicle = async (params) => {
     p_host_id: params.hostId,
     p_list_name: params.listName,
     p_location: params.location,
+    p_city: params.city,
     p_description: params.description,
     p_features: params.features,
     p_max_guests: params.guests,
@@ -441,9 +445,11 @@ export const addNewTour = async (params) => {
     p_host_id: params.hostId,
     p_list_name: params.listName,
     p_location: params.location,
+    p_city: params.city,
     p_description: params.description,
     p_max_guests: params.guests,
     p_tour_price: params.price,
+    p_tour_type: params.tour_type,
     p_image1_url: params.p_image1_url,
     p_image2_url: params.p_image2_url,
     p_image3_url: params.p_image3_url,
@@ -462,9 +468,11 @@ export const updateTour = async (params) => {
     p_host_id: params.hostId,
     p_list_name: params.listName,
     p_location: params.location,
+    p_city: params.city,
     p_description: params.description,
     p_max_guests: params.guests,
     p_tour_price: params.price,
+    p_tour_type: params.tour_type,
     p_image1_url: params.p_image1_url,
     p_image2_url: params.p_image2_url,
     p_image3_url: params.p_image3_url,

@@ -34,6 +34,7 @@ const AddNewListForm = ({
       validationSchema: Yup.object({
         listName: Yup.string().required("List Name is required"),
         location: Yup.string().required("Location is required"),
+        city: Yup.string().required("City is required"),
         guests: Yup.number()
           .required("Number of guests is required")
           .min(1, "At least 1 guest required"),
@@ -122,6 +123,7 @@ const AddNewListForm = ({
       validationSchema: Yup.object({
         listName: Yup.string().required("Tour Name is required"),
         location: Yup.string().required("Location is required"),
+        carType: Yup.string().required("Car Type is required"),
         guests: Yup.number()
           .required("Number of guests is required")
           .min(1, "At least 1 guest required"),
@@ -223,6 +225,7 @@ const AddNewListForm = ({
     const {
       listName,
       location,
+      city,
       description,
       features,
       guests,
@@ -261,6 +264,7 @@ const AddNewListForm = ({
         hostId,
         listName,
         location,
+        city,
         description,
         features,
         guests,
@@ -351,6 +355,33 @@ const AddNewListForm = ({
 
             <div className="relative mb-4">
               <Field
+                as="select"
+                name="city"
+                value={values.city || ""}
+                onChange={(e) => {
+                  const selectedCity = e.target.value;
+                  setFieldValue("city", selectedCity);
+                }}
+                className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
+              >
+                <option value="" disabled>
+                  Select City
+                </option>
+                <option value="Accra">Accra</option>
+                <option value="Aburi">Aburi</option>
+                <option value="Kumasi">Kumasi</option>
+                <option value="Tema">Tema</option>
+                <option value="Cape Coast">Cape Coast</option>
+              </Field>
+              <ErrorMessage
+                name="city"
+                component="div"
+                className="text-red-500 text-xs mt-1"
+              />
+            </div>
+
+            <div className="relative mb-4 md:col-span-2">
+              <Field
                 type="text"
                 name="location"
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
@@ -368,6 +399,33 @@ const AddNewListForm = ({
                 className="text-red-500 text-xs mt-1"
               />
             </div>
+
+            {hostType === "T" && (
+              <div className="relative mb-4">
+                <Field
+                  as="select"
+                  name="tourType"
+                  value={values.tourType || ""}
+                  onChange={(e) => {
+                    const selectedTourType = e.target.value;
+                    setFieldValue("tourType", selectedTourType);
+                  }}
+                  className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
+                >
+                  <option value="" disabled>
+                    Select Tour Type
+                  </option>
+                  <option value="Galleria Tour">Galleria Tour</option>
+                  <option value="Historical Tour">Historical Tour</option>
+                  <option value="Fun Experience">Fun Experience</option>
+                </Field>
+                <ErrorMessage
+                  name="tourType"
+                  component="div"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
+            )}
 
             <div className="relative mb-4">
               <Field
@@ -607,6 +665,7 @@ const AddNewListForm = ({
                 />
               </div>
             )}
+
             {/* Chauffeur Rate (for cars) */}
             {hostType === "V" && (
               <div className="relative mb-4">

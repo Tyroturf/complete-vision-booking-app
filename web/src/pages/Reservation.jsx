@@ -12,6 +12,8 @@ import { formatDate } from "../utils/helpers";
 import axios from "axios";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import BookingNotFound from "./BookingNotFound";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 const Reservation = ({ type }) => {
   const today = new Date();
@@ -287,7 +289,11 @@ const Reservation = ({ type }) => {
                 <div className="flex flex-col justify-center gap-y-1">
                   <span className="font-medium text-sm">{data?.LIST_NAME}</span>
                   {/* <RatingSummary /> */}
-                  <span className="font-thin text-xs">{data?.LOCATION}</span>
+                  <span className="flex font-thin text-xs gap-2 items-center">
+                    <FontAwesomeIcon icon={faMapMarkerAlt} />
+                    {data?.LOCATION}
+                  </span>
+                  <div className="text-xs">{data?.CITY}</div>
                 </div>
               </div>
 

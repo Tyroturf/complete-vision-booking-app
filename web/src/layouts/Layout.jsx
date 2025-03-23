@@ -8,17 +8,19 @@ import SubNav from "../components/SubNav";
 const Layout = ({ children }) => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useState({
-    destination: "",
+    city: "",
     checkIn: "",
     checkOut: "",
     guests: "",
+    search: "",
+    carType: "",
+    tourType: "",
   });
 
   const handleSearchSubmit = (values) => {
-    setSearchParams(values); // Store search parameters on submit
+    setSearchParams(values);
   };
 
-  // Check if the current path is either /places, /cars, or /tours
   const showSearchBar =
     location.pathname === "/" ||
     location.pathname === "/places" ||
@@ -31,7 +33,6 @@ const Layout = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen">
       {location.pathname === "/" ? <Header /> : <SubNav />}
-      {/* Conditionally render Search Bar */}
       {showSearchBar && (
         <div className={searchBarMarginClass}>
           <SearchBar

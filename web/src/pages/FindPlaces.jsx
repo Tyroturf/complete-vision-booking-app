@@ -22,15 +22,20 @@ const FindPlaces = () => {
     setCurrentPage("places");
 
     const queryParams = getQueryParams(location.search);
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
 
     if (Object.keys(queryParams).length > 0) {
-      setFindPlacesParams(queryParams);
-      searchPlaces(queryParams);
+      const p = {
+        p_city: queryParams.p_city,
+        p_search: queryParams.p_search,
+        p_check_in: formatDate(today),
+        p_check_out: formatDate(tomorrow),
+      };
+      setFindPlacesParams(p);
+      searchPlaces(p);
     } else {
-      const today = new Date();
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
-
       const defaultSearchParams = {
         p_check_in: formatDate(today),
         p_check_out: formatDate(tomorrow),
