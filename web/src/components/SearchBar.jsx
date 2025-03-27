@@ -8,6 +8,10 @@ import { formatDate, getQueryParams } from "../utils/helpers";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const SearchBar = ({ initialValues }) => {
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
   const { updateSearchParams, searchPlaces, setFindPlacesParams } = useSearch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,9 +33,14 @@ const SearchBar = ({ initialValues }) => {
   const [endDate, setEndDate] = useState(initialEndDate);
 
   useEffect(() => {
-    setStartDate(new Date());
-    setEndDate(null);
-  }, [location.pathname]);
+    if (!queryParams.p_check_in && !queryParams.p_check_out) {
+      setStartDate(today);
+      setEndDate(tomorrow);
+    } else {
+      setStartDate(initialStartDate);
+      setEndDate(initialEndDate);
+    }
+  }, [location.search]);
 
   const onChange = (dates) => {
     const [start, end] = dates;
@@ -39,7 +48,7 @@ const SearchBar = ({ initialValues }) => {
     setEndDate(end);
   };
 
-  const handleSubmit = async (values, { resetForm }) => {
+  const handleSubmit = async (values) => {
     const searchParams = {
       p_check_in: formatDate(startDate),
       p_check_out: formatDate(endDate),
@@ -77,6 +86,9 @@ const SearchBar = ({ initialValues }) => {
       onSubmit={handleSubmit}
     >
       {({ values, setFieldValue, resetForm }) => {
+        useEffect(() => {
+          resetForm();
+        }, [location.pathname, resetForm]);
         return (
           <Form
             className={`p-3 rounded-xl border border-brand shadow-md grid grid-cols-2 ${

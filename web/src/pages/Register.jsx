@@ -47,7 +47,7 @@ export const Register = () => {
         role,
       });
 
-      if (res.data.error === "error") {
+      if (res.data.error === "User already exists.") {
         showErrorToast("An account with this email/contact already exists");
         return;
       }
