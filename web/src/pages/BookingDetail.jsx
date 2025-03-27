@@ -226,7 +226,7 @@ const BookingDetails = () => {
           </span>
         </div>
 
-        {booking.Status === "pending" && (
+        {!host_type && booking.Status === "pending" && (
           <div className="flex flex-col md:flex-row gap-4">
             <PaystackButton {...paystackProps} />
             <button
