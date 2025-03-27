@@ -30,8 +30,8 @@ const FindPlaces = () => {
       const p = {
         p_city: queryParams.p_city,
         p_search: queryParams.p_search,
-        p_check_in: formatDate(today),
-        p_check_out: formatDate(tomorrow),
+        p_check_in: queryParams.p_check_in || formatDate(today),
+        p_check_out: queryParams.p_check_out || formatDate(tomorrow),
       };
       setFindPlacesParams(p);
       searchPlaces(p);

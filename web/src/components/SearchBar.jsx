@@ -37,13 +37,14 @@ const SearchBar = ({ initialValues }) => {
       setStartDate(today);
       setEndDate(tomorrow);
     } else {
-      setStartDate(initialStartDate);
-      setEndDate(initialEndDate);
+      setStartDate(queryParams.p_check_in);
+      setEndDate(queryParams.p_check_out);
     }
-  }, [location.search]);
+  }, [location.search, queryParams.p_check_in, queryParams.p_check_out]);
 
   const onChange = (dates) => {
     const [start, end] = dates;
+
     setStartDate(start);
     setEndDate(end);
   };
@@ -58,6 +59,7 @@ const SearchBar = ({ initialValues }) => {
       p_car_type: values.carType,
       p_tour_type: values.tourType,
     };
+    console.log("searchpar", searchParams);
 
     updateSearchParams(searchParams);
 
@@ -88,6 +90,8 @@ const SearchBar = ({ initialValues }) => {
       {({ values, setFieldValue, resetForm }) => {
         useEffect(() => {
           resetForm();
+          console.log("values", values);
+          console.log("reset");
         }, [location.pathname, resetForm]);
         return (
           <Form
