@@ -24,13 +24,16 @@ const Card = ({ item }) => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg overflow-hidden mb-7">
+    <div
+      className="flex bg-white shadow-md rounded-lg overflow-hidden mb-7 hover:scale-105 hover:cursor-pointer transition"
+      onClick={handleNavigate}
+    >
       <img
         src={item.IMAGE1_URL}
         alt={item.LIST_NAME}
-        className="w-full h-52 md:w-96 md:h-72 lg:h-72 object-cover"
+        className="w-32 h-44 md:w-96 md:h-72 lg:h-72 object-cover"
       />
-      <div className="flex flex-col m-5 justify-center w-auto md:w-full">
+      <div className="flex flex-col m-5 justify-center w-full">
         <div className="flex justify-between">
           <div className="flex flex-col gap-y-3">
             <span className="font-bold text-sm md:text-base text-gray-700">
@@ -44,11 +47,11 @@ const Card = ({ item }) => {
               {item.CITY}
             </div>
 
-            {isPlacesPage && (
+            {/* {isPlacesPage && (
               <div className="flex gap-2 bg-white rounded-lg pr-4 my-5">
                 <AmenitiesList amenities={item?.AMENITIES} />
               </div>
-            )}
+            )} */}
             {isToursPage && (
               <div className="flex items-center gap-2 text-gray-500 text-xs">
                 {item.TOUR_TYPE}
@@ -61,16 +64,16 @@ const Card = ({ item }) => {
             )}
           </div>
 
-          <div className="flex">
-            <span className="text-brand font-bold text-base">
+          <div className="flex flex-col justify-end">
+            <span className="font-bold text-base">
               ${item.PRICE}{" "}
-              <span className="font-thin text-xs md:text-sm">
+              <span className="hidden md:flex font-thin text-xs md:text-sm">
                 / {isPlacesPage ? "night" : "day"}
               </span>
             </span>
           </div>
         </div>
-        <div className="flex my-5">
+        <div className="hidden md:flex my-5">
           <button
             className="bg-brand p-3 px-6 text-white font-medium rounded-sm text-xs w-full hover:bg-brand-dark"
             onClick={handleNavigate}
