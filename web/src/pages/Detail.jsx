@@ -97,7 +97,7 @@ const Detail = ({ fetchDetail, type }) => {
 
       <ImageGallery images={images} />
 
-      <div className="lg:hidden flex justify-between items-center p-5 pt-10">
+      <div className="lg:hidden flex flex-col justify-between gap-5 p-5 pt-10">
         <div className="flex flex-col gap-1 text-gray-700">
           <span className="font-bold text-sm">{item?.LIST_NAME}</span>
           <div className="flex items-center gap-2 text-gray-500 text-xs">
@@ -108,7 +108,7 @@ const Detail = ({ fetchDetail, type }) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-y-4">
+        <div className="flex justify-between">
           <div>
             <span className="text-brand font-bold text-base">
               ${item?.PRICE}{" "}
@@ -118,7 +118,7 @@ const Detail = ({ fetchDetail, type }) => {
             </span>
           </div>
           <button
-            className="bg-brand p-2 text-white font-medium rounded-md text-xs"
+            className="bg-brand p-2 text-white font-medium rounded-md text-xs w-24"
             onClick={() => {
               const params = new URLSearchParams({
                 p_check_in: checkIn,
