@@ -108,7 +108,7 @@ const Detail = ({ fetchDetail, type }) => {
           </div>
         </div>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <div>
             <span className="text-brand font-bold text-base">
               ${item?.PRICE}{" "}
