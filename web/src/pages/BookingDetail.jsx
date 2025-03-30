@@ -202,10 +202,10 @@ const BookingDetails = () => {
             <DetailItem label="Host Contact" value={booking.HostContact} />
           )}
           {booking.Fee && (
-            <DetailItem label="Service Fee" value={`GHS ${booking.Fee}`} />
+            <DetailItem label="Service Fee" value={`USD ${booking.Fee}`} />
           )}
           {booking.SubTotal && (
-            <DetailItem label="Sub Total" value={`GHS ${booking.SubTotal}`} />
+            <DetailItem label="Sub Total" value={`USD ${booking.SubTotal}`} />
           )}
           {booking.Total && (
             <DetailItem label="Total" value={`GHS ${booking.Total}`} />
@@ -226,7 +226,7 @@ const BookingDetails = () => {
           </span>
         </div>
 
-        {!host_type && booking.Status === "pending" && (
+        {type && booking.Status === "pending" && (
           <div className="flex flex-col md:flex-row gap-4">
             <PaystackButton {...paystackProps} />
             <button
