@@ -612,3 +612,39 @@ export const addBankAccount = ({
 
   return api.get(url);
 };
+
+export const fetchHostBookingCount = (queryString) => {
+  return api.get(`/property/host_bookings_count?${queryString}`);
+}
+
+export const fetchHostBookingSum = (queryString) => {
+  return api.get(`/property/host_booking_sum?${queryString}`);
+}
+
+export const fetchHostBookingList = (queryString) => {
+  return api.get(`/property/host_bookings?${queryString}`);
+}
+
+export const fetchCarHostBookingCount = (queryString) => {
+  return api.get(`/carbooking/host_bookings_count?${queryString}`);
+}
+
+export const fetchCarHostBookingSum = (queryString) => {
+  return api.get(`/carbooking/host_booking_sum?${queryString}`);
+}
+
+export const fetchCarHostBookingList = (queryString) => {
+  return api.get(`/carbooking/host_bookings?${queryString}`);
+}
+
+export const fetchTourHostBookingCount = (queryString) => {
+  return api.get(`/tourrbooking/host_bookings_count?${queryString}`);
+}
+
+export const fetchTourHostBookingSum = (queryString) => {
+  return api.get(`/tourrbooking/host_booking_sum?${queryString}`);
+}
+
+export const fetchTourHostBookingList = (queryString) => {
+  return api.get(`/tourrbooking/host_bookings?${queryString}`);
+}

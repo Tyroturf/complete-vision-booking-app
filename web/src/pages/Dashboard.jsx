@@ -1,119 +1,131 @@
 import React, { useState, useEffect } from "react";
-import {
-  LineChart,
-  Line,
-  PieChart,
-  Pie,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-} from "recharts";
 import hero from "../assets/g.jpg";
 import "../styles.css";
 import * as Yup from "yup";
 import CountUp from "react-countup";
-import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
-import { getColor, getHeadingText, getInitials } from "../utils/helpers";
+import {
+  formatDate,
+  getColor,
+  getHeadingText,
+  getInitials,
+} from "../utils/helpers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { fetchUser, updateUserDetails } from "../api";
+import {
+  fetchCarHostBookingCount,
+  fetchCarHostBookingList,
+  fetchCarHostBookingSum,
+  fetchHostBookingCount,
+  fetchHostBookingList,
+  fetchHostBookingSum,
+  fetchTourHostBookingCount,
+  fetchTourHostBookingList,
+  fetchTourHostBookingSum,
+  fetchUser,
+  updateUserDetails,
+} from "../api";
 import EditableProfileForm from "../forms/EditableProfileForm";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import Loader from "../components/Loader";
 import Payment from "../components/Payment";
+import DatePicker from "react-datepicker";
+import { BookingCard } from "./Bookings";
 
-const TotalBookings = ({ totalBookings }) => {
-  const { ref, inView } = useInView({
-    triggerOnce: true,
-    threshold: 0.3,
-  });
-
-  return (
-    <motion.div
-      ref={ref}
-      className="bg-white p-4 rounded-lg shadow-md"
-      initial={{ opacity: 0 }}
-      animate={inView ? { opacity: 1 } : { opacity: 0 }}
-      transition={{ duration: 0.6 }}
-    >
-      <h3 className="text:sm md:text-lg font-semibold my-2">Total Bookings</h3>
-      <div className="md:mt-24">
-        <p className="text-3xl font-bold">
-          {inView && <CountUp start={1} end={totalBookings} duration={3} />} +
-        </p>
-        <p className="text-sm text-gray-600">
-          As of {new Date().toDateString()}
-        </p>
-      </div>
-    </motion.div>
-  );
-};
-
-const Home = () => {
+const Home = ({ user_id, host_type }) => {
+  const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+  const [startDate, endDate] = dateRange;
   const [totalBookings, setTotalBookings] = useState(0);
-  const [monthlyBookings, setMonthlyBookings] = useState([]);
-  const [bookingSources, setBookingSources] = useState([]);
+  const [totalBookingSum, setTotalBookingSum] = useState(0);
+  const [bookingList, setBookingList] = useState([]);
 
   useEffect(() => {
-    setTotalBookings(1200);
-    setMonthlyBookings([
-      { month: "Jan", bookings: 100 },
-      { month: "Feb", bookings: 150 },
-      { month: "Mar", bookings: 200 },
-    ]);
-    setBookingSources([
-      { name: "Direct", value: 400 },
-      { name: "Referral", value: 300 },
-      { name: "Social Media", value: 500 },
-    ]);
-  }, []);
+    if (!user_id || !host_type) return;
+
+    const API_MAP = {
+      L: {
+        count: fetchHostBookingCount,
+        sum: fetchHostBookingSum,
+        list: fetchHostBookingList,
+      },
+      V: {
+        count: fetchCarHostBookingCount,
+        sum: fetchCarHostBookingSum,
+        list: fetchCarHostBookingList,
+      },
+      T: {
+        count: fetchTourHostBookingCount,
+        sum: fetchTourHostBookingSum,
+        list: fetchTourHostBookingList,
+      },
+    };
+
+    const fetchData = async () => {
+      try {
+        const { count, sum, list } = API_MAP[host_type] || {};
+
+        if (!count || !sum || !list) {
+          console.error("Invalid host_type:", host_type);
+          return;
+        }
+
+        const queryString = `p_user_id=${user_id}&p_date_start=${formatDate(
+          startDate
+        )}&p_date_end=${formatDate(endDate)}`;
+
+        const [countRes, sumRes, listRes] = await Promise.all([
+          count(queryString),
+          sum(queryString),
+          list(queryString),
+        ]);
+
+        setTotalBookings(countRes.data["Booking Count"]);
+        setTotalBookingSum(sumRes.data.total_income);
+        setBookingList(listRes.data.Bookings);
+      } catch (err) {
+        console.error("Failed to fetch booking data:", err);
+      }
+    };
+
+    fetchData();
+  }, [startDate, endDate, host_type]);
 
   return (
     <div className="p-4 text-gray-600">
-      <h2 className="text:lg md:text-2xl font-bold mb-4">Dashboard</h2>
+      <h2 className="text-lg md:text-2xl font-bold mb-4">Dashboard</h2>
+      <div className="flex flex-col bg-white p-4 rounded-lg shadow-md mb-6">
+        <label className="text-sm font-semibold">Select Date Range:</label>
+        <DatePicker
+          selectsRange={true}
+          startDate={startDate}
+          endDate={endDate}
+          onChange={(update) => setDateRange(update)}
+          inline
+        />
+      </div>
 
-      <div className="grid md:grid-cols-2 gap-6 mt-10">
-        <TotalBookings totalBookings={100} />
-
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h3 className="text:sm md:text-lg font-semibold my-2">
-            Monthly Bookings
+      <div className="grid md:grid-cols-2 gap-6">
+        <motion.div className="bg-white p-4 rounded-lg shadow-md">
+          <h3 className="text-sm md:text-lg font-semibold mb-2">
+            Total Bookings
           </h3>
-          <ResponsiveContainer width="80%" height={200}>
-            <LineChart data={monthlyBookings}>
-              <Line type="monotone" dataKey="bookings" stroke="#8884d8" />
-              <Tooltip />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+          <p className="text-3xl font-bold">
+            <CountUp start={1} end={totalBookings} duration={3} />
+          </p>
+        </motion.div>
 
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h3 className="text:sm md:text-lg font-semibold my-2">
-            Booking Sources
-          </h3>
-          <ResponsiveContainer width="80%" height={200}>
-            <PieChart>
-              <Pie
-                data={bookingSources}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                fill="#8884d8"
-              >
-                {bookingSources.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={["#8884d8", "#82ca9d", "#ffc658"][index]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+        <motion.div className="bg-white p-4 rounded-lg shadow-md">
+          <h3 className="text-sm md:text-lg font-semibold mb-2">Booking Sum</h3>
+          <p className="text-3xl font-bold">${totalBookingSum}</p>
+        </motion.div>
+      </div>
+
+      <div className="bg-white p-4 mt-6">
+        <h3 className="text-sm md:text-lg font-semibold mb-2">Bookings List</h3>
+        {bookingList &&
+          bookingList.map((listing, index) => (
+            <BookingCard key={index} booking={listing} />
+          ))}
       </div>
     </div>
   );
@@ -362,7 +374,7 @@ export const Dashboard = () => {
   const renderSection = () => {
     switch (activeSection) {
       case "home":
-        return <Home />;
+        return <Home user_id={user_id} host_type={host_type} />;
       case "account":
         return (
           <Account

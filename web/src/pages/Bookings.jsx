@@ -116,6 +116,7 @@ export const BookingCard = ({ booking, activeTab }) => {
       <img
         src={
           booking["List Image"] ||
+          booking["ListImage"] ||
           booking["Image1URL"] ||
           booking["List Image 1"] ||
           "https://via.placeholder.com/150"
