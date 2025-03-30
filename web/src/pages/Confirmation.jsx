@@ -57,7 +57,7 @@ const Confirmation = ({ bookingDetails, page }) => {
   } = bookingDetails;
 
   const fullName = `${firstName} ${lastName}`;
-  const bookingDate = formatDate(new Date(), true);
+  const bookingDate = formatDate(new Date());
   const updatedBookingDetails = {
     ...bookingDetails,
     bookingDate,
