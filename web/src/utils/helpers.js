@@ -8,9 +8,12 @@ export const formatDate = (date, includeTime = false) => {
   let formattedDate = `${month}/${day}/${year}`;
 
   if (includeTime) {
-    const hours = (`0${date.getHours()}`).slice(-2);
+    let hours = date.getHours();
     const minutes = (`0${date.getMinutes()}`).slice(-2);
-    formattedDate += ` ${hours}:${minutes}`;
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12; // Convert 0 to 12 for 12 AM
+
+    formattedDate += ` ${hours}:${minutes} ${ampm}`;
   }
 
   return formattedDate;
@@ -146,4 +149,15 @@ export const getColor = (name) => {
     "bg-gray-500",
   ];
   return colors[name.charCodeAt(0) % colors.length];
+};
+
+export const isToday = (dateString) => {
+  const bookingDate = new Date(dateString);
+  const today = new Date();
+
+  return (
+    bookingDate.getFullYear() === today.getFullYear() &&
+    bookingDate.getMonth() === today.getMonth() &&
+    bookingDate.getDate() === today.getDate()
+  );
 };

@@ -13,6 +13,7 @@ import Loader from "../components/Loader";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import { PaystackButton } from "react-paystack";
 import Back from "../components/Back";
+import { isToday } from "../utils/helpers";
 
 const BookingDetails = () => {
   const { id } = useParams();
@@ -226,20 +227,22 @@ const BookingDetails = () => {
           </span>
         </div>
 
-        {type && booking.Status === "pending" && (
-          <div className="flex flex-col md:flex-row gap-4">
-            <PaystackButton {...paystackProps} />
-            <button
-              onClick={handleCancelBooking}
-              className="w-full bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 hover:scale-105 transition duration-300"
-              disabled={isCancelling}
-            >
-              <span className="text-xs py-2 font-bold">
-                {isCancelling ? "Cancelling..." : "Cancel Booking"}
-              </span>
-            </button>
-          </div>
-        )}
+        {isToday(booking.BookingDate) &&
+          type &&
+          booking.Status === "pending" && (
+            <div className="flex flex-col md:flex-row gap-4">
+              <PaystackButton {...paystackProps} />
+              <button
+                onClick={handleCancelBooking}
+                className="w-full bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 hover:scale-105 transition duration-300"
+                disabled={isCancelling}
+              >
+                <span className="text-xs py-2 font-bold">
+                  {isCancelling ? "Cancelling..." : "Cancel Booking"}
+                </span>
+              </button>
+            </div>
+          )}
       </div>
     </div>
   );
