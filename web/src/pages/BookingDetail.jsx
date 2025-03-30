@@ -111,7 +111,7 @@ const BookingDetails = () => {
   const onSuccess = async (response) => {
     try {
       const params = {
-        booking_id: booking,
+        booking_id: booking.ID,
         reference_id: response.reference,
       };
 
