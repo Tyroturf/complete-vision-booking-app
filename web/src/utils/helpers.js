@@ -1,10 +1,20 @@
-export const formatDate = (date) => {
-    if (!date) return '';
-    const month = (`0${date.getMonth() + 1}`).slice(-2);
-    const day = (`0${date.getDate()}`).slice(-2);
-    const year = date.getFullYear();
-    return `${month}/${day}/${year}`;
-  };
+export const formatDate = (date, includeTime = false) => {
+  if (!date) return '';
+
+  const month = (`0${date.getMonth() + 1}`).slice(-2);
+  const day = (`0${date.getDate()}`).slice(-2);
+  const year = date.getFullYear();
+
+  let formattedDate = `${month}/${day}/${year}`;
+
+  if (includeTime) {
+    const hours = (`0${date.getHours()}`).slice(-2);
+    const minutes = (`0${date.getMinutes()}`).slice(-2);
+    formattedDate += ` ${hours}:${minutes}`;
+  }
+
+  return formattedDate;
+};
 
 export const formatWithCommas = (number) => {
   return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });

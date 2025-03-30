@@ -57,10 +57,10 @@ const Confirmation = ({ bookingDetails, page }) => {
   } = bookingDetails;
 
   const fullName = `${firstName} ${lastName}`;
-  const bookingDate = new Date();
+  const bookingDate = formatDate(new Date(), true);
   const updatedBookingDetails = {
     ...bookingDetails,
-    bookingDate: formatDate(bookingDate),
+    bookingDate,
     user_id,
   };
 
