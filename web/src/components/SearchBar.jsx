@@ -188,11 +188,15 @@ const SearchBar = ({ initialValues }) => {
                 </Field>
               </div>
             )}
-            <div className="relative">
+            <div
+              className={`relative ${
+                location.pathname === "/" && "col-span-2 md:col-span-1"
+              }`}
+            >
               <Field
                 type="number"
                 name="guests"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
+                className="w-full border border-gray-300 px-3 py-2  rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                 placeholder=" "
                 min={1}
                 max={6}
