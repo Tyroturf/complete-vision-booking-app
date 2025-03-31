@@ -12,7 +12,13 @@ const SearchBar = ({ initialValues }) => {
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
 
-  const { updateSearchParams, searchPlaces, setFindPlacesParams } = useSearch();
+  const {
+    updateSearchParams,
+    searchPlaces,
+    setFindPlacesParams,
+    searchCars,
+    searchTours,
+  } = useSearch();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -70,6 +76,12 @@ const SearchBar = ({ initialValues }) => {
       navigate(`/places?${queryString}`, { replace: true });
     } else if (location.pathname === "/places") {
       await searchPlaces(searchParams);
+      navigate(`?${queryString}`, { replace: true });
+    } else if (location.pathname === "/cars") {
+      await searchCars(searchParams);
+      navigate(`?${queryString}`, { replace: true });
+    } else if (location.pathname === "/tours") {
+      await searchTours(searchParams);
       navigate(`?${queryString}`, { replace: true });
     }
   };
