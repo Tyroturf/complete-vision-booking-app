@@ -209,10 +209,10 @@ const SearchBar = ({ initialValues }) => {
                 endDate={endDate}
                 selectsRange
                 minDate={new Date()}
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-xs text-center sm:text-left"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-[16px] text-center sm:text-left"
                 wrapperClassName="customDatePickerWidth"
               />
-              <label className="text-xs absolute left-3 top-2 text-gray-600 bg-white px-1 text-[16px] transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none">
+              <label className="text-xs absolute left-3 top-2 text-gray-600 bg-white px-1 transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none">
                 Select Date
               </label>
             </div>
