@@ -614,7 +614,7 @@ export const addBankAccount = ({
 };
 
 export const fetchHostBookingCount = (queryString) => {
-  return api.get(`/property/host_bookings_count?${queryString}`);
+  return api.get(`/property/host_booking_count?${queryString}`);
 }
 
 export const fetchHostBookingSum = (queryString) => {
@@ -626,7 +626,7 @@ export const fetchHostBookingList = (queryString) => {
 }
 
 export const fetchCarHostBookingCount = (queryString) => {
-  return api.get(`/carbooking/host_bookings_count?${queryString}`);
+  return api.get(`/carbooking/host_booking_count?${queryString}`);
 }
 
 export const fetchCarHostBookingSum = (queryString) => {
@@ -638,7 +638,7 @@ export const fetchCarHostBookingList = (queryString) => {
 }
 
 export const fetchTourHostBookingCount = (queryString) => {
-  return api.get(`/tourrbooking/host_bookings_count?${queryString}`);
+  return api.get(`/tourrbooking/host_booking_count?${queryString}`);
 }
 
 export const fetchTourHostBookingSum = (queryString) => {

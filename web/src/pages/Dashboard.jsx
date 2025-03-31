@@ -81,7 +81,7 @@ const Home = ({ user_id, host_type }) => {
 
         setTotalBookings(countRes.data["Booking Count"]);
         setTotalBookingSum(sumRes.data.total_income);
-        setBookingList(listRes.data.Bookings);
+        setBookingList(listRes.data.Bookings || listRes.data.CarBookings);
       } catch (err) {
         console.error("Failed to fetch booking data:", err);
       }
