@@ -364,7 +364,7 @@ const AddNewListForm = ({
               <Field
                 type="text"
                 name="listName"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
                 placeholder=" "
               />
               <label
@@ -411,7 +411,7 @@ const AddNewListForm = ({
               <Field
                 type="text"
                 name="location"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
                 placeholder=" "
               />
               <label
@@ -458,7 +458,7 @@ const AddNewListForm = ({
               <Field
                 type="number"
                 name="guests"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
                 placeholder=" "
               />
               <label
@@ -478,7 +478,7 @@ const AddNewListForm = ({
               <Field
                 type="number"
                 name="price"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
                 placeholder=" "
               />
               <label
@@ -497,7 +497,7 @@ const AddNewListForm = ({
               <Field
                 as="textarea"
                 name="description"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
                 placeholder=" "
               />
               <label
@@ -518,7 +518,7 @@ const AddNewListForm = ({
                 <Field
                   type="text"
                   name="features"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
                   placeholder=" "
                 />
                 <label
@@ -647,7 +647,7 @@ const AddNewListForm = ({
                   <Field
                     type="number"
                     name="p_special_price"
-                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
                     placeholder=" "
                   />
                   <label
@@ -698,7 +698,7 @@ const AddNewListForm = ({
                 <Field
                   type="number"
                   name="chauffeurRate"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
                   placeholder=" "
                 />
                 <label

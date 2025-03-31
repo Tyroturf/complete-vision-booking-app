@@ -34,7 +34,7 @@ const AddPaymentForm = ({ handleSubmit, isLoading }) => {
             <Field
               type="text"
               name="p_bank_account_num"
-              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
+              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
               placeholder=" "
             />
             <label
@@ -54,7 +54,7 @@ const AddPaymentForm = ({ handleSubmit, isLoading }) => {
             <Field
               type="text"
               name="p_bank_name"
-              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
+              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
               placeholder=" "
             />
             <label
