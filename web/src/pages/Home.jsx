@@ -83,7 +83,7 @@ const Home = () => {
           </div>
         </div>
 
-        <p className="relative text-xs md:text-sm text-white font-medium z-10">
+        <p className="relative text-xs md:text-sm text-gray-300 font-medium">
           Embark on your dream vacation with exclusive 24/7 car service with a
           personal chauffeur, complemented by a private tour.
         </p>
