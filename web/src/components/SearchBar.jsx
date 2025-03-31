@@ -146,7 +146,7 @@ const SearchBar = ({ initialValues }) => {
                   className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-[16px]"
                 >
                   <option value="" disabled className="text-xs">
-                    Select Car Type
+                    Car Type
                   </option>
                   <option value="SUV" className="text-sm">
                     SUV
@@ -174,7 +174,7 @@ const SearchBar = ({ initialValues }) => {
                   className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-[16px]"
                 >
                   <option value="" disabled className="text-xs">
-                    Select Tour Type
+                    Tour Type
                   </option>
                   <option value="Galleria Tour" className="text-sm">
                     Galleria Tour
