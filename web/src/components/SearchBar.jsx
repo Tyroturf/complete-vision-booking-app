@@ -139,18 +139,27 @@ const SearchBar = ({ initialValues }) => {
               <div className="relative">
                 <Field
                   as="select"
+                  id="carType"
                   name="carType"
                   value={values.carType}
                   onChange={(e) => setFieldValue("carType", e.target.value)}
                   className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-[16px]"
                 >
-                  <option value="" disabled>
+                  <option value="" disabled className="text-xs">
                     Select Car Type
                   </option>
-                  <option value="SUV">SUV</option>
-                  <option value="Sedan">Sedan</option>
-                  <option value="Bus">Bus</option>
-                  <option value="Coupe">Coupe</option>
+                  <option value="SUV" className="text-sm">
+                    SUV
+                  </option>
+                  <option value="Sedan" className="text-sm">
+                    Sedan
+                  </option>
+                  <option value="Bus" className="text-sm">
+                    Bus
+                  </option>
+                  <option value="Coupe" className="text-sm">
+                    Coupe
+                  </option>
                 </Field>
               </div>
             )}
@@ -158,17 +167,24 @@ const SearchBar = ({ initialValues }) => {
               <div className="relative">
                 <Field
                   as="select"
+                  id="tourType"
                   name="tourType"
                   value={values.tourType}
                   onChange={(e) => setFieldValue("tourType", e.target.value)}
                   className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-[16px]"
                 >
-                  <option value="" disabled>
+                  <option value="" disabled className="text-xs">
                     Select Tour Type
                   </option>
-                  <option value="Galleria Tour">Galleria Tour</option>
-                  <option value="Historical Tour">Historical Tour</option>
-                  <option value="Fun Experiences">Fun Experiences</option>
+                  <option value="Galleria Tour" className="text-sm">
+                    Galleria Tour
+                  </option>
+                  <option value="Historical Tour" className="text-sm">
+                    Historical Tour
+                  </option>
+                  <option value="Fun Experiences" className="text-sm">
+                    Fun Experiences
+                  </option>
                 </Field>
               </div>
             )}
@@ -196,7 +212,7 @@ const SearchBar = ({ initialValues }) => {
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-xs text-center sm:text-left"
                 wrapperClassName="customDatePickerWidth"
               />
-              <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-[16px] transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none">
+              <label className="text-xs absolute left-3 top-2 text-gray-600 bg-white px-1 text-[16px] transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none">
                 Select Date
               </label>
             </div>
