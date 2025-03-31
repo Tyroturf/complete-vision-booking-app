@@ -59,7 +59,6 @@ const SearchBar = ({ initialValues }) => {
       p_car_type: values.carType,
       p_tour_type: values.tourType,
     };
-    console.log("searchpar", searchParams);
 
     updateSearchParams(searchParams);
 
@@ -106,7 +105,7 @@ const SearchBar = ({ initialValues }) => {
               <Field
                 type="text"
                 name="search"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
                 placeholder=" "
               />
               <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none">
@@ -117,7 +116,7 @@ const SearchBar = ({ initialValues }) => {
               <Field
                 type="text"
                 name="city"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
                 placeholder=" "
               />
               <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none">
@@ -131,7 +130,7 @@ const SearchBar = ({ initialValues }) => {
                   name="carType"
                   value={values.carType}
                   onChange={(e) => setFieldValue("carType", e.target.value)}
-                  className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
+                  className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-sm md:text-xs"
                 >
                   <option value="" disabled>
                     Select Car Type
@@ -150,7 +149,7 @@ const SearchBar = ({ initialValues }) => {
                   name="tourType"
                   value={values.tourType}
                   onChange={(e) => setFieldValue("tourType", e.target.value)}
-                  className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-xs"
+                  className="w-full border bg-white border-gray-300 text-gray-600 px-3 py-2 rounded-md text-sm md:text-xs"
                 >
                   <option value="" disabled>
                     Select Tour Type
@@ -165,7 +164,7 @@ const SearchBar = ({ initialValues }) => {
               <Field
                 type="number"
                 name="guests"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
                 placeholder=" "
                 min={1}
                 max={6}
@@ -185,7 +184,7 @@ const SearchBar = ({ initialValues }) => {
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-xs text-center sm:text-left"
                 wrapperClassName="customDatePickerWidth"
               />
-              <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none">
+              <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-sm md:text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none">
                 Select Date
               </label>
             </div>

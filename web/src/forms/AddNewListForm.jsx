@@ -19,6 +19,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../customDatePickerWidth.css";
 import CustomSelect from "../components/CustomSelect";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+const MAX_IMAGES = 5;
 
 const AddNewListForm = ({
   mode = "add",
@@ -74,8 +78,8 @@ const AddNewListForm = ({
           .of(Yup.mixed().required("Image is required"))
           .test(
             "images-required",
-            "You must upload at least 5 images",
-            (images) => isEditMode || (images && images.length === 5)
+            `You must upload at least ${MAX_IMAGES} images`,
+            (images) => isEditMode || (images && images.length === MAX_IMAGES)
           ),
       }),
       api: {
@@ -107,8 +111,8 @@ const AddNewListForm = ({
           .of(Yup.mixed().required("Image is required"))
           .test(
             "images-required",
-            "You must upload at least 5 images",
-            (images) => isEditMode || (images && images.length === 5)
+            `You must upload at least ${MAX_IMAGES} images`,
+            (images) => isEditMode || (images && images.length === MAX_IMAGES)
           ),
       }),
       api: {
@@ -135,8 +139,8 @@ const AddNewListForm = ({
           .of(Yup.mixed().required("Image is required"))
           .test(
             "images-required",
-            "You must upload at least 5 images",
-            (images) => isEditMode || (images && images.length === 5)
+            `You must upload at least ${MAX_IMAGES} images`,
+            (images) => isEditMode || (images && images.length === MAX_IMAGES)
           ),
       }),
       api: {
@@ -209,12 +213,16 @@ const AddNewListForm = ({
     getListingId();
   }, [config.api.fetchId]);
 
-  const handleImageChange = (event, setFieldValue) => {
+  const handleImageChange = (event, values, setFieldValue) => {
     const files = Array.from(event.target.files);
-    setFieldValue("images", files);
 
-    const newPreviews = files.map((file) => URL.createObjectURL(file));
-    setImagePreviews((prev) => [...prev, ...newPreviews]);
+    const currentImages = values.images || [];
+    const newImages = currentImages.concat(files).slice(0, MAX_IMAGES);
+
+    setFieldValue("images", newImages);
+
+    const newPreviews = newImages.map((file) => URL.createObjectURL(file));
+    setImagePreviews(newPreviews);
   };
 
   const handleSubmit = async (values) => {
@@ -315,6 +323,25 @@ const AddNewListForm = ({
     }
   };
 
+  const handleDeleteImage = async (imageUrl, index, values, setFieldValue) => {
+    if (isEditMode) {
+      const bucketUrl =
+        "https://objectstorage.af-johannesburg-1.oraclecloud.com/p/suIO1K3vlc1QnyW-2BPxWaaHUDuky1kg0oCvk6N19db2Qd_jUv9nEM7oqCgT1Uv6/n/axw84jvjnipe/b/bucket1/o/";
+
+      try {
+        const imageName = imageUrl.split("/").pop();
+        await axios.delete(`${bucketUrl}${imageName}`);
+      } catch (error) {
+        console.error("Failed to delete image:", error);
+        return;
+      }
+    }
+
+    const updatedImages = values.images.filter((_, i) => i !== index);
+    setFieldValue("images", updatedImages);
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
   return (
     <Formik
       initialValues={getInitialValues(hostType, initialValues, isEditMode)}
@@ -323,7 +350,7 @@ const AddNewListForm = ({
         handleSubmit(values);
       }}
     >
-      {({ setFieldValue, resetForm, values, errors }) => {
+      {({ setFieldValue, resetForm, values }) => {
         useEffect(() => {
           if (!isEditMode) {
             resetForm();
@@ -337,7 +364,7 @@ const AddNewListForm = ({
               <Field
                 type="text"
                 name="listName"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
                 placeholder=" "
               />
               <label
@@ -384,7 +411,7 @@ const AddNewListForm = ({
               <Field
                 type="text"
                 name="location"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
                 placeholder=" "
               />
               <label
@@ -431,7 +458,7 @@ const AddNewListForm = ({
               <Field
                 type="number"
                 name="guests"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
                 placeholder=" "
               />
               <label
@@ -451,7 +478,7 @@ const AddNewListForm = ({
               <Field
                 type="number"
                 name="price"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
                 placeholder=" "
               />
               <label
@@ -470,7 +497,7 @@ const AddNewListForm = ({
               <Field
                 as="textarea"
                 name="description"
-                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
                 placeholder=" "
               />
               <label
@@ -491,7 +518,7 @@ const AddNewListForm = ({
                 <Field
                   type="text"
                   name="features"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
                   placeholder=" "
                 />
                 <label
@@ -620,7 +647,7 @@ const AddNewListForm = ({
                   <Field
                     type="number"
                     name="p_special_price"
-                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
                     placeholder=" "
                   />
                   <label
@@ -666,13 +693,12 @@ const AddNewListForm = ({
               </div>
             )}
 
-            {/* Chauffeur Rate (for cars) */}
             {hostType === "V" && (
               <div className="relative mb-4">
                 <Field
                   type="number"
                   name="chauffeurRate"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-xs"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-sm md:text-xs"
                   placeholder=" "
                 />
                 <label
@@ -688,7 +714,7 @@ const AddNewListForm = ({
                 />
               </div>
             )}
-            {/* Image Previews */}
+
             {imagePreviews.length > 0 && (
               <div className="md:col-span-2">
                 <label className="text-gray-600 text-xs mb-1 block">
@@ -696,34 +722,53 @@ const AddNewListForm = ({
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   {imagePreviews.map((src, index) => (
-                    <img
-                      key={index}
-                      src={src}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-32 object-cover rounded-md border"
-                    />
+                    <div key={index} className="relative">
+                      <img
+                        src={src}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-md border"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleDeleteImage(src, index, values, setFieldValue);
+                        }}
+                        className="absolute bottom-1 right-1 text-white text-sm p-2 hover:scale-105"
+                        title="Delete Image"
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </div>
                   ))}
                 </div>
               </div>
             )}
-            {/* Upload Images Field */}
+
             <div className="relative mb-4 md:col-span-2 grid grid-cols-1 gap-2">
               <label className="text-gray-600 text-xs mb-1 block">
-                Upload 5 Images
+                Upload Up to {MAX_IMAGES} Images
               </label>
               <input
                 type="file"
                 accept="image/*"
                 multiple
-                onChange={(event) => handleImageChange(event, setFieldValue)}
+                onChange={(event) =>
+                  handleImageChange(event, values, setFieldValue)
+                }
+                disabled={imagePreviews.length >= MAX_IMAGES}
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-xs"
               />
+              <small className="text-gray-500 text-xs">
+                {`${imagePreviews.length}/${MAX_IMAGES} images selected`}
+              </small>
               <ErrorMessage
                 name="images"
                 component="div"
                 className="text-red-500 text-xs mt-1"
               />
             </div>
+
             <button
               type="submit"
               className="bg-brand text-white py-2 px-4 rounded-md mt-4 text-xs font-bold md:col-span-2"
