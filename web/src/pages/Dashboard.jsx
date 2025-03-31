@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import hero from "../assets/g.jpg";
 import "../styles.css";
 import * as Yup from "yup";
@@ -40,6 +40,7 @@ const Home = ({ user_id, host_type }) => {
   const [totalBookingSum, setTotalBookingSum] = useState(0);
   const [bookingList, setBookingList] = useState([]);
   const [selectedPreset, setSelectedPreset] = useState("today");
+  const datePickerRef = useRef(null);
 
   const presets = [
     { label: "Today", value: "today" },
@@ -119,6 +120,14 @@ const Home = ({ user_id, host_type }) => {
         newEndDate = new Date(today.getFullYear() - 1, 11, 31); // Dec 31st of last year
         break;
 
+      case "custom":
+        setTimeout(() => {
+          if (datePickerRef.current) {
+            datePickerRef.current.setFocus(); // Open the date picker automatically
+          }
+        }, 100);
+        return;
+
       default:
         return;
     }
@@ -196,11 +205,12 @@ const Home = ({ user_id, host_type }) => {
         {selectedPreset === "custom" && (
           <DatePicker
             selectsRange={true}
+            ref={datePickerRef}
             startDate={startDate}
             endDate={endDate}
             onChange={(update) => setDateRange(update)}
             maxDate={new Date()}
-            className="w-full border text-gray-600 border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-[16px] lg:text-xs lg:text-xs text-center sm:text-left"
+            className="w-full border text-gray-600 border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-[16px] lg:text-xs text-center sm:text-left"
             wrapperClassName="customDatePickerWidth"
           />
         )}
