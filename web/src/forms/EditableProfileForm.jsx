@@ -226,7 +226,7 @@ const renderInputField = (name, label, isEditing, value, type = "text") => {
             type={type}
             name={name}
             id={name}
-            className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+            className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
             placeholder=""
           />
           <label

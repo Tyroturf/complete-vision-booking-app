@@ -4,6 +4,7 @@ import "../styles.css";
 import * as Yup from "yup";
 import CountUp from "react-countup";
 import { motion } from "framer-motion";
+import "../customDatePickerWidth.css";
 import {
   formatDate,
   getColor,
@@ -38,6 +39,92 @@ const Home = ({ user_id, host_type }) => {
   const [totalBookings, setTotalBookings] = useState(0);
   const [totalBookingSum, setTotalBookingSum] = useState(0);
   const [bookingList, setBookingList] = useState([]);
+  const [selectedPreset, setSelectedPreset] = useState("today");
+
+  const presets = [
+    { label: "Today", value: "today" },
+    { label: "Yesterday", value: "yesterday" },
+    { label: "This Week", value: "thisWeek" },
+    { label: "Last Week", value: "lastWeek" },
+    { label: "Last 7 Days", value: "last7Days" },
+    { label: "Last 14 Days", value: "last14Days" },
+    { label: "This Month", value: "thisMonth" },
+    { label: "Last Month", value: "lastMonth" },
+    { label: "Last 30 Days", value: "last30Days" },
+    { label: "Last Year", value: "lastYear" },
+    { label: "Custom", value: "custom" },
+  ];
+
+  const handlePresetChange = (preset) => {
+    setSelectedPreset(preset);
+
+    const today = new Date();
+    let newStartDate, newEndDate;
+
+    switch (preset) {
+      case "today":
+        newStartDate = new Date(today);
+        newEndDate = new Date(today);
+        break;
+
+      case "yesterday":
+        newStartDate = new Date(today);
+        newStartDate.setDate(today.getDate() - 1);
+        newEndDate = new Date(newStartDate);
+        break;
+
+      case "thisWeek":
+        newStartDate = new Date(today);
+        newStartDate.setDate(today.getDate() - today.getDay()); // Start of the week (Sunday)
+        newEndDate = new Date(today);
+        break;
+
+      case "lastWeek":
+        newStartDate = new Date(today);
+        newStartDate.setDate(today.getDate() - today.getDay() - 7); // Start of last week
+        newEndDate = new Date(newStartDate);
+        newEndDate.setDate(newStartDate.getDate() + 6); // End of last week
+        break;
+
+      case "last7Days":
+        newStartDate = new Date(today);
+        newStartDate.setDate(today.getDate() - 7);
+        newEndDate = new Date(today);
+        break;
+
+      case "last14Days":
+        newStartDate = new Date(today);
+        newStartDate.setDate(today.getDate() - 14);
+        newEndDate = new Date(today);
+        break;
+
+      case "thisMonth":
+        newStartDate = new Date(today.getFullYear(), today.getMonth(), 1); // First day of this month
+        newEndDate = new Date(today);
+        break;
+
+      case "lastMonth":
+        newStartDate = new Date(today.getFullYear(), today.getMonth() - 1, 1); // First day of last month
+        newEndDate = new Date(today.getFullYear(), today.getMonth(), 0); // Last day of last month
+        break;
+
+      case "last30Days":
+        newStartDate = new Date(today);
+        newStartDate.setDate(today.getDate() - 30);
+        newEndDate = new Date(today);
+        break;
+
+      case "lastYear":
+        newStartDate = new Date(today.getFullYear() - 1, 0, 1); // Jan 1st of last year
+        newEndDate = new Date(today.getFullYear() - 1, 11, 31); // Dec 31st of last year
+        break;
+
+      default:
+        return;
+    }
+
+    setDateRange([newStartDate, newEndDate]);
+  };
 
   useEffect(() => {
     if (!user_id || !host_type) return;
@@ -63,7 +150,6 @@ const Home = ({ user_id, host_type }) => {
     const fetchData = async () => {
       try {
         const { count, sum, list } = API_MAP[host_type] || {};
-
         if (!count || !sum || !list) {
           console.error("Invalid host_type:", host_type);
           return;
@@ -93,15 +179,31 @@ const Home = ({ user_id, host_type }) => {
   return (
     <div className="p-4 text-gray-600">
       <h2 className="text-lg md:text-2xl font-bold mb-4">Dashboard</h2>
-      <div className="flex flex-col bg-white p-4 rounded-lg shadow-md mb-6">
+      <div className="flex flex-col p-4 rounded-lg shadow-md mb-6">
         <label className="text-sm font-semibold">Select Date Range:</label>
-        <DatePicker
-          selectsRange={true}
-          startDate={startDate}
-          endDate={endDate}
-          onChange={(update) => setDateRange(update)}
-          inline
-        />
+        <select
+          value={selectedPreset}
+          onChange={(e) => handlePresetChange(e.target.value)}
+          className="border border-gray-300 p-2 rounded-md mt-2 text-[16px] lg:text-xs"
+        >
+          {presets.map((preset) => (
+            <option key={preset.value} value={preset.value}>
+              {preset.label}
+            </option>
+          ))}
+        </select>
+
+        {selectedPreset === "custom" && (
+          <DatePicker
+            selectsRange={true}
+            startDate={startDate}
+            endDate={endDate}
+            onChange={(update) => setDateRange(update)}
+            maxDate={new Date()}
+            className="w-full border text-gray-600 border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-[16px] lg:text-xs lg:text-xs text-center sm:text-left"
+            wrapperClassName="customDatePickerWidth"
+          />
+        )}
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">

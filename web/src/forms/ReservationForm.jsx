@@ -264,7 +264,7 @@ const ReservationForm = ({
                 <Field
                   type="text"
                   name="firstName"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                   placeholder=" "
                   value={reservationData.firstName}
                   onChange={(e) => {
@@ -277,7 +277,7 @@ const ReservationForm = ({
                 />
                 <label
                   htmlFor="firstName"
-                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px] lg:text-xs"
                 >
                   First Name
                 </label>
@@ -292,7 +292,7 @@ const ReservationForm = ({
                 <Field
                   type="text"
                   name="lastName"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                   placeholder=" "
                   value={reservationData.lastName}
                   onChange={(e) => {
@@ -305,7 +305,7 @@ const ReservationForm = ({
                 />
                 <label
                   htmlFor="lastName"
-                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px] lg:text-xs"
                 >
                   Last Name
                 </label>
@@ -320,7 +320,7 @@ const ReservationForm = ({
                 <Field
                   type="number"
                   name="guests"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                   placeholder=" "
                   min={1}
                   max={6}
@@ -335,7 +335,7 @@ const ReservationForm = ({
                 />
                 <label
                   htmlFor="guests"
-                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px] lg:text-xs"
                 >
                   Guests
                 </label>
@@ -350,7 +350,7 @@ const ReservationForm = ({
                 <Field
                   type="text"
                   name="phoneNumber"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                   placeholder=" "
                   value={reservationData.phoneNumber}
                   onChange={(e) => {
@@ -363,7 +363,7 @@ const ReservationForm = ({
                 />
                 <label
                   htmlFor="phoneNumber"
-                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px] lg:text-xs"
                 >
                   Phone Number
                 </label>
@@ -378,7 +378,7 @@ const ReservationForm = ({
                 <Field
                   type="email"
                   name="email"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                   placeholder=" "
                   value={reservationData.email}
                   onChange={(e) => {
@@ -391,7 +391,7 @@ const ReservationForm = ({
                 />
                 <label
                   htmlFor="email"
-                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px] lg:text-xs"
                 >
                   Email
                 </label>
@@ -438,7 +438,7 @@ const ReservationForm = ({
                 />
                 <label
                   htmlFor="reservation-dates"
-                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px] lg:text-xs"
                 >
                   Select Dates
                 </label>
@@ -570,7 +570,7 @@ const ReservationForm = ({
                                 <Field
                                   type="text"
                                   name="pickupLocation"
-                                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                                   placeholder="Ex: Home Address"
                                   value={reservationData.pickupLocation}
                                   onChange={(e) => {
@@ -586,7 +586,7 @@ const ReservationForm = ({
                                 />
                                 <label
                                   htmlFor="pickupLocation"
-                                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                                  className="absolute left-3 text-gray-600 px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-2 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
                                 >
                                   Pick-up Location
                                 </label>
@@ -600,7 +600,7 @@ const ReservationForm = ({
                                 <Field
                                   type="text"
                                   name="dropoffLocation"
-                                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                                   placeholder=" "
                                   value={reservationData.dropoffLocation}
                                   onChange={(e) => {
@@ -616,7 +616,7 @@ const ReservationForm = ({
                                 />
                                 <label
                                   htmlFor="dropoffLocation"
-                                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px] lg:text-xs"
                                 >
                                   Drop-off Location
                                 </label>
@@ -664,7 +664,7 @@ const ReservationForm = ({
                                 <Field
                                   type="text"
                                   name="dropoffLocation"
-                                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                                   placeholder="Ex: Home Address"
                                   value={reservationData.dropoffLocation}
                                   onChange={(e) => {
@@ -680,7 +680,7 @@ const ReservationForm = ({
                                 />
                                 <label
                                   htmlFor="dropoffLocation"
-                                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px] lg:text-xs"
                                 >
                                   Drop-off Location
                                 </label>
@@ -875,7 +875,7 @@ const ReservationForm = ({
                         <Field
                           type="text"
                           name="pickupLocation"
-                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                           placeholder="Ex: Home Address"
                           value={reservationData.pickupLocation}
                           onChange={(e) => {
@@ -886,7 +886,7 @@ const ReservationForm = ({
                             setFieldValue("pickupLocation", e.target.value);
                           }}
                         />
-                        <label className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]">
+                        <label className="absolute left-3 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-2 peer-focus:scale-75 peer-focus:px-1 pointer-events-none">
                           Pick-up Location
                         </label>
                         <ErrorMessage
@@ -899,7 +899,7 @@ const ReservationForm = ({
                         <Field
                           type="text"
                           name="dropoffLocation"
-                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                           placeholder=" "
                           value={reservationData.dropoffLocation}
                           onChange={(e) => {
@@ -912,7 +912,7 @@ const ReservationForm = ({
                         />
                         <label
                           htmlFor="dropoffLocation"
-                          className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                          className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
                         >
                           Drop-off Location
                         </label>
@@ -960,7 +960,7 @@ const ReservationForm = ({
                         <Field
                           type="text"
                           name="dropoffLocation"
-                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                          className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                           placeholder="Ex: Home Address"
                           value={reservationData.dropoffLocation}
                           onChange={(e) => {
@@ -973,7 +973,7 @@ const ReservationForm = ({
                         />
                         <label
                           htmlFor="dropoffLocation"
-                          className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px]"
+                          className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px] lg:text-xs"
                         >
                           Drop-off Location
                         </label>

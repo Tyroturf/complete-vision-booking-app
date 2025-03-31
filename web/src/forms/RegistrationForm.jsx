@@ -40,7 +40,7 @@ const FormComponent = ({
                       type="text"
                       name="firstName"
                       id="firstName"
-                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                       placeholder=" "
                     />
                     <label
@@ -61,7 +61,7 @@ const FormComponent = ({
                       type="text"
                       name="lastName"
                       id="lastName"
-                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                       placeholder=" "
                     />
                     <label
@@ -82,7 +82,7 @@ const FormComponent = ({
                       type="text"
                       name="contact"
                       id="contact"
-                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                       placeholder=" "
                     />
                     <label
@@ -103,7 +103,7 @@ const FormComponent = ({
                     type="text"
                     name="username"
                     id="username"
-                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                     placeholder=" "
                   />
                   <label
@@ -125,7 +125,7 @@ const FormComponent = ({
                   type="email"
                   name="email"
                   id="email"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                   placeholder=" "
                 />
                 <label
@@ -149,7 +149,7 @@ const FormComponent = ({
                     type="password"
                     name="password"
                     id="password"
-                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                     placeholder=" "
                   />
                   <label
@@ -172,7 +172,7 @@ const FormComponent = ({
                   type="password"
                   name="confirmPassword"
                   id="confirmPassword"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px]"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
                   placeholder=" "
                 />
                 <label
