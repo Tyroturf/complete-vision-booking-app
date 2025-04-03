@@ -1,16 +1,16 @@
 export const formatDate = (date, includeTime = false) => {
-  if (!date) return '';
+  if (!date) return "";
 
-  const month = (`0${date.getMonth() + 1}`).slice(-2);
-  const day = (`0${date.getDate()}`).slice(-2);
+  const month = `0${date.getMonth() + 1}`.slice(-2);
+  const day = `0${date.getDate()}`.slice(-2);
   const year = date.getFullYear();
 
   let formattedDate = `${month}/${day}/${year}`;
 
   if (includeTime) {
     let hours = date.getHours();
-    const minutes = (`0${date.getMinutes()}`).slice(-2);
-    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const minutes = `0${date.getMinutes()}`.slice(-2);
+    const ampm = hours >= 12 ? "PM" : "AM";
     hours = hours % 12 || 12; // Convert 0 to 12 for 12 AM
 
     formattedDate += ` ${hours}:${minutes} ${ampm}`;
@@ -20,7 +20,10 @@ export const formatDate = (date, includeTime = false) => {
 };
 
 export const formatWithCommas = (number) => {
-  return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return number.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 };
 
 export const calculateNights = (checkIn, checkOut) => {
@@ -95,6 +98,7 @@ export const getInitialValues = (hostType, initialValues, isEditMode) => {
 };
 
 export const getHeadingText = (host_type) => {
+  console.log(host_type);
   switch (host_type) {
     case "V":
       return "Vehicle";
@@ -104,7 +108,6 @@ export const getHeadingText = (host_type) => {
       return "Listings";
   }
 };
-
 
 export const getQueryParams = (queryString) => {
   if (!queryString) {

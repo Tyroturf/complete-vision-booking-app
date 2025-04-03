@@ -17,6 +17,9 @@ import {
   fetchCarHostBookingCount,
   fetchCarHostBookingList,
   fetchCarHostBookingSum,
+  fetchGuestCarBookingCount,
+  fetchGuestPlaceBookingCount,
+  fetchGuestTourBookingCount,
   fetchHostBookingCount,
   fetchHostBookingList,
   fetchHostBookingSum,
@@ -38,6 +41,9 @@ const Home = ({ user_id, host_type }) => {
   const [startDate, endDate] = dateRange;
   const [totalBookings, setTotalBookings] = useState(0);
   const [totalBookingSum, setTotalBookingSum] = useState(0);
+  const [guestPlaceBookings, setGuestPlaceBookings] = useState(0);
+  const [guestCarBookings, setGuestCarBookings] = useState(0);
+  const [guestTourBookings, setGuestTourBookings] = useState(0);
   const [bookingList, setBookingList] = useState([]);
   const [selectedPreset, setSelectedPreset] = useState("today");
   const datePickerRef = useRef(null);
@@ -136,7 +142,7 @@ const Home = ({ user_id, host_type }) => {
   };
 
   useEffect(() => {
-    if (!user_id || !host_type) return;
+    if (!user_id) return;
 
     const API_MAP = {
       L: {
@@ -154,12 +160,35 @@ const Home = ({ user_id, host_type }) => {
         sum: fetchTourHostBookingSum,
         list: fetchTourHostBookingList,
       },
+      G: {
+        count: async (queryString) => {
+          const [placeRes, carRes, tourRes] = await Promise.all([
+            fetchGuestPlaceBookingCount(queryString),
+            fetchGuestCarBookingCount(queryString),
+            fetchGuestTourBookingCount(queryString),
+          ]);
+
+          return {
+            data: {
+              placeCount: placeRes.data["Booking Count"] || 0,
+              carCount: carRes.data["Booking Count"] || 0,
+              tourCount: tourRes.data["Booking Count"] || 0,
+              totalCount:
+                (placeRes.data["Booking Count"] || 0) +
+                (carRes.data["Booking Count"] || 0) +
+                (tourRes.data["Booking Count"] || 0),
+            },
+          };
+        },
+      },
     };
 
     const fetchData = async () => {
       try {
-        const { count, sum, list } = API_MAP[host_type] || {};
-        if (!count || !sum || !list) {
+        const typeKey = host_type || "G";
+        const { count, sum, list } = API_MAP[typeKey] || {};
+
+        if (!count) {
           console.error("Invalid host_type:", host_type);
           return;
         }
@@ -168,15 +197,23 @@ const Home = ({ user_id, host_type }) => {
           startDate
         )}&p_date_end=${formatDate(endDate)}`;
 
-        const [countRes, sumRes, listRes] = await Promise.all([
-          count(queryString),
-          sum(queryString),
-          list(queryString),
-        ]);
+        const countRes = await count(queryString);
 
-        setTotalBookings(countRes.data["Booking Count"]);
-        setTotalBookingSum(sumRes.data.total_income);
-        setBookingList(listRes.data.Bookings || listRes.data.CarBookings);
+        if (!host_type) {
+          setGuestPlaceBookings(countRes.data.placeCount);
+          setGuestCarBookings(countRes.data.carCount);
+          setGuestTourBookings(countRes.data.tourCount);
+          setTotalBookings(countRes.data.totalCount);
+        } else {
+          const [sumRes, listRes] = await Promise.all([
+            sum(queryString),
+            list(queryString),
+          ]);
+
+          setTotalBookings(countRes.data["Booking Count"]);
+          setTotalBookingSum(sumRes.data.total_income);
+          setBookingList(listRes.data.Bookings || listRes.data.CarBookings);
+        }
       } catch (err) {
         console.error("Failed to fetch booking data:", err);
       }
@@ -217,28 +254,61 @@ const Home = ({ user_id, host_type }) => {
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        <motion.div className="bg-white p-4 rounded-lg shadow-md">
+        {host_type ? (
+          <>
+            <motion.div className="bg-white p-4 rounded-lg shadow-md">
+              <h3 className="text-sm md:text-lg font-semibold mb-2">
+                Total Bookings
+              </h3>
+              <p className="text-3xl font-bold">
+                <CountUp start={1} end={totalBookings} duration={3} />
+              </p>
+            </motion.div>
+
+            <motion.div className="bg-white p-4 rounded-lg shadow-md">
+              <h3 className="text-sm md:text-lg font-semibold mb-2">
+                Booking Sum
+              </h3>
+              <p className="text-3xl font-bold">${totalBookingSum}</p>
+            </motion.div>
+          </>
+        ) : (
+          <>
+            <motion.div className="bg-white p-4 rounded-lg shadow-md">
+              <h3 className="text-sm md:text-lg font-semibold mb-2">
+                Place Bookings
+              </h3>
+              <p className="text-3xl font-bold">{guestPlaceBookings}</p>
+            </motion.div>
+
+            <motion.div className="bg-white p-4 rounded-lg shadow-md">
+              <h3 className="text-sm md:text-lg font-semibold mb-2">
+                Car Bookings
+              </h3>
+              <p className="text-3xl font-bold">{guestCarBookings}</p>
+            </motion.div>
+
+            <motion.div className="bg-white p-4 rounded-lg shadow-md">
+              <h3 className="text-sm md:text-lg font-semibold mb-2">
+                Tour Bookings
+              </h3>
+              <p className="text-3xl font-bold">{guestTourBookings}</p>
+            </motion.div>
+          </>
+        )}
+      </div>
+
+      {host_type && (
+        <div className="bg-white p-4 mt-6">
           <h3 className="text-sm md:text-lg font-semibold mb-2">
-            Total Bookings
+            Bookings List
           </h3>
-          <p className="text-3xl font-bold">
-            <CountUp start={1} end={totalBookings} duration={3} />
-          </p>
-        </motion.div>
-
-        <motion.div className="bg-white p-4 rounded-lg shadow-md">
-          <h3 className="text-sm md:text-lg font-semibold mb-2">Booking Sum</h3>
-          <p className="text-3xl font-bold">${totalBookingSum}</p>
-        </motion.div>
-      </div>
-
-      <div className="bg-white p-4 mt-6">
-        <h3 className="text-sm md:text-lg font-semibold mb-2">Bookings List</h3>
-        {bookingList &&
-          bookingList.map((listing, index) => (
-            <BookingCard key={index} booking={listing} />
-          ))}
-      </div>
+          {bookingList &&
+            bookingList.map((listing, index) => (
+              <BookingCard key={index} booking={listing} />
+            ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -479,10 +549,7 @@ export const Dashboard = () => {
   }
 
   const roleFull = user.role === "G" ? "Guest" : "Host";
-  const sections = host_type
-    ? ["home", "account", "payment"]
-    : ["home", "account"];
-
+  const sections = ["home", "account", "payment"];
   const renderSection = () => {
     switch (activeSection) {
       case "home":

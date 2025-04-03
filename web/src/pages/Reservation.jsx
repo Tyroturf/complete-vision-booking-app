@@ -294,6 +294,9 @@ const Reservation = ({ type }) => {
                     {data?.LOCATION}
                   </span>
                   <div className="text-xs">{data?.CITY}</div>
+                  {data.FEATURES && (
+                    <div className="text-xs font-bold">{data?.FEATURES}</div>
+                  )}
                 </div>
               </div>
 

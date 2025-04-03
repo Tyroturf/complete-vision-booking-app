@@ -228,6 +228,7 @@ const BookingDetails = () => {
         </div>
 
         {isToday(booking.BookingDate) &&
+          booking.Total &&
           type &&
           booking.Status === "pending" && (
             <div className="flex flex-col md:flex-row gap-4">

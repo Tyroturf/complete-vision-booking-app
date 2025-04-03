@@ -106,7 +106,7 @@ const AddNewListForm = ({
           "Chauffeur rate must be a positive number"
         ),
         description: Yup.string().required("Description is required"),
-        features: Yup.string().required("Features are required"),
+        features: Yup.string().required("Car Number is required"),
         images: Yup.array()
           .of(Yup.mixed().required("Image is required"))
           .test(
@@ -519,13 +519,13 @@ const AddNewListForm = ({
                   type="text"
                   name="features"
                   className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
-                  placeholder=" "
+                  placeholder="ex: GX-6543-19"
                 />
                 <label
                   htmlFor="features"
                   className="pointer-events-none absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
                 >
-                  Features
+                  Car No.
                 </label>
                 <ErrorMessage
                   name="features"

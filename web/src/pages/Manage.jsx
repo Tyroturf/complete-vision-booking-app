@@ -17,7 +17,9 @@ import {
   deleteListing,
   deleteVehicle,
   deleteTour,
-  blockDates,
+  blockPlaceDates,
+  blockCarDates,
+  blockTourDates,
 } from "../api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
@@ -290,6 +292,7 @@ const Manage = () => {
                 onEdit={() => openEditModal(listing)}
                 onDelete={() => openDeleteModal(listing)}
                 user_id={user_id}
+                host_type={host_type}
               />
             ))}
         </div>
@@ -312,7 +315,7 @@ const NewList = ({ openAddModal, buttonText }) => {
   );
 };
 
-const ListCard = ({ listing, onEdit, onDelete, user_id }) => {
+const ListCard = ({ listing, onEdit, onDelete, user_id, host_type }) => {
   const imageUrl = listing.Image1URL || "https://via.placeholder.com/300";
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [selectedDates, setSelectedDates] = useState([null, null]);
@@ -342,7 +345,15 @@ const ListCard = ({ listing, onEdit, onDelete, user_id }) => {
         status: "blocked",
         host_id: listing.HostID,
       };
-      const response = await blockDates(params);
+
+      let response;
+      if (host_type === "L") {
+        response = await blockPlaceDates(params);
+      } else if (host_type === "V") {
+        response = await blockCarDates(params);
+      } else if (host_type === "T") {
+        response = await blockTourDates(params);
+      }
 
       if (response.status === 200) {
         showSuccessToast("Dates blocked successfully!");

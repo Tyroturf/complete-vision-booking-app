@@ -149,6 +149,14 @@ const Detail = ({ fetchDetail, type }) => {
           <AmenitiesList amenities={item?.AMENITIES} />
         </div>
       )}
+      {type === "car_rentals" && (
+        <div className="flex flex-col gap-2 bg-transparent rounded-lg p-4">
+          <span className="text-md font-bold">Car Number</span>
+          <span className="text-xs md:text-sm tracking-wide font-thin">
+            {item?.FEATURES}
+          </span>
+        </div>
+      )}
     </div>
   );
 };

@@ -7,6 +7,7 @@ import {
 } from "../api";
 import { BookingCard } from "./Bookings";
 import Back from "../components/Back";
+import { getHeadingText } from "../utils/helpers";
 
 const ListingBookings = () => {
   const { user_id, host_type } = JSON.parse(localStorage.getItem("user"));
@@ -46,7 +47,7 @@ const ListingBookings = () => {
 
   return (
     <div className="mt-10 md:mt-20 p-4">
-      <Back path={"/manage"} page={"Manage Listings"} />
+      <Back path={"/manage"} page={`Manage ${getHeadingText(host_type)}`} />
       {loading && <Loader />}
       {error && <p className="text-red-500">{error}</p>}
       {!loading && !error && (!listings || listings.length === 0) && (

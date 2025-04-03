@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Loader from "../components/Loader";
+import { fetchBanks } from "../api";
 
 const AddPaymentForm = ({ handleSubmit, isLoading }) => {
+  const [banks, setBanks] = useState([]);
+
   const validationSchema = Yup.object().shape({
     p_bank_account_num: Yup.string()
       .matches(/^\d+$/, "Account number must be numeric")
@@ -12,6 +15,19 @@ const AddPaymentForm = ({ handleSubmit, isLoading }) => {
     p_bank_type: Yup.string().required("Bank type is required"),
     p_bank_name: Yup.string().required("Bank name is required"),
   });
+
+  useEffect(() => {
+    const getBanks = async () => {
+      try {
+        const response = await fetchBanks();
+        setBanks(response?.data?.Bank || []);
+      } catch (error) {
+        console.error("Error fetching banks:", error);
+      }
+    };
+
+    getBanks();
+  }, []);
 
   return (
     <div className="flex flex-col gap-4">
@@ -52,17 +68,17 @@ const AddPaymentForm = ({ handleSubmit, isLoading }) => {
 
           <div className="relative mb-4">
             <Field
-              type="text"
+              as="select"
               name="p_bank_name"
-              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
-              placeholder=" "
-            />
-            <label
-              htmlFor="p_bank_name"
-              className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px] lg:text-xs"
+              className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-xs"
             >
-              Bank Name
-            </label>
+              <option value="" label="Select a bank" />
+              {banks.map((bank) => (
+                <option key={bank.ID} value={bank.ID}>
+                  {bank.BANK_NAME}
+                </option>
+              ))}
+            </Field>
             <ErrorMessage
               name="p_bank_name"
               component="div"

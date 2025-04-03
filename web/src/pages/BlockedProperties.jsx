@@ -5,7 +5,7 @@ import {
   fetchBlockedBookings,
   updateBlockDates,
 } from "../api";
-import { formatDate, formatWithCommas } from "../utils/helpers";
+import { formatDate, formatWithCommas, getHeadingText } from "../utils/helpers";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import BlockedDatesModal from "../components/BlockDatesModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,7 +13,7 @@ import { showErrorToast, showSuccessToast } from "../utils/toast";
 import Back from "../components/Back";
 
 const BlockedProperties = () => {
-  const { user_id } = JSON.parse(localStorage.getItem("user"));
+  const { user_id, host_type } = JSON.parse(localStorage.getItem("user"));
   const [bookingsData, setBookingsData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -43,7 +43,7 @@ const BlockedProperties = () => {
 
   return (
     <div className="mt-10 md:mt-20">
-      <Back path={"/manage"} page={"Manage Listings"} />
+      <Back path={"/manage"} page={`Manage ${getHeadingText(host_type)}`} />
       <div className="p-4">
         {loading && <Loader />}
         {error && <p className="text-red-500">{error}</p>}

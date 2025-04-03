@@ -1,19 +1,25 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://gb3c4b8d5922445-kingsford1.adb.af-johannesburg-1.oraclecloudapps.com/ords/complete",
+  baseURL:
+    "https://gb3c4b8d5922445-kingsford1.adb.af-johannesburg-1.oraclecloudapps.com/ords/complete",
 });
 
-api.interceptors.request.use((config) => {
-  const sessionId = localStorage.getItem("session_id");
-  if (sessionId) {
-    config.headers['Authorization'] = `Bearer ${sessionId}`;
-  }
-  return config;
-}, (error) => Promise.reject(error));
+api.interceptors.request.use(
+  (config) => {
+    const sessionId = localStorage.getItem("session_id");
+    if (sessionId) {
+      config.headers["Authorization"] = `Bearer ${sessionId}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export const login = async (email, password) => {
-  const loginUrl = `/auth/login?p_username=${encodeURIComponent(email)}&p_password=${encodeURIComponent(password)}`;
+  const loginUrl = `/auth/login?p_username=${encodeURIComponent(
+    email
+  )}&p_password=${encodeURIComponent(password)}`;
   const response = await api.get(loginUrl);
 
   const user = response.data;
@@ -31,10 +37,17 @@ export const logout = (p_session_id) => {
 
   if (!sessionId) return;
 
-  return api.get((`/logout/auth?${queryString}`))
+  return api.get(`/logout/auth?${queryString}`);
 };
 
-export const register = ({ firstName, lastName, contact, email, password, role }) => {
+export const register = ({
+  firstName,
+  lastName,
+  contact,
+  email,
+  password,
+  role,
+}) => {
   const queryString = new URLSearchParams({
     first_name: firstName,
     last_name: lastName,
@@ -58,7 +71,7 @@ export const fetchCars = () => {
 };
 
 export const searchPlaces = (params) => {
-  return api.get('/listing/listings', { params });
+  return api.get("/listing/listings", { params });
 };
 
 export const searchCars = (params) => {
@@ -70,20 +83,32 @@ export const searchTours = (params) => {
 };
 
 export const fetchPlace = (params) => {
-  const queryString = new URLSearchParams({ p_listing_id: params.id, p_check_in: params.checkIn, p_check_out: params.checkOut }).toString();
-  
+  const queryString = new URLSearchParams({
+    p_listing_id: params.id,
+    p_check_in: params.checkIn,
+    p_check_out: params.checkOut,
+  }).toString();
+
   return api.get(`/listing/listings?${queryString}`);
 };
 
 export const fetchCar = (params) => {
-  const queryString = new URLSearchParams({ p_rental_id: params.id,  p_check_in: params.checkIn, p_check_out: params.checkOut }).toString();
-  
+  const queryString = new URLSearchParams({
+    p_rental_id: params.id,
+    p_check_in: params.checkIn,
+    p_check_out: params.checkOut,
+  }).toString();
+
   return api.get(`/vehicle/rental?${queryString}`);
 };
 
 export const fetchTour = (params) => {
-  const queryString = new URLSearchParams({ p_tour_id: params.id,  p_check_in: params.checkIn, p_check_out: params.checkOut }).toString();
-  
+  const queryString = new URLSearchParams({
+    p_tour_id: params.id,
+    p_check_in: params.checkIn,
+    p_check_out: params.checkOut,
+  }).toString();
+
   return api.get(`/tour/tours?${queryString}`);
 };
 
@@ -187,7 +212,6 @@ export const saveTourBooking = (bookingData) => {
   return api.get(`/tourbooking/booking?${queryString}`);
 };
 
-
 // export const updateBooking = (bookingData) => {
 //   const queryString = new URLSearchParams(
 //     Object.entries({
@@ -224,41 +248,41 @@ export const saveTourBooking = (bookingData) => {
 //   return api.get(`/property/update_booking_by_user?${queryString}`);
 // };
 
-export const cancelPlaceBooking = ({booking_id, status}) => {
+export const cancelPlaceBooking = ({ booking_id, status }) => {
   const queryString = new URLSearchParams({
     p_BOOKING_ID: booking_id,
-    p_STATUS: status
-  })
+    p_STATUS: status,
+  });
 
   return api.get(`/property/update_booking_by_user?${queryString}`);
 };
 
-export const cancelCarBooking = ({booking_id, status}) => {
+export const cancelCarBooking = ({ booking_id, status }) => {
   const queryString = new URLSearchParams({
     p_BOOKING_ID: booking_id,
-    p_STATUS: status
-  })
+    p_STATUS: status,
+  });
 
   return api.get(`/carbooking/update_car_booking?${queryString}`);
 };
 
-export const cancelTourBooking = ({booking_id, status}) => {
+export const cancelTourBooking = ({ booking_id, status }) => {
   const queryString = new URLSearchParams({
     p_BOOKING_ID: booking_id,
-    p_STATUS: status
-  })
+    p_STATUS: status,
+  });
 
   return api.get(`/tourbooking/update_tour_booking?${queryString}`);
 };
 
-export const fetchBookingCars = ({check_in, check_out, num_guests}) => {
+export const fetchBookingCars = ({ check_in, check_out, num_guests }) => {
   const queryString = new URLSearchParams({
     check_in,
     check_out,
     num_guests,
   }).toString();
   return api.get(`/vehicle/car_list?${queryString}`);
-}
+};
 
 export const fetchTourTypes = async () => {
   return api.get("/tourtype/type");
@@ -276,7 +300,15 @@ export const uploadDocs = async (queryString) => {
   return api.get(`/user/update_user_details?${queryString}`);
 };
 
-export const becomeAHost = ({ firstName, lastName, contact, email, role = "H", hostType, user }) => {
+export const becomeAHost = ({
+  firstName,
+  lastName,
+  contact,
+  email,
+  role = "H",
+  hostType,
+  user,
+}) => {
   const queryString = new URLSearchParams({
     p_first_name: firstName,
     p_last_name: lastName,
@@ -284,7 +316,7 @@ export const becomeAHost = ({ firstName, lastName, contact, email, role = "H", h
     p_username: email,
     p_role: role,
     p_host_type: hostType,
-    p_user_id: user
+    p_user_id: user,
   }).toString();
 
   const url = `/user/update_user_details?${queryString}`;
@@ -292,7 +324,15 @@ export const becomeAHost = ({ firstName, lastName, contact, email, role = "H", h
   return api.get(url);
 };
 
-export const becomeAHosRegister = ({ firstName, lastName, contact, email, password, role = "H", hostType }) => {
+export const becomeAHosRegister = ({
+  firstName,
+  lastName,
+  contact,
+  email,
+  password,
+  role = "H",
+  hostType,
+}) => {
   const queryString = new URLSearchParams({
     first_name: firstName,
     last_name: lastName,
@@ -363,7 +403,6 @@ export const updateList = async (params) => {
 export const fetchListingId = async () => {
   return api.get(`/next/listing_id`);
 };
-
 
 export const fetchListings = async (queryString) => {
   return api.get(`/listing/host_listing?host_id=${queryString}`);
@@ -501,11 +540,11 @@ export const fetchAmenities = async () => {
   return api.get("/get/amenities");
 };
 
-export const verifyPayment = async ({booking_id, reference_id}) => {
+export const verifyPayment = async ({ booking_id, reference_id }) => {
   const queryString = new URLSearchParams({
     booking_id,
-    reference_id
-  })
+    reference_id,
+  });
   return api.get(`/verify/paystack?${queryString}`);
 };
 
@@ -530,24 +569,28 @@ export const fetchCarBooking = async (queryString) => {
 };
 
 export const fetchTourBooking = async (queryString) => {
-  return api.get(`/tourbooking/tour_booking_details?P_BOOKING_ID=${queryString}`);
+  return api.get(
+    `/tourbooking/tour_booking_details?P_BOOKING_ID=${queryString}`
+  );
 };
 
-export const blockDates = async ({listing_id,
+export const blockPlaceDates = async ({
+  listing_id,
   user_id,
   booking_date,
   checkin,
   checkout,
   status,
-  host_id}) => {
+  host_id,
+}) => {
   const queryString = new URLSearchParams({
     listing_id,
-        user_id,
-        booking_date,
-        checkin,
-        checkout,
-        status,
-        host_id
+    user_id,
+    booking_date,
+    checkin,
+    checkout,
+    status,
+    host_id,
   }).toString();
 
   const url = `/property/block_dates?${queryString}`;
@@ -555,15 +598,59 @@ export const blockDates = async ({listing_id,
   return api.get(url);
 };
 
-export const updateBlockDates = async ({
+export const blockCarDates = async ({
+  listing_id,
+  user_id,
+  booking_date,
   checkin,
   checkout,
-  booking_id
+  status,
+  host_id,
 }) => {
   const queryString = new URLSearchParams({
-        p_BOOKING_ID: booking_id,
-        p_CHECKIN: checkin,
-        p_CHECKOUT: checkout,
+    rental_id: listing_id,
+    user_id,
+    booking_date,
+    checkin,
+    checkout,
+    status,
+    host_id,
+  }).toString();
+
+  const url = `/carbooking/block_dates?${queryString}`;
+
+  return api.get(url);
+};
+
+export const blockTourDates = async ({
+  p_TOUR_ID: listing_id,
+  user_id,
+  booking_date,
+  checkin,
+  checkout,
+  status,
+  host_id,
+}) => {
+  const queryString = new URLSearchParams({
+    listing_id,
+    user_id,
+    booking_date,
+    checkin,
+    checkout,
+    status,
+    host_id,
+  }).toString();
+
+  const url = `/tourbooking/block_dates?${queryString}`;
+
+  return api.get(url);
+};
+
+export const updateBlockDates = async ({ checkin, checkout, booking_id }) => {
+  const queryString = new URLSearchParams({
+    p_BOOKING_ID: booking_id,
+    p_CHECKIN: checkin,
+    p_CHECKOUT: checkout,
   }).toString();
 
   const url = `/property/update_booking_by_user?${queryString}`;
@@ -579,14 +666,20 @@ export const deleteBlockedBooking = async (queryString) => {
   return api.get(`/property/delete_booking?P_BOOKING_ID=${queryString}`);
 };
 
-export const updateUserDetails = ({ firstName, lastName, contact, email, id }) => {
+export const updateUserDetails = ({
+  firstName,
+  lastName,
+  contact,
+  email,
+  id,
+}) => {
   const queryString = new URLSearchParams(
     Object.entries({
       p_first_name: firstName,
       p_last_name: lastName,
       p_contact: contact,
       p_username: email,
-      p_user_id: id
+      p_user_id: id,
     }).filter(([_, value]) => value !== undefined && value !== "")
   ).toString();
 
@@ -599,14 +692,14 @@ export const addBankAccount = ({
   p_bank_account_num,
   p_bank_type,
   p_bank_name,
-  p_user_id
+  p_user_id,
 }) => {
   const queryString = new URLSearchParams({
-      p_bank_account_num,
-      p_bank_type,
-      p_bank_name,
-      p_user_id
-    }).toString();
+    p_bank_account_num,
+    p_bank_type,
+    p_bank_name,
+    p_user_id,
+  }).toString();
 
   const url = `/user/update_user_details?${queryString}`;
 
@@ -615,36 +708,52 @@ export const addBankAccount = ({
 
 export const fetchHostBookingCount = (queryString) => {
   return api.get(`/property/host_booking_count?${queryString}`);
-}
+};
 
 export const fetchHostBookingSum = (queryString) => {
   return api.get(`/property/host_booking_sum?${queryString}`);
-}
+};
 
 export const fetchHostBookingList = (queryString) => {
   return api.get(`/property/host_bookings?${queryString}`);
-}
+};
 
 export const fetchCarHostBookingCount = (queryString) => {
   return api.get(`/carbooking/host_booking_count?${queryString}`);
-}
+};
 
 export const fetchCarHostBookingSum = (queryString) => {
   return api.get(`/carbooking/host_booking_sum?${queryString}`);
-}
+};
 
 export const fetchCarHostBookingList = (queryString) => {
   return api.get(`/carbooking/host_bookings?${queryString}`);
-}
+};
 
 export const fetchTourHostBookingCount = (queryString) => {
   return api.get(`/tourrbooking/host_booking_count?${queryString}`);
-}
+};
 
 export const fetchTourHostBookingSum = (queryString) => {
   return api.get(`/tourrbooking/host_booking_sum?${queryString}`);
-}
+};
 
 export const fetchTourHostBookingList = (queryString) => {
   return api.get(`/tourrbooking/host_bookings?${queryString}`);
-}
+};
+
+export const fetchGuestPlaceBookingCount = (queryString) => {
+  return api.get(`/user/user_booking_count?${queryString}`);
+};
+
+export const fetchGuestCarBookingCount = (queryString) => {
+  return api.get(`/user/user_car_booking_count?${queryString}`);
+};
+
+export const fetchGuestTourBookingCount = (queryString) => {
+  return api.get(`/user/user_tour_booking_count?${queryString}`);
+};
+
+export const fetchBanks = () => {
+  return api.get("/bank/details");
+};
