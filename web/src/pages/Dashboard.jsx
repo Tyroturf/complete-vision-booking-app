@@ -197,15 +197,15 @@ const Home = ({ user_id, host_type }) => {
           startDate
         )}&p_date_end=${formatDate(endDate)}`;
 
-        const countRes = await count(queryString);
+        const guestCountRes = await API_MAP["G"].count(queryString);
 
-        if (!host_type) {
-          setGuestPlaceBookings(countRes.data.placeCount);
-          setGuestCarBookings(countRes.data.carCount);
-          setGuestTourBookings(countRes.data.tourCount);
-          setTotalBookings(countRes.data.totalCount);
-        } else {
-          const [sumRes, listRes] = await Promise.all([
+        setGuestPlaceBookings(guestCountRes.data.placeCount);
+        setGuestCarBookings(guestCountRes.data.carCount);
+        setGuestTourBookings(guestCountRes.data.tourCount);
+
+        if (host_type) {
+          const [countRes, sumRes, listRes] = await Promise.all([
+            count(queryString),
             sum(queryString),
             list(queryString),
           ]);
@@ -254,7 +254,7 @@ const Home = ({ user_id, host_type }) => {
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        {host_type ? (
+        {host_type && (
           <>
             <motion.div className="bg-white p-4 rounded-lg shadow-md">
               <h3 className="text-sm md:text-lg font-semibold mb-2">
@@ -272,30 +272,28 @@ const Home = ({ user_id, host_type }) => {
               <p className="text-3xl font-bold">${totalBookingSum}</p>
             </motion.div>
           </>
-        ) : (
-          <>
-            <motion.div className="bg-white p-4 rounded-lg shadow-md">
-              <h3 className="text-sm md:text-lg font-semibold mb-2">
-                Place Bookings
-              </h3>
-              <p className="text-3xl font-bold">{guestPlaceBookings}</p>
-            </motion.div>
-
-            <motion.div className="bg-white p-4 rounded-lg shadow-md">
-              <h3 className="text-sm md:text-lg font-semibold mb-2">
-                Car Bookings
-              </h3>
-              <p className="text-3xl font-bold">{guestCarBookings}</p>
-            </motion.div>
-
-            <motion.div className="bg-white p-4 rounded-lg shadow-md">
-              <h3 className="text-sm md:text-lg font-semibold mb-2">
-                Tour Bookings
-              </h3>
-              <p className="text-3xl font-bold">{guestTourBookings}</p>
-            </motion.div>
-          </>
         )}
+
+        <motion.div className="bg-white p-4 rounded-lg shadow-md">
+          <h3 className="text-sm md:text-lg font-semibold mb-2">
+            Place Bookings
+          </h3>
+          <p className="text-3xl font-bold">{guestPlaceBookings}</p>
+        </motion.div>
+
+        <motion.div className="bg-white p-4 rounded-lg shadow-md">
+          <h3 className="text-sm md:text-lg font-semibold mb-2">
+            Car Bookings
+          </h3>
+          <p className="text-3xl font-bold">{guestCarBookings}</p>
+        </motion.div>
+
+        <motion.div className="bg-white p-4 rounded-lg shadow-md">
+          <h3 className="text-sm md:text-lg font-semibold mb-2">
+            Tour Bookings
+          </h3>
+          <p className="text-3xl font-bold">{guestTourBookings}</p>
+        </motion.div>
       </div>
 
       {host_type && (
