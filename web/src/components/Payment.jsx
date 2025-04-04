@@ -1,11 +1,6 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
-import {
-  faCcVisa,
-  faCcMastercard,
-  faCcAmex,
-} from "@fortawesome/free-brands-svg-icons";
+import { faBank, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import AddPaymentForm from "../forms/AddPaymentForm";
 import Modal from "./Modal";
 import { addBankAccount } from "../api";
@@ -19,24 +14,10 @@ const Card = ({ children, className }) => (
   </div>
 );
 
-const getCardBrandIcon = (brand) => {
-  switch (brand?.toLowerCase()) {
-    case "visa":
-      return faCcVisa;
-    case "mastercard":
-      return faCcMastercard;
-    case "amex":
-      return faCcAmex;
-    default:
-      return faCcVisa;
-  }
-};
-
 const Payment = ({ p_user_id, fetchUserDetails, user }) => {
   const { bank_name, bank_type, bank_account_number } = user;
   const [card, setCard] = useState({
     last4: bank_account_number ? bank_account_number.slice(-4) : "----",
-    brand: bank_name || "Visa",
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -86,10 +67,7 @@ const Payment = ({ p_user_id, fetchUserDetails, user }) => {
                 <p>Bank</p>
                 <p className="font-bold">{bank_name}</p>
               </div>
-              <FontAwesomeIcon
-                className="size-8 md:size-10"
-                icon={getCardBrandIcon(card.brand)}
-              />
+              <FontAwesomeIcon className="size-8 md:size-10" icon={faBank} />
             </div>
             <div className="flex justify-between text-white">
               <div className="flex flex-col text-xs md:text-sm">

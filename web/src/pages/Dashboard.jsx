@@ -549,7 +549,10 @@ export const Dashboard = () => {
   }
 
   const roleFull = user.role === "G" ? "Guest" : "Host";
-  const sections = ["home", "account", "payment"];
+  const sections = host_type
+    ? ["home", "account", "payment"]
+    : ["home", "account"];
+
   const renderSection = () => {
     switch (activeSection) {
       case "home":
