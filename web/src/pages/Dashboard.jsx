@@ -230,7 +230,7 @@ const Home = ({ user_id, host_type }) => {
         <select
           value={selectedPreset}
           onChange={(e) => handlePresetChange(e.target.value)}
-          className="border border-gray-300 p-2 rounded-md mt-2 text-[16px] lg:text-xs"
+          className="border p-2 rounded-md mt-2 text-[16px] lg:text-xs"
         >
           {presets.map((preset) => (
             <option key={preset.value} value={preset.value}>
@@ -247,7 +247,7 @@ const Home = ({ user_id, host_type }) => {
             endDate={endDate}
             onChange={(update) => setDateRange(update)}
             maxDate={new Date()}
-            className="w-full border text-gray-600 border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-[16px] lg:text-xs text-center sm:text-left"
+            className="w-full border text-gray-600 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-[16px] lg:text-xs text-center sm:text-left"
             wrapperClassName="customDatePickerWidth"
           />
         )}
