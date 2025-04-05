@@ -164,3 +164,9 @@ export const isToday = (dateString) => {
     bookingDate.getDate() === today.getDate()
   );
 };
+
+export const formatTime = (secs) => {
+  const minutes = String(Math.floor(secs / 60)).padStart(2, "0");
+  const seconds = String(secs % 60).padStart(2, "0");
+  return `${minutes}:${seconds}`;
+};
