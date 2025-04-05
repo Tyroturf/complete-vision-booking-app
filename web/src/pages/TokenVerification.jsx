@@ -4,14 +4,27 @@ import OtpInput from "react-otp-input";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import { verifyToken } from "../api";
 import Loader from "../components/Loader";
+import { formatTime } from "../utils/helpers";
 
 const TokenVerification = () => {
   const [token, setToken] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [secondsRemaining, setSecondsRemaining] = useState(900);
+
   const navigate = useNavigate();
   const location = useLocation();
   const { username } = location.state || {};
+
+  useEffect(() => {
+    if (secondsRemaining <= 0) return;
+
+    const interval = setInterval(() => {
+      setSecondsRemaining((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [secondsRemaining]);
 
   useEffect(() => {
     if (token.length === 6 && !isSubmitting && !isError) {
@@ -64,7 +77,7 @@ const TokenVerification = () => {
         </p>
 
         <form>
-          <div className="mb-4">
+          <div className="mb-4 flex flex-col">
             <OtpInput
               value={token}
               onChange={handleTokenChange}
@@ -92,6 +105,12 @@ const TokenVerification = () => {
                 boxShadow: "0 0 5px rgba(75, 137, 220, 0.8)",
               }}
             />
+            <div className="text-center mb-4 text-xs text-gray-600">
+              Token expires in{" "}
+              <span className="font-semibold">
+                {formatTime(secondsRemaining)}
+              </span>
+            </div>
           </div>
 
           {isSubmitting && <Loader />}
