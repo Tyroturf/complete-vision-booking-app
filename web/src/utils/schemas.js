@@ -95,3 +95,16 @@ export const updateAccountValidationSchema = Yup.object({
     .matches(/^\d{10}$/, "Phone number is not valid"),
   email: Yup.string().email("Invalid email address"),
 });
+
+export const resetPasswordSchema = Yup.object().shape({
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .required("Password is required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Confirm password is required"),
+});
+
+export const emailOnlySchema = Yup.object({
+  email: Yup.string().email("Invalid email").required("Email is required"),
+});

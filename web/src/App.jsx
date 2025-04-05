@@ -32,6 +32,8 @@ import BookingDetails from "./pages/BookingDetail";
 import Bookings from "./pages/Bookings";
 import BlockedProperties from "./pages/BlockedProperties";
 import ListingBookings from "./pages/ListingBookings";
+import { ResetPassword } from "./pages/ResetPassword";
+import TokenVerification from "./pages/TokenVerification";
 
 const renderWithLayout = (Component) => (
   <Layout>
@@ -54,6 +56,11 @@ const App = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/register-host" element={<HostRegister />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route
+                path="/token-verification"
+                element={<TokenVerification />}
+              />
               <Route path="/" element={renderWithLayout(Home)} />
               <Route
                 path="/places/:id"

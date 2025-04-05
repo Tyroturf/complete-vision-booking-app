@@ -773,3 +773,35 @@ export const updatePassword = ({
 
   return api.get(url);
 };
+
+export const forgotPassword = (p_username) => {
+  const queryString = new URLSearchParams({
+    p_username,
+  }).toString();
+
+  const url = `/user/forgot_password?${queryString}`;
+
+  return api.get(url);
+};
+
+export const verifyToken = ({ p_username, p_reset_code }) => {
+  const queryString = new URLSearchParams({
+    p_username,
+    p_reset_code,
+  }).toString();
+
+  const url = `/user/verify_code?${queryString}`;
+
+  return api.get(url);
+};
+
+export const resetPassword = (p_user_name, p_new_password) => {
+  const queryString = new URLSearchParams({
+    p_user_name,
+    p_new_password,
+  }).toString();
+
+  const url = `/user/current_password?${queryString}`;
+
+  return api.get(url);
+};

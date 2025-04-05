@@ -13,6 +13,7 @@ const FormComponent = ({
   termsAccepted,
   setTermsAccepted,
   user,
+  handleForgotPasswordClick,
 }) => {
   return (
     <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
@@ -166,28 +167,14 @@ const FormComponent = ({
                 </div>
               )}
 
-              {/* {isRegister && (
-              <div className="relative">
-                <Field
-                  type="password"
-                  name="confirmPassword"
-                  id="confirmPassword"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor="confirmPassword"
-                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
+              <div className="text-xs text-gray-500 mt-3">
+                <button
+                  onClick={handleForgotPasswordClick}
+                  className="hover:underline"
                 >
-                  Confirm Password
-                </label>
-                <ErrorMessage
-                  name="confirmPassword"
-                  component="div"
-                  className="text-red-500 text-xs mt-1"
-                />
+                  Forgot Password?
+                </button>
               </div>
-            )} */}
               {(title === "Register" || title === "Become A Host") && (
                 <div className="relative">
                   <Field
