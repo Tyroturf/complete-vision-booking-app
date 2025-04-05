@@ -213,7 +213,11 @@ const Home = ({ user_id, host_type }) => {
 
           setTotalBookings(countRes.data["Booking Count"]);
           setTotalBookingSum(sumRes.data.total_income);
-          setBookingList(listRes.data.Bookings || listRes.data.CarBookings);
+          setBookingList(
+            listRes.data.Bookings ||
+              listRes.data.CarBookings ||
+              listRes.data.TourBookings
+          );
         }
       } catch (err) {
         console.error("Failed to fetch booking data:", err);
@@ -224,14 +228,15 @@ const Home = ({ user_id, host_type }) => {
   }, [startDate, endDate, host_type]);
 
   return (
-    <div className="p-4 text-gray-600">
-      <h2 className="text-lg md:text-2xl font-bold mb-4">Dashboard</h2>
-      <div className="flex flex-col p-4 rounded-lg shadow-md mb-6">
-        <label className="text-sm font-semibold">Select Date Range:</label>
+    <div className="p-4 md:p-6 text-gray-700">
+      <h2 className="text-xl md:text-3xl font-bold mb-6">Dashboard</h2>
+
+      <div className="flex flex-col bg-white p-4 rounded-lg shadow mb-8">
+        <label className="text-xs font-bold">Select Date Range:</label>
         <select
           value={selectedPreset}
           onChange={(e) => handlePresetChange(e.target.value)}
-          className="border p-2 rounded-md mt-2 text-[16px] lg:text-xs"
+          className="border mt-2 bg-white p-2 rounded-md w-full text-sm"
         >
           {presets.map((preset) => (
             <option key={preset.value} value={preset.value}>
@@ -241,71 +246,86 @@ const Home = ({ user_id, host_type }) => {
         </select>
 
         {selectedPreset === "custom" && (
-          <DatePicker
-            selectsRange={true}
-            ref={datePickerRef}
-            startDate={startDate}
-            endDate={endDate}
-            onChange={(update) => setDateRange(update)}
-            maxDate={new Date()}
-            className="w-full border text-gray-600 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-[16px] lg:text-xs text-center sm:text-left"
-            wrapperClassName="customDatePickerWidth"
-          />
+          <div className="mt-4">
+            <DatePicker
+              selectsRange
+              ref={datePickerRef}
+              startDate={startDate}
+              endDate={endDate}
+              onChange={(update) => setDateRange(update)}
+              maxDate={new Date()}
+              className="w-full border px-3 py-2 rounded-md text-center sm:text-left text-[16px] lg:text-xs"
+              wrapperClassName="customDatePickerWidth"
+            />
+          </div>
         )}
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {host_type && (
           <>
-            <motion.div className="bg-white p-4 rounded-lg shadow-md">
-              <h3 className="text-sm md:text-lg font-semibold mb-2">
-                Total Bookings
+            <div className="col-span-2">
+              <h3 className="text-lg font-semibold text-gray-800">
+                Host Stats
               </h3>
+              <hr className="my-2" />
+            </div>
+
+            <motion.div className="bg-white p-4 rounded-lg shadow">
+              <h4 className="text-sm md:text-base font-semibold mb-1">
+                Total Bookings
+              </h4>
               <p className="text-3xl font-bold">
                 <CountUp start={1} end={totalBookings} duration={3} />
               </p>
             </motion.div>
 
-            <motion.div className="bg-white p-4 rounded-lg shadow-md">
-              <h3 className="text-sm md:text-lg font-semibold mb-2">
+            <motion.div className="bg-white p-4 rounded-lg shadow">
+              <h4 className="text-sm md:text-base font-semibold mb-1">
                 Booking Sum
-              </h3>
+              </h4>
               <p className="text-3xl font-bold">${totalBookingSum}</p>
             </motion.div>
           </>
         )}
 
-        <motion.div className="bg-white p-4 rounded-lg shadow-md">
-          <h3 className="text-sm md:text-lg font-semibold mb-2">
+        <div className="col-span-2 mt-6">
+          <h3 className="text-lg font-semibold text-gray-800">Your Stats</h3>
+          <hr className="my-2" />
+        </div>
+
+        <motion.div className="bg-white p-4 rounded-lg shadow">
+          <h4 className="text-sm md:text-base font-semibold mb-1">
             Place Bookings
-          </h3>
+          </h4>
           <p className="text-3xl font-bold">{guestPlaceBookings}</p>
         </motion.div>
 
-        <motion.div className="bg-white p-4 rounded-lg shadow-md">
-          <h3 className="text-sm md:text-lg font-semibold mb-2">
+        <motion.div className="bg-white p-4 rounded-lg shadow">
+          <h4 className="text-sm md:text-base font-semibold mb-1">
             Car Bookings
-          </h3>
+          </h4>
           <p className="text-3xl font-bold">{guestCarBookings}</p>
         </motion.div>
 
-        <motion.div className="bg-white p-4 rounded-lg shadow-md">
-          <h3 className="text-sm md:text-lg font-semibold mb-2">
+        <motion.div className="bg-white p-4 rounded-lg shadow">
+          <h4 className="text-sm md:text-base font-semibold mb-1">
             Tour Bookings
-          </h3>
+          </h4>
           <p className="text-3xl font-bold">{guestTourBookings}</p>
         </motion.div>
       </div>
 
-      {host_type && (
-        <div className="bg-white p-4 mt-6">
-          <h3 className="text-sm md:text-lg font-semibold mb-2">
-            Bookings List
+      {host_type && bookingList?.length > 0 && (
+        <div className="bg-white p-4 mt-8 rounded-lg shadow">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            Host Booking List
           </h3>
-          {bookingList &&
-            bookingList.map((listing, index) => (
+          <div className="space-y-4">
+            {bookingList.map((listing, index) => (
               <BookingCard key={index} booking={listing} />
             ))}
+          </div>
         </div>
       )}
     </div>

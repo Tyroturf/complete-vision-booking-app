@@ -127,7 +127,6 @@ const AddNewListForm = ({
       validationSchema: Yup.object({
         listName: Yup.string().required("Tour Name is required"),
         location: Yup.string().required("Location is required"),
-        carType: Yup.string().required("Car Type is required"),
         guests: Yup.number()
           .required("Number of guests is required")
           .min(1, "At least 1 guest required"),
@@ -350,7 +349,8 @@ const AddNewListForm = ({
         handleSubmit(values);
       }}
     >
-      {({ setFieldValue, resetForm, values }) => {
+      {({ setFieldValue, resetForm, values, errors }) => {
+        console.log(errors);
         useEffect(() => {
           if (!isEditMode) {
             resetForm();

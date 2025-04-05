@@ -731,15 +731,15 @@ export const fetchCarHostBookingList = (queryString) => {
 };
 
 export const fetchTourHostBookingCount = (queryString) => {
-  return api.get(`/tourrbooking/host_booking_count?${queryString}`);
+  return api.get(`/tourbooking/host_booking_count?${queryString}`);
 };
 
 export const fetchTourHostBookingSum = (queryString) => {
-  return api.get(`/tourrbooking/host_booking_sum?${queryString}`);
+  return api.get(`/tourbooking/host_booking_sum?${queryString}`);
 };
 
 export const fetchTourHostBookingList = (queryString) => {
-  return api.get(`/tourrbooking/host_bookings?${queryString}`);
+  return api.get(`/tourbooking/host_bookings?${queryString}`);
 };
 
 export const fetchGuestPlaceBookingCount = (queryString) => {
