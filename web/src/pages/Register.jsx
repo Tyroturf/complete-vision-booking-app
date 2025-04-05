@@ -1,27 +1,12 @@
 import React, { useState } from "react";
 import FormComponent from "../forms/RegistrationForm";
 import wheel from "../assets/wheel.webp";
-import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 import TermsAndConditions from "../components/tncs/TermsAndConditions";
 import CustomerTermsAndConditions from "../components/tncs/CustomerTermsAndConditions";
-
-const validationSchema = Yup.object({
-  firstName: Yup.string().required("First name is required"),
-  lastName: Yup.string().required("Last name is required"),
-  contact: Yup.string()
-    .length(10, "Contact must be exactly 10 digits")
-    .matches(/^\d{10}$/, "Phone number is not valid")
-    .required("Phone number is required"),
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
-});
+import { registerValidationSchema } from "../utils/schemas";
 
 export const Register = () => {
   const [showTerms, setShowTerms] = useState(false);
@@ -73,7 +58,7 @@ export const Register = () => {
               email: "",
               password: "",
             }}
-            validationSchema={validationSchema}
+            validationSchema={registerValidationSchema}
             onSubmit={handleSubmit}
             buttonText="Register"
             isRegister

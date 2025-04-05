@@ -1,20 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import Loader from "../components/Loader";
 import { fetchBanks } from "../api";
+import { paymentValidationSchema } from "../utils/schemas";
 
 const AddPaymentForm = ({ handleSubmit, isLoading }) => {
   const [banks, setBanks] = useState([]);
-
-  const validationSchema = Yup.object().shape({
-    p_bank_account_num: Yup.string()
-      .matches(/^\d+$/, "Account number must be numeric")
-      .min(11, "Must be at least 11 digits")
-      .required("Bank account number is required"),
-    p_bank_type: Yup.string().required("Bank type is required"),
-    p_bank_name: Yup.string().required("Bank name is required"),
-  });
 
   useEffect(() => {
     const getBanks = async () => {
@@ -40,7 +31,7 @@ const AddPaymentForm = ({ handleSubmit, isLoading }) => {
           p_bank_type: "",
           p_bank_name: "",
         }}
-        validationSchema={validationSchema}
+        validationSchema={paymentValidationSchema}
         onSubmit={(values) => {
           handleSubmit(values);
         }}

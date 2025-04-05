@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import hero from "../assets/g.jpg";
 import "../styles.css";
-import * as Yup from "yup";
 import CountUp from "react-countup";
 import { motion } from "framer-motion";
 import "../customDatePickerWidth.css";
@@ -27,6 +26,7 @@ import {
   fetchTourHostBookingList,
   fetchTourHostBookingSum,
   fetchUser,
+  updatePassword,
   updateUserDetails,
 } from "../api";
 import EditableProfileForm from "../forms/EditableProfileForm";
@@ -35,6 +35,7 @@ import Loader from "../components/Loader";
 import Payment from "../components/Payment";
 import DatePicker from "react-datepicker";
 import { BookingCard } from "./Bookings";
+import { updateAccountValidationSchema } from "../utils/schemas";
 
 const Home = ({ user_id, host_type }) => {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
@@ -316,7 +317,6 @@ const Account = ({ user, fetchUserDetails, id }) => {
     first_name,
     last_name,
     contact,
-    role,
     username,
     host_type,
     driver_license,
@@ -332,59 +332,42 @@ const Account = ({ user, fetchUserDetails, id }) => {
     lastName: last_name,
     contact: contact,
     email: username,
-    currentPassword: "",
-    newPassword: "",
-    confirmNewPassword: "",
   };
 
-  const validationSchema = Yup.object({
-    firstName: Yup.string(),
-    lastName: Yup.string(),
-    contact: Yup.string()
-      .length(10, "Contact must be exactly 10 digits")
-      .matches(/^\d{10}$/, "Phone number is not valid"),
-    email: Yup.string().email("Invalid email address"),
+  const handlePasswordUpdate = async (values) => {
+    try {
+      const payload = {
+        p_user_id: id,
+        p_current_password: values.currentPassword,
+        p_new_password: values.newPassword,
+      };
+      setIsLoading(true);
 
-    currentPassword: Yup.string(),
+      const res = await updatePassword(payload);
 
-    newPassword: Yup.string()
-      .min(6, "Password should be at least 6 characters")
-      .when("currentPassword", {
-        is: (val) => Boolean(val),
-        then: (schema) => schema.required("New password is required"),
-        otherwise: (schema) => schema.notRequired(),
-      }),
-
-    confirmNewPassword: Yup.string()
-      .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
-      .when(
-        ["currentPassword", "newPassword"],
-        ([currentPassword, newPassword], schema) => {
-          return currentPassword && newPassword
-            ? schema.required("Please confirm your new password")
-            : schema.notRequired();
-        }
-      ),
-  });
+      if (res.data?.message === "Password updated successfully.") {
+        showSuccessToast("Password updated successfully");
+        setIsEditing(false);
+      } else {
+        showErrorToast("Failed to update password");
+      }
+    } catch (err) {
+      console.error("Password update error", err);
+      showErrorToast("An error occurred while updating password");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async (values) => {
     try {
-      const {
-        firstName,
-        lastName,
-        contact,
-        email,
-        currentPassword,
-        confirmNewPassword,
-        newPassword,
-      } = values;
+      const { firstName, lastName, contact, email } = values;
       setIsLoading(true);
       const res = await updateUserDetails({
         firstName,
         lastName,
         contact,
         email,
-        currentPassword,
         id,
       });
 
@@ -392,14 +375,14 @@ const Account = ({ user, fetchUserDetails, id }) => {
         res.data.status === "success" ||
         res.data.success === "User registered successfully."
       ) {
-        showSuccessToast("Account updated succcessfully");
+        showSuccessToast("Account updated successfully");
         fetchUserDetails();
         setIsEditing(false);
       } else {
         showErrorToast("Account update failed.");
       }
     } catch (error) {
-      showErrorToast(error);
+      showErrorToast(error.message || "Something went wrong.");
     } finally {
       setIsLoading(false);
     }
@@ -411,28 +394,27 @@ const Account = ({ user, fetchUserDetails, id }) => {
 
   return (
     <div className="w-full md:w-1/2 p-8 flex flex-col justify-center mx-auto border rounded-lg shadow-lg bg-white mt-10">
-      <div className="flex justify-between items-center mb-10">
-        <h3 className="text-lg font-semibold text-slate-600">
-          Account Information
-        </h3>
+      <div className="relative mb-10">
         <button
           onClick={toggleEdit}
-          className="text-brand hover:text-brand-dark transition"
+          className="absolute top-0 right-0 text-brand hover:text-brand-dark transition"
         >
           <FontAwesomeIcon icon={isEditing ? faTimes : faEdit} size="lg" />
         </button>
       </div>
+
       {isEditing ? (
         <EditableProfileForm
           initialValues={initialValues}
-          validationSchema={validationSchema}
+          validationSchema={updateAccountValidationSchema}
           handleSubmit={handleSubmit}
           isEditing={isEditing}
           isLoading={isLoading}
           setIsEditing={setIsEditing}
+          handlePasswordUpdate={handlePasswordUpdate}
         />
       ) : (
-        <div className="space-y-8 text-sm text-slate-700">
+        <div className="space-y-8 text-xs md:text-sm text-slate-700">
           <p>
             <strong>First Name:</strong> {first_name}
           </p>

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import FormComponent from "../forms/RegistrationForm";
 import wheel from "../assets/wheel.webp";
-import * as Yup from "yup";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
@@ -10,33 +9,10 @@ import ListingHostTermsAndConditions from "../components/tncs/ListingHostTermsAn
 import CarHostTermsAndConditions from "../components/tncs/CarHostTermsAndConditions";
 import TourHostTermsAndConditions from "../components/tncs/TourHostTermsAndConditions";
 import TermsAndConditions from "../components/tncs/TermsAndConditions";
-
-const validationSchema = Yup.object({
-  firstName: Yup.string().required("First name is required"),
-  lastName: Yup.string().required("Last name is required"),
-  contact: Yup.string()
-    .length(10, "Contact must be exactly 10 digits")
-    .matches(/^\d{10}$/, "Phone number is not valid")
-    .required("Phone number is required"),
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
-});
-
-const validationSchema1 = Yup.object({
-  firstName: Yup.string().required("First name is required"),
-  lastName: Yup.string().required("Last name is required"),
-  contact: Yup.string()
-    .length(10, "Contact must be exactly 10 digits")
-    .matches(/^\d{10}$/, "Phone number is not valid")
-    .required("Phone number is required"),
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-});
+import {
+  nonUserValidationSchema,
+  userValidationSchema,
+} from "../utils/schemas";
 
 export const HostRegister = () => {
   const [showTerms, setShowTerms] = useState(false);
@@ -108,7 +84,9 @@ export const HostRegister = () => {
               email: user?.email || "",
               password: "",
             }}
-            validationSchema={user ? validationSchema1 : validationSchema}
+            validationSchema={
+              user ? userValidationSchema : nonUserValidationSchema
+            }
             onSubmit={handleSubmit}
             buttonText="Register"
             isRegister

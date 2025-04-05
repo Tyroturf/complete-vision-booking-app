@@ -1,19 +1,10 @@
 import React from "react";
 import FormComponent from "../forms/RegistrationForm";
 import tall from "../assets/tall.webp";
-import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
-
-const validationSchema = Yup.object({
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
-});
+import { loginValidationSchema } from "../utils/schemas";
 
 export const Login = () => {
   const { login } = useAuth();
@@ -46,7 +37,7 @@ export const Login = () => {
         <FormComponent
           title="Login"
           initialValues={{ email: "", password: "" }}
-          validationSchema={validationSchema}
+          validationSchema={loginValidationSchema}
           onSubmit={handleSubmit}
           buttonText="Login"
         />

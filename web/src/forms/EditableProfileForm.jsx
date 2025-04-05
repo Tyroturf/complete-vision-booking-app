@@ -8,11 +8,13 @@ import { useReservation } from "../contexts/ReservationContext";
 import { uploadDocs } from "../api";
 import axios from "axios";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
+import { passwordSchema } from "../utils/schemas";
 
 const EditableProfileForm = ({
   initialValues,
   validationSchema,
   handleSubmit,
+  handlePasswordUpdate,
   isEditing,
   first_last,
   last_name,
@@ -23,15 +25,16 @@ const EditableProfileForm = ({
 }) => {
   const [showDLUploadModal, setShowDLUploadModal] = useState(false);
   const [showSelfieUploadModal, setShowSelfieUploadModal] = useState(false);
-  const { reservationData, setReservationData } = useReservation();
   const [isUploading, setIsUploading] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const toggleUploadDLModal = () => {
-    setShowDLUploadModal(!showDLUploadModal);
-  };
-  const toggleUploadSelfieModal = () => {
+  const { reservationData } = useReservation();
+
+  const toggleUploadDLModal = () => setShowDLUploadModal(!showDLUploadModal);
+  const toggleUploadSelfieModal = () =>
     setShowSelfieUploadModal(!showSelfieUploadModal);
-  };
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const uploadDL = async () => {
     const { driverLicense } = reservationData;
@@ -39,14 +42,11 @@ const EditableProfileForm = ({
 
     const bucketUrl =
       "https://objectstorage.af-johannesburg-1.oraclecloud.com/p/suIO1K3vlc1QnyW-2BPxWaaHUDuky1kg0oCvk6N19db2Qd_jUv9nEM7oqCgT1Uv6/n/axw84jvjnipe/b/bucket1/o/";
-
     const uploadUrl = `${bucketUrl}${user_id}_dl`;
-    setIsUploading(true);
 
+    setIsUploading(true);
     const r = await axios.put(uploadUrl, driverLicense, {
-      headers: {
-        "Content-Type": driverLicense?.type,
-      },
+      headers: { "Content-Type": driverLicense?.type },
     });
 
     if (r.status === 200) {
@@ -55,27 +55,22 @@ const EditableProfileForm = ({
           p_user_id: user_id,
           p_dl_photo_url: uploadUrl,
         };
-
         const queryString = new URLSearchParams(payload).toString();
-
         const response = await uploadDocs(queryString);
+
         if (
           response.data.message === "User credentials updated successfully."
         ) {
           showSuccessToast("Driver License uploaded successfully");
-          setIsEditing(!isEditing);
-        } else {
-          showErrorToast("Upload Failed. Try again");
-        }
+          setIsEditing(false);
+        } else showErrorToast("Upload Failed. Try again");
       } catch (error) {
-        console.error("Error uploading driver licence", error);
-        showErrorToast("Failed to upload driver licence");
+        console.error("Error uploading DL", error);
+        showErrorToast("Failed to upload DL");
       } finally {
         setIsUploading(false);
         setShowDLUploadModal(false);
       }
-    } else {
-      throw new Error("Upload failed with status " + response.status);
     }
   };
 
@@ -85,14 +80,11 @@ const EditableProfileForm = ({
 
     const bucketUrl =
       "https://objectstorage.af-johannesburg-1.oraclecloud.com/p/suIO1K3vlc1QnyW-2BPxWaaHUDuky1kg0oCvk6N19db2Qd_jUv9nEM7oqCgT1Uv6/n/axw84jvjnipe/b/bucket1/o/";
-
     const uploadUrl = `${bucketUrl}${user_id}_selfie`;
-    setIsUploading(true);
 
+    setIsUploading(true);
     const r = await axios.put(uploadUrl, selfie, {
-      headers: {
-        "Content-Type": selfie?.type,
-      },
+      headers: { "Content-Type": selfie?.type },
     });
 
     if (r.status === 200) {
@@ -101,18 +93,15 @@ const EditableProfileForm = ({
           p_user_id: user_id,
           p_selfie_photo_url: uploadUrl,
         };
-
         const queryString = new URLSearchParams(payload).toString();
-
         const response = await uploadDocs(queryString);
+
         if (
           response.data.message === "User credentials updated successfully."
         ) {
           showSuccessToast("Selfie uploaded successfully");
-          setIsEditing(!isEditing);
-        } else {
-          showErrorToast("Upload Failed. Try again");
-        }
+          setIsEditing(false);
+        } else showErrorToast("Upload Failed. Try again");
       } catch (error) {
         console.error("Error uploading selfie", error);
         showErrorToast("Failed to upload selfie");
@@ -120,8 +109,6 @@ const EditableProfileForm = ({
         setIsUploading(false);
         setShowSelfieUploadModal(false);
       }
-    } else {
-      throw new Error("Upload failed with status " + response.status);
     }
   };
 
@@ -135,78 +122,135 @@ const EditableProfileForm = ({
           setSubmitting(false);
         }}
       >
-        {({ isSubmitting }) => {
-          return (
-            <Form className="space-y-4">
-              {renderInputField(
-                "firstName",
-                "First Name",
-                isEditing,
-                first_last
-              )}
-              {renderInputField("lastName", "Last Name", isEditing, last_name)}
-              {renderInputField("contact", "Contact", isEditing, contact)}
-              {renderInputField("email", "Email", isEditing, email, "email")}
+        {({ isSubmitting }) => (
+          <Form className="space-y-4">
+            <h2 className="font-bold text-sm text-brand">
+              Profile Information
+            </h2>
+            {renderInputField(
+              "firstName",
+              "First Name",
+              isEditing,
+              first_last,
+              "text",
+              true
+            )}
+            {renderInputField(
+              "lastName",
+              "Last Name",
+              isEditing,
+              last_name,
+              "text",
+              true
+            )}
+            {renderInputField("contact", "Contact", isEditing, contact)}
+            {renderInputField("email", "Email", isEditing, email, "email")}
 
-              {/* Password Fields */}
-              {isEditing && (
-                <>
-                  {renderInputField(
-                    "currentPassword",
-                    "Current Password",
-                    true,
-                    "",
-                    "password"
-                  )}
-                  {renderInputField(
-                    "newPassword",
-                    "New Password",
-                    true,
-                    "",
-                    "password"
-                  )}
-                  {renderInputField(
-                    "confirmNewPassword",
-                    "Confirm New Password",
-                    true,
-                    "",
-                    "password"
-                  )}
-                </>
-              )}
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={toggleUploadSelfieModal}
+                className="border text-brand px-4 py-2 rounded-md text-xs hover:scale-105 transition"
+              >
+                Upload Selfie
+              </button>
+              <button
+                type="button"
+                onClick={toggleUploadDLModal}
+                className="border text-brand px-4 py-2 rounded-md text-xs hover:scale-105 transition"
+              >
+                Upload Driver's License
+              </button>
+            </div>
 
-              <div className="flex flex-col">
-                <button
-                  type="button"
-                  onClick={toggleUploadSelfieModal}
-                  className="border text-brand px-4 py-2 rounded-md text-xs hover:scale-105 transition mt-4"
-                >
-                  Upload Selfie
-                </button>
-
-                <button
-                  type="button"
-                  onClick={toggleUploadDLModal}
-                  className="border text-brand px-4 py-2 rounded-md text-xs hover:scale-105 transition mt-4"
-                >
-                  Upload Driver's License
-                </button>
-              </div>
-
-              {isEditing && (
-                <button
-                  type="submit"
-                  className="w-full bg-brand text-white py-2 rounded-md font-bold hover:scale-105 transition-transform duration-200 text-xs flex justify-center items-center gap-2"
-                  disabled={isSubmitting}
-                >
-                  {isLoading ? <Loader /> : "Save"}
-                </button>
-              )}
-            </Form>
-          );
-        }}
+            {isEditing && (
+              <button
+                type="submit"
+                className="w-full bg-brand text-white py-2 rounded-md font-bold hover:scale-105 transition-transform text-xs flex justify-center items-center gap-2"
+                disabled={isSubmitting}
+              >
+                {isLoading ? <Loader /> : "Save Profile"}
+              </button>
+            )}
+          </Form>
+        )}
       </Formik>
 
+      {/* Toggle Password Form */}
+      {isEditing && (
+        <div className="mt-6">
+          <button
+            onClick={() => setShowPasswordForm(!showPasswordForm)}
+            className="text-brand text-xs underline"
+          >
+            {showPasswordForm ? "Hide Password Update" : "Update Password"}
+          </button>
+        </div>
+      )}
+
+      {/* Password Section */}
+      {showPasswordForm && (
+        <Formik
+          initialValues={{
+            currentPassword: "",
+            newPassword: "",
+            confirmNewPassword: "",
+          }}
+          validationSchema={passwordSchema}
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
+            await handlePasswordUpdate(values);
+            setSubmitting(false);
+            resetForm();
+          }}
+        >
+          {({ isSubmitting }) => (
+            <Form className="space-y-4 mt-4 border-t pt-4">
+              <h2 className="font-bold text-sm text-brand">Update Password</h2>
+
+              {renderInputField(
+                "currentPassword",
+                "Current Password",
+                true,
+                "",
+                showPassword ? "text" : "password"
+              )}
+              {renderInputField(
+                "newPassword",
+                "New Password",
+                true,
+                "",
+                showPassword ? "text" : "password"
+              )}
+              {renderInputField(
+                "confirmNewPassword",
+                "Confirm New Password",
+                true,
+                "",
+                showPassword ? "text" : "password"
+              )}
+
+              <div className="flex items-center gap-2 text-xs">
+                <input
+                  type="checkbox"
+                  id="togglePassword"
+                  onChange={togglePasswordVisibility}
+                />
+                <label htmlFor="togglePassword">Show Password</label>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-brand text-white py-2 rounded-md font-bold hover:scale-105 transition-transform text-xs flex justify-center items-center gap-2"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? <Loader /> : "Update Password"}
+              </button>
+            </Form>
+          )}
+        </Formik>
+      )}
+
+      {/* Modals */}
       <Modal isOpen={showDLUploadModal} onClose={toggleUploadDLModal}>
         <UploadDL handleSubmit={uploadDL} isUploading={isUploading} />
       </Modal>
@@ -217,7 +261,14 @@ const EditableProfileForm = ({
   );
 };
 
-const renderInputField = (name, label, isEditing, value, type = "text") => {
+const renderInputField = (
+  name,
+  label,
+  isEditing,
+  value,
+  type = "text",
+  disabled = false
+) => {
   return (
     <div className="relative">
       {isEditing ? (
@@ -226,8 +277,14 @@ const renderInputField = (name, label, isEditing, value, type = "text") => {
             type={type}
             name={name}
             id={name}
-            className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
+            className={`w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs 
+            ${
+              disabled
+                ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                : "bg-white"
+            }`}
             placeholder=""
+            disabled={disabled}
           />
           <label
             htmlFor={name}

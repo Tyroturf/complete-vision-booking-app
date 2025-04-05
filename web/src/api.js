@@ -757,3 +757,19 @@ export const fetchGuestTourBookingCount = (queryString) => {
 export const fetchBanks = () => {
   return api.get("/bank/details");
 };
+
+export const updatePassword = ({
+  p_user_id,
+  p_current_password,
+  p_new_password,
+}) => {
+  const queryString = new URLSearchParams({
+    p_user_id,
+    p_current_password,
+    p_new_password,
+  }).toString();
+
+  const url = `/user/password?${queryString}`;
+
+  return api.get(url);
+};
