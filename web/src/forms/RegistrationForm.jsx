@@ -41,8 +41,13 @@ const FormComponent = ({
                       type="text"
                       name="firstName"
                       id="firstName"
-                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
+                      className={`w-full border border-gray-300 px-3 py-2 rounded-md peer text-[16px] lg:text-xs focus:outline-none focus:border-brand ${
+                        user && title === "Become A Host"
+                          ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                          : "bg-white text-black"
+                      }`}
                       placeholder=" "
+                      disabled={user && title === "Become A Host"}
                     />
                     <label
                       htmlFor="firstName"
@@ -62,8 +67,13 @@ const FormComponent = ({
                       type="text"
                       name="lastName"
                       id="lastName"
-                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
+                      className={`w-full border border-gray-300 px-3 py-2 rounded-md peer text-[16px] lg:text-xs focus:outline-none focus:border-brand ${
+                        user && title === "Become A Host"
+                          ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                          : "bg-white text-black"
+                      }`}
                       placeholder=" "
+                      disabled={user && title === "Become A Host"}
                     />
                     <label
                       htmlFor="lastName"
@@ -83,8 +93,13 @@ const FormComponent = ({
                       type="text"
                       name="contact"
                       id="contact"
-                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
+                      className={`w-full border border-gray-300 px-3 py-2 rounded-md peer text-[16px] lg:text-xs focus:outline-none focus:border-brand ${
+                        user && title === "Become A Host"
+                          ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                          : "bg-white text-black"
+                      }`}
                       placeholder=" "
+                      disabled={user && title === "Become A Host"}
                     />
                     <label
                       htmlFor="contact"
@@ -98,27 +113,6 @@ const FormComponent = ({
                       className="text-red-500 text-xs mt-1"
                     />
                   </div>
-
-                  {/* <div className="relative">
-                  <Field
-                    type="text"
-                    name="username"
-                    id="username"
-                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
-                    placeholder=" "
-                  />
-                  <label
-                    htmlFor="username"
-                    className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1"
-                  >
-                    Username
-                  </label>
-                  <ErrorMessage
-                    name="username"
-                    component="div"
-                    className="text-red-500 text-xs mt-1"
-                  />
-                </div> */}
                 </>
               )}
               <div className="relative">
@@ -126,8 +120,13 @@ const FormComponent = ({
                   type="email"
                   name="email"
                   id="email"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
+                  className={`w-full border border-gray-300 px-3 py-2 rounded-md peer text-[16px] lg:text-xs focus:outline-none focus:border-brand ${
+                    user && title === "Become A Host"
+                      ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                      : "bg-white text-black"
+                  }`}
                   placeholder=" "
+                  disabled={user && title === "Become A Host"}
                 />
                 <label
                   htmlFor="email"
@@ -204,7 +203,13 @@ const FormComponent = ({
                 className="w-full bg-brand text-white py-2 rounded-md font-bold hover:scale-105 transition-transform duration-200 text-xs"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? `${buttonText}ing...` : buttonText}
+                {isSubmitting
+                  ? buttonText === "Login"
+                    ? "Logging in..."
+                    : buttonText === "Register"
+                    ? "Registering..."
+                    : "Submitting..."
+                  : buttonText}
               </button>
             </Form>
           );
