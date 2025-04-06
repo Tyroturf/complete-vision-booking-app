@@ -42,11 +42,11 @@ export const Login = () => {
     try {
       const res = await forgotPassword(email);
       console.log(res);
-      showSuccessToast("Password reset link has been sent to your contact.");
+      showSuccessToast("Password reset code has been sent to your contact.");
       setIsForgotPassword(false);
       navigate("/token-verification", { state: { username: email } });
     } catch (error) {
-      showErrorToast("Failed to send password reset link.");
+      showErrorToast("Failed to send password reset coder.");
     }
   };
 
@@ -59,7 +59,7 @@ export const Login = () => {
               Forgot Password
             </h2>
             <p className="text-xs md:text-sm text-gray-600 mb-4">
-              Please enter your email address. We'll send you a link to reset
+              Please enter your email address. We'll send you a code to reset
               your password.
             </p>
             <Formik
@@ -88,7 +88,7 @@ export const Login = () => {
                     className="w-full p-3 bg-brand font-bold text-white rounded-md hover:bg-brand-4xl transition"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Sending..." : "Send Reset Link"}
+                    {isSubmitting ? "Sending..." : "Send Reset Code"}
                   </button>
                 </Form>
               )}

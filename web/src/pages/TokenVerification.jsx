@@ -70,10 +70,10 @@ const TokenVerification = () => {
     <div className="min-h-screen flex justify-center items-center bg-gray-100 p-4">
       <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">
-          Enter Verification Token
+          Enter Verification Code
         </h2>
         <p className="text-gray-600 mb-4 text-xs md:text-sm">
-          Please enter the 6-digit token sent to your contact.
+          Please enter the 6-digit code sent to your contact.
         </p>
 
         <form>
@@ -106,7 +106,7 @@ const TokenVerification = () => {
               }}
             />
             <div className="text-center mb-4 text-xs text-gray-600">
-              Token expires in{" "}
+              Code expires in{" "}
               <span className="font-semibold">
                 {formatTime(secondsRemaining)}
               </span>

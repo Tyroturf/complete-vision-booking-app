@@ -160,6 +160,8 @@ const BookingDetails = () => {
     );
   }
 
+  console.log("b", booking);
+
   return (
     <div className="mt-20 mx-auto">
       <Back path={backPath} page={"Bookings"} />
@@ -189,6 +191,27 @@ const BookingDetails = () => {
           )}
           {booking.BookingDate && (
             <DetailItem label="Booking Date" value={booking.BookingDate} />
+          )}
+          {booking.ChauffuerRate && (
+            <DetailItem
+              label="Chauffeur Rate"
+              value={`USD ${booking.ChauffuerRate}`}
+            />
+          )}
+          {booking.PickupLocation && (
+            <DetailItem
+              label="Pickup Location"
+              value={booking.PickupLocation}
+            />
+          )}
+          {booking.DropoffLocation && (
+            <DetailItem
+              label="Dropoff Location"
+              value={booking.DropoffLocation}
+            />
+          )}
+          {booking.Features && (
+            <DetailItem label="Car No." value={booking.Features} />
           )}
           {booking.ReferenceID && (
             <DetailItem label="Reference ID" value={booking.ReferenceID} />
