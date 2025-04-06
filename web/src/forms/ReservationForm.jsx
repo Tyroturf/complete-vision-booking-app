@@ -32,6 +32,9 @@ const ReservationForm = ({
   const [interestedInTour, setInterestedInTour] = useState(false);
   const [tourTypes, setTourType] = useState("");
   const [selectedTour, setSelectedTour] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const [isDropoffFocused, setIsDropoffFocused] = useState(false);
+
   const { reservationData, setReservationData } = useReservation();
 
   const [selfieError, setSelfieError] = useState("");
@@ -252,7 +255,7 @@ const ReservationForm = ({
           setSubmitting(false);
         }}
       >
-        {({ isSubmitting, setFieldValue, errors, touched }) => {
+        {({ isSubmitting, setFieldValue, errors, touched, handleBlur }) => {
           setSelfieError(errors.selfie || "");
           setDLError(errors.driverLicense || "");
           setDrivingOptionError(errors.drivingOption || "");
@@ -432,7 +435,7 @@ const ReservationForm = ({
                 />
                 <label
                   htmlFor="reservation-dates"
-                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-[16px] lg:text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
+                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
                 >
                   Select Dates
                 </label>
@@ -564,8 +567,15 @@ const ReservationForm = ({
                                   type="text"
                                   name="pickupLocation"
                                   className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
-                                  placeholder="Ex: Home Address"
+                                  placeholder={
+                                    isFocused ? "Ex: Home Address" : ""
+                                  }
                                   value={reservationData.pickupLocation}
+                                  onFocus={() => setIsFocused(true)}
+                                  onBlur={(e) => {
+                                    setIsFocused(false);
+                                    handleBlur(e);
+                                  }}
                                   onChange={(e) => {
                                     setReservationData({
                                       ...reservationData,
@@ -579,7 +589,7 @@ const ReservationForm = ({
                                 />
                                 <label
                                   htmlFor="pickupLocation"
-                                  className="absolute left-3 text-gray-600 px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-2 peer-focus:scale-75 peer-focus:px-1 pointer-events-none"
+                                  className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px] lg:text-xs"
                                 >
                                   Pick-up Location
                                 </label>
@@ -657,9 +667,17 @@ const ReservationForm = ({
                                 <Field
                                   type="text"
                                   name="dropoffLocation"
+                                  id="dropoffLocation"
                                   className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
-                                  placeholder="Ex: Home Address"
+                                  placeholder={
+                                    isDropoffFocused ? "Ex: Home Address" : ""
+                                  }
                                   value={reservationData.dropoffLocation}
+                                  onFocus={() => setIsDropoffFocused(true)}
+                                  onBlur={(e) => {
+                                    setIsDropoffFocused(false);
+                                    handleBlur(e);
+                                  }}
                                   onChange={(e) => {
                                     setReservationData((prevData) => ({
                                       ...prevData,
@@ -696,7 +714,7 @@ const ReservationForm = ({
                                 <button
                                   type="button"
                                   onClick={() => setShowSelfieUploadModal(true)}
-                                  className="border text-brand px-4 py-2 rounded-md text-xs hover:scale-105 transition mt-4"
+                                  className="border text-brand px-4 py-2 rounded-md text-xs hover:scale-105 transition "
                                 >
                                   Upload Selfie
                                 </button>
@@ -868,8 +886,13 @@ const ReservationForm = ({
                           type="text"
                           name="pickupLocation"
                           className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
-                          placeholder="Ex: Home Address"
+                          placeholder={isFocused ? "Ex: Home Address" : ""}
                           value={reservationData.pickupLocation}
+                          onFocus={() => setIsFocused(true)}
+                          onBlur={(e) => {
+                            setIsFocused(false);
+                            handleBlur(e);
+                          }}
                           onChange={(e) => {
                             setReservationData({
                               ...reservationData,
@@ -878,7 +901,10 @@ const ReservationForm = ({
                             setFieldValue("pickupLocation", e.target.value);
                           }}
                         />
-                        <label className="absolute left-3 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-2 peer-focus:scale-75 peer-focus:px-1 pointer-events-none">
+                        <label
+                          htmlFor="pickupLocation"
+                          className="absolute left-3 top-2 text-gray-600 bg-white px-1 text-xs transition-all duration-200 transform origin-top-left -translate-y-4 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-1 pointer-events-none text-[16px] lg:text-xs"
+                        >
                           Pick-up Location
                         </label>
                         <ErrorMessage
@@ -952,9 +978,20 @@ const ReservationForm = ({
                         <Field
                           type="text"
                           name="dropoffLocation"
+                          id="dropoffLocation"
                           className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand peer text-[16px] lg:text-xs"
-                          placeholder="Ex: Home Address"
+                          placeholder={
+                            isDropoffFocused ? "Ex: Home Address" : ""
+                          }
                           value={reservationData.dropoffLocation}
+                          onFocus={() => {
+                            console.log("first");
+                            setIsDropoffFocused(true);
+                          }}
+                          onBlur={(e) => {
+                            setIsDropoffFocused(false);
+                            handleBlur(e);
+                          }}
                           onChange={(e) => {
                             setReservationData((prevData) => ({
                               ...prevData,

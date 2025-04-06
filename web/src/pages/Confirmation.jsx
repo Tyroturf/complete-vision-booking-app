@@ -154,16 +154,16 @@ const Confirmation = ({ bookingDetails, page }) => {
         <div>
           <h2 className="text-xs md:text-sm font-bold">Booking Details</h2>
           <p className="text-xs md:text-sm">
-            <span className="font-medium">Guests: </span>
-            {guests}
+            <span className="font-medium">Listing: </span>
+            {listing?.LIST_NAME || "N/A"}
           </p>
           <p className="text-xs md:text-sm">
             <span className="font-medium">Dates: </span>
             {checkIn} - {checkOut}
           </p>
           <p className="text-xs md:text-sm">
-            <span className="font-medium">Listing: </span>
-            {listing?.LIST_NAME || "N/A"}
+            <span className="font-medium">Guests: </span>
+            {guests}
           </p>
           <p className="text-xs md:text-sm">
             <span className="font-medium">Nights: </span>
@@ -175,10 +175,6 @@ const Confirmation = ({ bookingDetails, page }) => {
         <div>
           <h2 className="text-xs md:text-sm font-bold">Property</h2>
           <p className="text-xs md:text-sm">
-            <span className="font-medium">Listing: </span>
-            {listing?.LIST_NAME}
-          </p>
-          <p className="text-xs md:text-sm">
             <span className="font-medium">Location: </span>
             {listing?.LOCATION}
           </p>
@@ -189,13 +185,20 @@ const Confirmation = ({ bookingDetails, page }) => {
         </div>
 
         {/* Car Rental Details */}
-        {page === "place" && interestedInCar && selectedCar && (
+        {interestedInCar && selectedCar && (
           <div>
             <h2 className="text-xs md:text-sm font-bold">Car Rental Details</h2>
-            <p className="text-xs md:text-sm">
-              <span className="font-medium">Car: </span>
-              {selectedCar?.ListName || "N/A"}
-            </p>
+            {page === "place" && (
+              <>
+                <p className="text-xs md:text-sm">
+                  <span className="font-medium">Car: </span>
+                  {selectedCar?.ListName || "N/A"}
+                </p>
+                <p className="text-xs md:text-sm">
+                  <span className="font-medium">Car Price: </span>${carPrice}
+                </p>
+              </>
+            )}
             <p className="text-xs md:text-sm">
               <span className="font-medium">Driving Option: </span>
               {drivingOption === "chauffeur" ? "Chauffeur" : "Self-driving"}
@@ -215,9 +218,6 @@ const Confirmation = ({ bookingDetails, page }) => {
             <p className="text-xs md:text-sm">
               <span className="font-medium">Dropoff Location: </span>
               {dropoffLocation || "N/A"}
-            </p>
-            <p className="text-xs md:text-sm">
-              <span className="font-medium">Car Price: </span>${carPrice}
             </p>
           </div>
         )}
