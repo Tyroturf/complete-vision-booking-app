@@ -305,7 +305,7 @@ const BookingDetails = () => {
             />
           )}
           {booking["Car Number"] && (
-            <DetailItem label="Car No." value={booking["Car Number"]} />
+            <DetailItem label="Car Number" value={booking["Car Number"]} />
           )}
           {booking.ReferenceID && (
             <DetailItem label="Reference ID" value={booking.ReferenceID} />
