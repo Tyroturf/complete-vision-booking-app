@@ -89,15 +89,18 @@ const BookingCard = ({ booking, fetchBookings, host_type }) => {
 
   const handleBlock = async () => {
     if (!booking || booking.Status !== "blocked") return;
+
+    const bookingId = host_type === "T" ? booking.TourID : booking.ID;
+
     setIsUnblocking(true);
     try {
       let response;
       if (host_type === "V") {
-        response = await deleteBlockedCarBooking(booking.ID);
+        response = await deleteBlockedCarBooking(bookingId);
       } else if (host_type === "T") {
-        response = await deleteBlockedTourBooking(booking.ID);
+        response = await deleteBlockedTourBooking(bookingId);
       } else {
-        response = await deleteBlockedPlaceBooking(booking.ID);
+        response = await deleteBlockedPlaceBooking(bookingId);
       }
 
       if (response?.data?.message === "Booking successfully deleted.") {
@@ -129,7 +132,7 @@ const BookingCard = ({ booking, fetchBookings, host_type }) => {
     setLoading(true);
     try {
       const params = {
-        booking_id: booking.ID,
+        booking_id: host_type === "T" ? booking.TourID : booking.ID,
         checkin: formatDate(checkin),
         checkout: formatDate(checkout),
       };
