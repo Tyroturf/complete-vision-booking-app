@@ -132,6 +132,7 @@ const BookingCard = ({ booking, fetchBookings, host_type }) => {
         checkout: formatDate(checkout),
       };
       const response = await updateBlockDates(params);
+      console.log("blc", response);
 
       if (response.status === 200) {
         showSuccessToast("Dates blocked successfully!");
@@ -147,9 +148,9 @@ const BookingCard = ({ booking, fetchBookings, host_type }) => {
       setIsDatePickerOpen(false);
     }
   };
+
   return (
     <div className="mt-10 md:mt-20 p-4">
-      <Back path={"/manage"} page={"Manage Listings"} />
       <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg mb-7 cursor-pointer hover:shadow-lg transition-shadow">
         <img
           src={

@@ -355,7 +355,7 @@ const ListCard = ({ listing, onEdit, onDelete, user_id, host_type }) => {
         response = await blockTourDates(params);
       }
 
-      if (response.status === 200) {
+      if (response.data === "Date Booked successfully.") {
         showSuccessToast("Dates blocked successfully!");
       } else {
         showErrorToast("Failed to block dates.");
