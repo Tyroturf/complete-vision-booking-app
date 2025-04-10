@@ -341,6 +341,8 @@ const BookingDetails = () => {
                 ? "bg-red-100 text-red-600"
                 : booking.Status === "reversed"
                 ? "bg-purple-100 text-purple-600"
+                : booking.Status === "blocked"
+                ? "bg-gray-200 text-gray-700"
                 : ""
             }`}
           >
