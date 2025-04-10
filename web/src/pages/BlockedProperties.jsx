@@ -160,7 +160,7 @@ const BookingCard = ({ booking, fetchBookings, host_type }) => {
   };
 
   return (
-    <div className="mt-10 md:mt-20 p-4">
+    <div className="p-4">
       <div className="flex flex-col md:flex-row bg-white shadow-md rounded-lg mb-7 cursor-pointer hover:shadow-lg transition-shadow">
         <img
           src={
