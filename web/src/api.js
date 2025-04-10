@@ -660,6 +660,38 @@ export const updateBlockDates = async ({ checkin, checkout, booking_id }) => {
   return api.get(url);
 };
 
+export const updateCarBlockDates = async ({
+  checkin,
+  checkout,
+  booking_id,
+}) => {
+  const queryString = new URLSearchParams({
+    p_BOOKING_ID: booking_id,
+    p_CHECKIN: checkin,
+    p_CHECKOUT: checkout,
+  }).toString();
+
+  const url = `/carbooking/update_car_booking?${queryString}`;
+
+  return api.get(url);
+};
+
+export const updateTourBlockDates = async ({
+  checkin,
+  checkout,
+  booking_id,
+}) => {
+  const queryString = new URLSearchParams({
+    p_BOOKING_ID: booking_id,
+    p_CHECKIN: checkin,
+    p_CHECKOUT: checkout,
+  }).toString();
+
+  const url = `/tourbooking/update_tour_booking?${queryString}`;
+
+  return api.get(url);
+};
+
 export const fetchBlockedPlaceBookings = async (queryString) => {
   return api.get(`/property/blocked_bookings?P_USER_ID=${queryString}`);
 };

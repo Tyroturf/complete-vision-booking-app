@@ -8,6 +8,8 @@ import {
   fetchBlockedPlaceBookings,
   fetchBlockedTourBookings,
   updateBlockDates,
+  updateCarBlockDates,
+  updateTourBlockDates,
 } from "../api";
 import { formatDate, formatWithCommas, getHeadingText } from "../utils/helpers";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
@@ -90,16 +92,16 @@ const BookingCard = ({ booking, fetchBookings, host_type }) => {
     setIsUnblocking(true);
     try {
       let response;
-      if (host_type === "car") {
+      if (host_type === "V") {
         response = await deleteBlockedCarBooking(booking.ID);
-      } else if (host_type === "tour") {
+      } else if (host_type === "T") {
         response = await deleteBlockedTourBooking(booking.ID);
       } else {
         response = await deleteBlockedPlaceBooking(booking.ID);
       }
 
-      fetchBookings();
       if (response?.data?.message === "Booking successfully deleted.") {
+        fetchBookings();
         showSuccessToast("Property successfully unblocked");
       } else {
         showErrorToast("Failed to unblock property");
@@ -131,10 +133,18 @@ const BookingCard = ({ booking, fetchBookings, host_type }) => {
         checkin: formatDate(checkin),
         checkout: formatDate(checkout),
       };
-      const response = await updateBlockDates(params);
-      console.log("blc", response);
 
-      if (response.status === 200) {
+      let response;
+
+      if (host_type === "V") {
+        response = await updateCarBlockDates(params);
+      } else if (host_type === "T") {
+        response = await updateTourBlockDates(params);
+      } else {
+        response = await updateBlockDates(params);
+      }
+
+      if (response.data.message === "Booking successfully updated.") {
         showSuccessToast("Dates blocked successfully!");
         fetchBookings();
       } else {
