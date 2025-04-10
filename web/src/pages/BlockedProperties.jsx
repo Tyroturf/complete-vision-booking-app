@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import {
-  deleteBlockedBooking,
-  fetchBlockedBookings,
+  deleteBlockedCarBooking,
+  deleteBlockedPlaceBooking,
+  deleteBlockedTourBooking,
+  fetchBlockedCarBookings,
+  fetchBlockedPlaceBookings,
+  fetchBlockedTourBookings,
   updateBlockDates,
 } from "../api";
 import { formatDate, formatWithCommas, getHeadingText } from "../utils/helpers";
@@ -27,7 +31,14 @@ const BlockedProperties = () => {
     setError(null);
     try {
       let response;
-      response = await fetchBlockedBookings(user_id);
+
+      if (host_type === "V") {
+        response = await fetchBlockedCarBookings(user_id);
+      } else if (host_type === "T") {
+        response = await fetchBlockedTourBookings(user_id);
+      } else {
+        response = await fetchBlockedPlaceBookings(user_id);
+      }
 
       if (response?.status === 200) {
         setBookingsData(response.data.Bookings);
@@ -58,6 +69,7 @@ const BlockedProperties = () => {
               booking={booking}
               fetchBookings={fetchBookings}
               user_id={user_id}
+              host_type={host_type}
             />
           ))}
       </div>
@@ -67,7 +79,7 @@ const BlockedProperties = () => {
 
 export default BlockedProperties;
 
-const BookingCard = ({ booking, fetchBookings, user_id }) => {
+const BookingCard = ({ booking, fetchBookings, host_type }) => {
   const [isUnblocking, setIsUnblocking] = useState(false);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [selectedDates, setSelectedDates] = useState([null, null]);
@@ -77,7 +89,15 @@ const BookingCard = ({ booking, fetchBookings, user_id }) => {
     if (!booking || booking.Status !== "blocked") return;
     setIsUnblocking(true);
     try {
-      const response = await deleteBlockedBooking(booking.ID);
+      let response;
+      if (host_type === "car") {
+        response = await deleteBlockedCarBooking(booking.ID);
+      } else if (host_type === "tour") {
+        response = await deleteBlockedTourBooking(booking.ID);
+      } else {
+        response = await deleteBlockedPlaceBooking(booking.ID);
+      }
+
       fetchBookings();
       if (response?.data?.message === "Booking successfully deleted.") {
         showSuccessToast("Property successfully unblocked");
@@ -86,7 +106,7 @@ const BookingCard = ({ booking, fetchBookings, user_id }) => {
         throw new Error("Failed to unblock property");
       }
     } catch (err) {
-      setError(err.message);
+      showErrorToast(err.message);
     } finally {
       setIsUnblocking(false);
     }

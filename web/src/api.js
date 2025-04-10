@@ -623,7 +623,7 @@ export const blockCarDates = async ({
 };
 
 export const blockTourDates = async ({
-  p_TOUR_ID: listing_id,
+  listing_id,
   user_id,
   booking_date,
   checkin,
@@ -632,7 +632,7 @@ export const blockTourDates = async ({
   host_id,
 }) => {
   const queryString = new URLSearchParams({
-    listing_id,
+    tour_id: listing_id,
     user_id,
     booking_date,
     checkin,
@@ -640,6 +640,8 @@ export const blockTourDates = async ({
     status,
     host_id,
   }).toString();
+
+  console.log("qqq", queryString);
 
   const url = `/tourbooking/block_dates?${queryString}`;
 
@@ -658,12 +660,28 @@ export const updateBlockDates = async ({ checkin, checkout, booking_id }) => {
   return api.get(url);
 };
 
-export const fetchBlockedBookings = async (queryString) => {
+export const fetchBlockedPlaceBookings = async (queryString) => {
   return api.get(`/property/blocked_bookings?P_USER_ID=${queryString}`);
 };
 
-export const deleteBlockedBooking = async (queryString) => {
+export const deleteBlockedPlaceBooking = async (queryString) => {
   return api.get(`/property/delete_booking?P_BOOKING_ID=${queryString}`);
+};
+
+export const fetchBlockedCarBookings = async (queryString) => {
+  return api.get(`/carbooking/blocked_bookings?P_USER_ID=${queryString}`);
+};
+
+export const deleteBlockedCarBooking = async (queryString) => {
+  return api.get(`/carbooking/delete_booking?P_BOOKING_ID=${queryString}`);
+};
+
+export const fetchBlockedTourBookings = async (queryString) => {
+  return api.get(`/tourbooking/blocked_bookings?P_USER_ID=${queryString}`);
+};
+
+export const deleteBlockedTourBooking = async (queryString) => {
+  return api.get(`/tourbooking/delete_booking?P_BOOKING_ID=${queryString}`);
 };
 
 export const updateUserDetails = ({
@@ -804,4 +822,28 @@ export const resetPassword = (p_user_name, p_new_password) => {
   const url = `/user/current_password?${queryString}`;
 
   return api.get(url);
+};
+
+export const refundBooking = (p_transaction_id) => {
+  const queryString = new URLSearchParams({
+    p_transaction_id,
+  });
+
+  return api.get(`/verify/paystack_refund?${queryString}`);
+};
+
+export const trackRefund = (p_refund_id) => {
+  const queryString = new URLSearchParams({
+    p_refund_id,
+  });
+
+  return api.get(`/verify/track_refund?${queryString}`);
+};
+
+export const verifyRefundStatus = (reference_id) => {
+  const queryString = new URLSearchParams({
+    reference_id,
+  });
+
+  return api.get(`/verify/paystack?${queryString}`);
 };

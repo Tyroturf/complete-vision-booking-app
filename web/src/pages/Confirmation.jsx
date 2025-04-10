@@ -107,7 +107,13 @@ const Confirmation = ({ bookingDetails, page }) => {
       const res = await verifyPayment(params);
       if (res.data.status === "success") {
         showSuccessToast("Payment verified successfully!");
-        navigate("/thank-you");
+        navigate("/thank-you", {
+          state: {
+            paymentReference: response.reference,
+            booking,
+            page,
+          },
+        });
       } else {
         showErrorToast("Payment verification failed.");
       }

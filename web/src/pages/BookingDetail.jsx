@@ -8,6 +8,8 @@ import {
   cancelPlaceBooking,
   cancelCarBooking,
   cancelTourBooking,
+  refundBooking,
+  verifyRefundStatus,
 } from "../api";
 import Loader from "../components/Loader";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
@@ -23,6 +25,8 @@ const BookingDetails = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [refundAmount, setRefundAmount] = useState(0);
+  const [refundStatus, setRefundStatus] = useState(null);
 
   const { search } = useLocation();
   const { host_type } = JSON.parse(localStorage.getItem("user"));
@@ -31,50 +35,78 @@ const BookingDetails = () => {
   const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
   const backPath = type ? `/bookings?type=${type}` : `/listing-bookings`;
 
-  useEffect(() => {
-    const fetchDetails = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        let response;
-        if (type) {
-          if (type === "past stays") {
-            response = await fetchBooking(id);
-          } else if (type === "rentals") {
-            response = await fetchCarBooking(id);
-          } else if (type === "tours") {
-            response = await fetchTourBooking(id);
-          }
-        } else {
-          if (host_type === "L") {
-            response = await fetchBooking(id);
-          } else if (host_type === "V") {
-            response = await fetchCarBooking(id);
-          } else if (host_type === "T") {
-            response = await fetchTourBooking(id);
-          }
+  const fetchBookingDetails = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      let response;
+      if (type) {
+        if (type === "past stays") {
+          response = await fetchBooking(id);
+        } else if (type === "rentals") {
+          response = await fetchCarBooking(id);
+        } else if (type === "tours") {
+          response = await fetchTourBooking(id);
         }
-
-        if (response?.status === 200) {
-          setBooking(
-            response.data.Bookings?.[0] ||
-              response.data.CarBookings?.[0] ||
-              response.data.TourBookings?.[0]
-          );
-        } else {
-          throw new Error("Failed to fetch booking details");
+      } else {
+        if (host_type === "L") {
+          response = await fetchBooking(id);
+        } else if (host_type === "V") {
+          response = await fetchCarBooking(id);
+        } else if (host_type === "T") {
+          response = await fetchTourBooking(id);
         }
-      } catch (err) {
-        setError(err.message || "Failed to load booking details.");
-      } finally {
-        setLoading(false);
       }
-    };
 
+      if (response?.status === 200) {
+        const bookingData =
+          response.data.Bookings?.[0] ||
+          response.data.CarBookings?.[0] ||
+          response.data.TourBookings?.[0];
+
+        setBooking(bookingData);
+
+        if (bookingData?.Status === "reversed") {
+          const refundStatusRes = await verifyRefundStatus(
+            bookingData.ReferenceID
+          );
+          const amount = refundStatusRes?.data?.amount;
+          if (amount) {
+            setRefundAmount(amount);
+          }
+        }
+      } else {
+        throw new Error("Failed to fetch booking details");
+      }
+    } catch (err) {
+      setError(err.message || "Failed to load booking details.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     if (id) {
-      fetchDetails();
+      fetchBookingDetails();
     }
   }, [id, type]);
+
+  useEffect(() => {
+    const checkRefund = async () => {
+      if (booking?.ReferenceID && booking?.Status === "reversed") {
+        const res = await verifyRefundStatus(booking.ReferenceID);
+        const amount = res?.data?.amount;
+        const status = res?.data?.status;
+        if (amount) {
+          setRefundAmount(amount);
+        }
+        if (status) {
+          setRefundStatus(status);
+        }
+      }
+    };
+    checkRefund();
+  }, [booking]);
 
   const handleCancelBooking = async () => {
     if (!booking || booking.Status !== "pending") return;
@@ -104,6 +136,70 @@ const BookingDetails = () => {
     } catch (err) {
       setError(err.message);
     } finally {
+      setIsCancelling(false);
+    }
+  };
+
+  const handleRefundBooking = async () => {
+    if (!booking || booking.Status !== "success") return;
+    const { ReferenceID } = booking;
+
+    setIsCancelling(true);
+    try {
+      const response = await refundBooking(ReferenceID);
+      const status = response?.data;
+
+      if (status !== "processed: ") {
+        showErrorToast("Failed to initiate refund.");
+        setIsCancelling(false);
+        return;
+      }
+
+      showSuccessToast("Refund initiated. Tracking refund...");
+
+      let retryCount = 0;
+      const maxRetries = 10;
+
+      const trackInterval = setInterval(async () => {
+        try {
+          const trackRes = await verifyRefundStatus(ReferenceID);
+          const refundStatus = trackRes?.data?.status;
+          const amount = trackRes?.data?.amount;
+
+          if (amount) {
+            setRefundAmount(amount);
+          }
+
+          if (refundStatus === "reversed") {
+            clearInterval(trackInterval);
+            showSuccessToast("Refund completed successfully!");
+            await fetchBookingDetails();
+          } else if (refundStatus === "failed") {
+            clearInterval(trackInterval);
+            showErrorToast("Refund failed. Please contact support.");
+          } else {
+            console.log("Tracking refund... status:", refundStatus);
+            setRefundStatus(refundStatus);
+            retryCount++;
+            if (retryCount >= maxRetries) {
+              clearInterval(trackInterval);
+              showErrorToast(
+                "Refund is taking longer than expected. Please check again later."
+              );
+            }
+          }
+        } catch (err) {
+          clearInterval(trackInterval);
+          showErrorToast("Error tracking refund. Please try again.");
+        } finally {
+          setIsCancelling(false);
+        }
+      }, 3000);
+    } catch (err) {
+      console.error("Refund Error:", err);
+      showErrorToast(
+        err?.response?.data?.message || "Error processing refund."
+      );
       setIsCancelling(false);
     }
   };
@@ -160,8 +256,6 @@ const BookingDetails = () => {
     );
   }
 
-  console.log("b", booking);
-
   return (
     <div className="mt-20 mx-auto">
       <Back path={backPath} page={"Bookings"} />
@@ -210,8 +304,8 @@ const BookingDetails = () => {
               value={booking.DropoffLocation}
             />
           )}
-          {booking.Features && (
-            <DetailItem label="Car No." value={booking.Features} />
+          {booking["Car Number"] && (
+            <DetailItem label="Car No." value={booking["Car Number"]} />
           )}
           {booking.ReferenceID && (
             <DetailItem label="Reference ID" value={booking.ReferenceID} />
@@ -243,12 +337,30 @@ const BookingDetails = () => {
                 ? "bg-green-100 text-green-600"
                 : booking.Status === "pending"
                 ? "bg-yellow-100 text-yellow-600"
-                : "bg-red-100 text-red-600"
+                : booking.Status === "cancelled"
+                ? "bg-red-100 text-red-600"
+                : booking.Status === "reversed"
+                ? "bg-purple-100 text-purple-600"
+                : ""
             }`}
           >
             {booking.Status}
           </span>
         </div>
+
+        {booking.Status === "reversed" && (
+          <div className="text-xs text-center mt-4 p-3 bg-green-100 text-green-800 rounded-lg">
+            Your refund of {refundAmount} has been successfully reversed. It
+            should reflect in your account shortly.
+          </div>
+        )}
+
+        {refundStatus && refundStatus !== "reversed" && (
+          <div className="mt-4 p-3 bg-yellow-100 text-yellow-800 rounded-lg text-sm">
+            Your refund is currently <strong>{refundStatus}</strong>. Please
+            check back shortly.
+          </div>
+        )}
 
         {isToday(booking.BookingDate) &&
           booking.Total &&
@@ -266,6 +378,22 @@ const BookingDetails = () => {
                 </span>
               </button>
             </div>
+          )}
+
+        {isToday(booking.BookingDate) &&
+          booking.Total &&
+          type &&
+          booking.Status === "success" &&
+          refundStatus !== "reversed" && (
+            <button
+              onClick={handleRefundBooking}
+              className="w-full bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 hover:scale-105 transition duration-300"
+              disabled={isCancelling || refundStatus === "processing"}
+            >
+              <span className="text-xs py-2 font-bold">
+                {isCancelling ? "Cancelling..." : "Cancel & Refund"}
+              </span>
+            </button>
           )}
       </div>
     </div>

@@ -177,7 +177,11 @@ export const BookingCard = ({ booking, activeTab }) => {
                 ? "bg-green-100 text-green-600"
                 : booking.Status === "pending"
                 ? "bg-yellow-100 text-yellow-600"
-                : "bg-red-100 text-red-600"
+                : booking.Status === "cancelled"
+                ? "bg-red-100 text-red-600"
+                : booking.Status === "reversed"
+                ? "bg-purple-100 text-purple-600"
+                : ""
             }`}
           >
             {booking.Status}

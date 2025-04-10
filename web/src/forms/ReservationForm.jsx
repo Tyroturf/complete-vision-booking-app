@@ -540,7 +540,7 @@ const ReservationForm = ({
                             <input
                               type="radio"
                               id="chauffeur"
-                              name="drivingOption"
+                              name="chauffeur"
                               value="chauffeur"
                               checked={chauffeur}
                               onChange={() => {
