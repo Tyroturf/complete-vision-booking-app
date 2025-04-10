@@ -207,7 +207,7 @@ const BookingCard = ({ booking, fetchBookings, host_type }) => {
             )}
           </div>
 
-          <div className="flex justify-between items-center mt-5">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3 mt-5">
             <span
               className={`text-sm font-medium px-3 py-1 rounded-lg ${
                 booking.Status === "success"
@@ -224,7 +224,7 @@ const BookingCard = ({ booking, fetchBookings, host_type }) => {
                 className="bg-brand text-white px-6 py-2 text-sm font-medium rounded-lg"
                 onClick={handleBlock}
               >
-                {isUnblocking ? "Unblocking..." : "Unblock Property"}
+                {isUnblocking ? "Unblocking..." : "Unblock"}
               </button>
               <button
                 className="bg-gray-300 text-gray-700 px-4 py-2 text-sm font-medium rounded-lg flex items-center gap-2"
