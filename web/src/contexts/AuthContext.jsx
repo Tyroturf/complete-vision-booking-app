@@ -51,6 +51,7 @@ export const AuthProvider = ({ children }) => {
     apiLogout(session);
     localStorage.removeItem("user");
     localStorage.removeItem("session_id");
+    window.Intercom("shutdown");
   };
 
   const value = {

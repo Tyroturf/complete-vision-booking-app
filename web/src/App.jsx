@@ -47,9 +47,11 @@ const renderPrivateRoute = (Component) => (
 );
 
 const App = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+
   useEffect(() => {
-    loadIntercom();
-  }, []);
+    loadIntercom(user);
+  }, [user]);
 
   return (
     <AuthProvider>

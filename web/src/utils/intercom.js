@@ -1,8 +1,12 @@
 const APP_ID = import.meta.env.VITE_INTERCOM_APP_ID;
 
-export const loadIntercom = () => {
+export const loadIntercom = (user) => {
+  const name = `${user.first_name} ${user.last_name}`;
   window.intercomSettings = {
     app_id: APP_ID,
+    name: name,
+    email: user?.email,
+    user_id: user?.user_id,
   };
 
   (function () {
