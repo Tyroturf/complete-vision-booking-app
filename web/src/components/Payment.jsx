@@ -106,7 +106,7 @@ const Payment = ({ p_user_id, fetchUserDetails, user }) => {
         )}
       </div>
 
-      {payouts.length > 0 && (
+      {payouts.length > 0 ? (
         <div className="max-w-3xl mx-auto px-4 mt-10">
           <h2 className="text-xl font-bold mb-6 text-center text-gray-800">
             Payout History
@@ -141,6 +141,8 @@ const Payment = ({ p_user_id, fetchUserDetails, user }) => {
             ))}
           </div>
         </div>
+      ) : (
+        <span className=" text-xs md:text-sm">No payouts available</span>
       )}
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
