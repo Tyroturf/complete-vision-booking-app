@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBank, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import AddPaymentForm from "../forms/AddPaymentForm";
 import Modal from "./Modal";
-import { addBankAccount } from "../api";
+import { addBankAccount, fetchPayouts } from "../api";
 import { showErrorToast, showSuccessToast } from "../utils/toast";
 
 const Card = ({ children, className }) => (
@@ -21,6 +21,7 @@ const Payment = ({ p_user_id, fetchUserDetails, user }) => {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [payouts, setPayouts] = useState([]);
 
   const handleSubmit = async (values) => {
     try {
@@ -51,12 +52,27 @@ const Payment = ({ p_user_id, fetchUserDetails, user }) => {
     }
   };
 
+  const getPayouts = async () => {
+    try {
+      const res = await fetchPayouts(p_user_id);
+      if (res.data?.["Payouts: "]) {
+        setPayouts(res.data["Payouts: "]);
+      }
+    } catch (error) {
+      showErrorToast("Failed to fetch payouts");
+    }
+  };
+
+  useEffect(() => {
+    getPayouts();
+  }, []);
+
   return (
     <>
       <div className="flex flex-wrap items-center justify-center gap-10 p-4">
         {bank_account_number ? (
           <Card>
-            <div className="flex justify-between items-center ">
+            <div className="flex justify-between items-center">
               <div className="flex flex-col font-bold">
                 <p className="text-white">**** **** ****</p>
                 <p className="text-white text-lg md:text-2xl">{card.last4}</p>
@@ -89,6 +105,43 @@ const Payment = ({ p_user_id, fetchUserDetails, user }) => {
           </button>
         )}
       </div>
+
+      {payouts.length > 0 && (
+        <div className="max-w-3xl mx-auto px-4 mt-10">
+          <h2 className="text-xl font-bold mb-6 text-center text-gray-800">
+            Payout History
+          </h2>
+          <div className="space-y-4">
+            {payouts.map((payout) => (
+              <div
+                key={payout.PAYOUT_ID}
+                className="bg-white rounded-xl shadow-md p-6 flex justify-between items-center"
+              >
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">
+                    <span className="font-semibold">Date:</span>{" "}
+                    {new Date(payout.PAYOUT_DATE).toLocaleDateString("en-GB")}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    <span className="font-semibold">Amount:</span>{" "}
+                    <span className="text-green-600 font-semibold">
+                      GH₵ {payout.AMOUNT.toLocaleString()}
+                    </span>
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-500 flex flex-col md:flex-row">
+                    <span className="font-semibold">Balance:</span>{" "}
+                    <span className="text-brand font-semibold">
+                      GH₵ {payout.BALANCE.toLocaleString()}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <AddPaymentForm handleSubmit={handleSubmit} isLoading={isLoading} />

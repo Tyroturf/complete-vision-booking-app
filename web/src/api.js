@@ -879,3 +879,8 @@ export const verifyRefundStatus = (reference_id) => {
 
   return api.get(`/verify/paystack?${queryString}`);
 };
+
+export const fetchPayouts = (queryString) => {
+  const url = `/payouts/payouts?P_HOST_ID=${queryString}`;
+  return api.get(url);
+};
