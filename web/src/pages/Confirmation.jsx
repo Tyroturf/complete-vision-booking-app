@@ -185,8 +185,10 @@ const Confirmation = ({ bookingDetails, page }) => {
             {listing?.LOCATION}
           </p>
           <p className="text-xs md:text-sm">
-            <span className="font-medium">Price per Night: </span>$
-            {listingPrice}
+            <span className="font-medium">
+              Price per {page === "place" ? "night" : "day"}:{" "}
+            </span>
+            ${listingPrice}
           </p>
         </div>
 

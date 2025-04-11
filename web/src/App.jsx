@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -34,6 +34,7 @@ import BlockedProperties from "./pages/BlockedProperties";
 import ListingBookings from "./pages/ListingBookings";
 import { ResetPassword } from "./pages/ResetPassword";
 import TokenVerification from "./pages/TokenVerification";
+import { loadIntercom } from "./utils/intercom";
 
 const renderWithLayout = (Component) => (
   <Layout>
@@ -46,6 +47,10 @@ const renderPrivateRoute = (Component) => (
 );
 
 const App = () => {
+  useEffect(() => {
+    loadIntercom();
+  }, []);
+
   return (
     <AuthProvider>
       <SearchProvider>
