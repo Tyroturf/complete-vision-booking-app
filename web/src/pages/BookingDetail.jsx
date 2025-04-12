@@ -32,7 +32,10 @@ const BookingDetails = () => {
   const { host_type } = JSON.parse(localStorage.getItem("user"));
   const queryParams = new URLSearchParams(search);
   const type = queryParams.get("type");
-  const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
+  const paystackPublicKey =
+    import.meta.env.NODE_ENV === "production"
+      ? import.meta.env.VITE_PAYSTACK_LIVE_KEY
+      : import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
   const backPath = type ? `/bookings?type=${type}` : `/listing-bookings`;
 
   const fetchBookingDetails = async () => {
