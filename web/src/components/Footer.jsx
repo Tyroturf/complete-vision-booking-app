@@ -45,22 +45,6 @@ const Footer = () => {
 
         <div className="flex space-x-4">
           <a
-            href="https://www.facebook.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="md:text-lg text-white text-sm hover:text-white"
-          >
-            <FontAwesomeIcon icon={faFacebookF} />
-          </a>
-          <a
-            href="https://www.twitter.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="md:text-lg text-white text-sm hover:text-white"
-          >
-            <FontAwesomeIcon icon={faTwitter} />
-          </a>
-          <a
             href="https://www.instagram.com"
             target="_blank"
             rel="noopener noreferrer"
@@ -69,15 +53,7 @@ const Footer = () => {
             <FontAwesomeIcon icon={faInstagram} />
           </a>
           <a
-            href="https://www.linkedin.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="md:text-lg text-white text-sm hover:text-white"
-          >
-            <FontAwesomeIcon icon={faLinkedin} />
-          </a>
-          <a
-            href="mailto:support@completevision.com"
+            href="mailto:info@completevisiongh.com"
             className="md:text-lg text-white text-sm hover:text-white"
           >
             <FontAwesomeIcon icon={faEnvelope} />
