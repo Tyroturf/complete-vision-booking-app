@@ -172,7 +172,9 @@ const Confirmation = ({ bookingDetails, page }) => {
             {guests}
           </p>
           <p className="text-xs md:text-sm">
-            <span className="font-medium">Nights: </span>
+            <span className="font-medium">
+              {page === "place" ? "Nights" : "Days"}:{" "}
+            </span>
             {duration}
           </p>
         </div>
