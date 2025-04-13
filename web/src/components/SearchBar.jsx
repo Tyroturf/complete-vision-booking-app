@@ -57,8 +57,8 @@ const SearchBar = ({ initialValues }) => {
 
   const handleSubmit = async (values) => {
     const searchParams = {
-      p_check_in: formatDate(startDate),
-      p_check_out: formatDate(endDate),
+      p_check_in: formatDate(values.startDate),
+      p_check_out: formatDate(values.endDate),
       p_num_guests: values.guests,
       p_city: values.city,
       p_search: values.search,
@@ -74,14 +74,14 @@ const SearchBar = ({ initialValues }) => {
     if (location.pathname === "/") {
       setFindPlacesParams(searchParams);
       navigate(`/places?${queryString}`, { replace: true });
-    } else if (location.pathname === "/places") {
-      await searchPlaces(searchParams);
-      navigate(`?${queryString}`, { replace: true });
-    } else if (location.pathname === "/cars") {
-      await searchCars(searchParams);
-      navigate(`?${queryString}`, { replace: true });
-    } else if (location.pathname === "/tours") {
-      await searchTours(searchParams);
+    } else {
+      if (location.pathname === "/places") {
+        await searchPlaces(searchParams);
+      } else if (location.pathname === "/cars") {
+        await searchCars(searchParams);
+      } else if (location.pathname === "/tours") {
+        await searchTours(searchParams);
+      }
       navigate(`?${queryString}`, { replace: true });
     }
   };
@@ -94,6 +94,8 @@ const SearchBar = ({ initialValues }) => {
         carType: initialCarType || "",
         tourType: initialTourType || "",
         guests: initialGuests,
+        startDate: initialStartDate,
+        endDate: initialEndDate,
       }}
       enableReinitialize={true}
       onSubmit={handleSubmit}
@@ -101,9 +103,9 @@ const SearchBar = ({ initialValues }) => {
       {({ values, setFieldValue, resetForm }) => {
         useEffect(() => {
           resetForm();
-          console.log("values", values);
-          console.log("reset");
-        }, [location.pathname, resetForm]);
+          setStartDate(today);
+          setEndDate(tomorrow);
+        }, [location.pathname]);
         return (
           <Form
             className={`p-3 rounded-xl border border-brand shadow-md grid grid-cols-2 ${
@@ -207,10 +209,14 @@ const SearchBar = ({ initialValues }) => {
             </div>
             <div className="relative col-span-2 md:col-span-1">
               <DatePicker
-                selected={startDate}
-                onChange={onChange}
-                startDate={startDate}
-                endDate={endDate}
+                selected={values.startDate}
+                onChange={(dates) => {
+                  const [start, end] = dates;
+                  setFieldValue("startDate", start);
+                  setFieldValue("endDate", end);
+                }}
+                startDate={values.startDate}
+                endDate={values.endDate}
                 selectsRange
                 minDate={new Date()}
                 className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:border-brand text-[16px] lg:text-xs text-center sm:text-left"
