@@ -82,10 +82,10 @@ const Reservation = ({ type }) => {
 
         setReservationData((prevData) => ({
           ...prevData,
-          firstName: userDetails.first_name || "",
-          lastName: userDetails.last_name || "",
-          phoneNumber: userDetails.contact || "",
-          email: userDetails.email || "",
+          firstName: userDetails.FIRST_NAME || "",
+          lastName: userDetails.LAST_NAME || "",
+          phoneNumber: userDetails.CONTACT || "",
+          email: userDetails.USERNAME || "",
           driverLicense: userDetails.DL_PHOTO_URL
             ? userDetails.DL_PHOTO_URL
             : "",
