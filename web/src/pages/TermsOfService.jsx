@@ -6,7 +6,7 @@ const TermsOfService = () => {
       <h1 className="text-2xl sm:text-3xl font-bold mb-4">
         Terms of Service – Complete Vision GH
       </h1>
-      <p className="mb-6 text-xs md:text-sm">Effective Date: [Insert Date]</p>
+      <p className="mb-6 text-xs md:text-sm">Effective Date: 1st April 2025</p>
 
       <p className="mb-4 text-xs md:text-sm">
         Welcome to <strong>Complete Vision GH</strong>! These Terms of Service
