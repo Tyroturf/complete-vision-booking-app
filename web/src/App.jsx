@@ -35,6 +35,9 @@ import ListingBookings from "./pages/ListingBookings";
 import { ResetPassword } from "./pages/ResetPassword";
 import TokenVerification from "./pages/TokenVerification";
 import { loadIntercom } from "./utils/intercom";
+import ContactUs from "./pages/ContactUs";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 
 const renderWithLayout = (Component) => (
   <Layout>
@@ -76,6 +79,15 @@ const App = () => {
               <Route path="/places" element={renderWithLayout(FindPlaces)} />
               <Route path="/cars" element={renderWithLayout(CarRentals)} />
               <Route path="/tours" element={renderWithLayout(BookTours)} />
+              <Route path="/contact-us" element={renderWithLayout(ContactUs)} />
+              <Route
+                path="/privacy-policy"
+                element={renderWithLayout(PrivacyPolicy)}
+              />
+              <Route
+                path="/terms-of-service"
+                element={renderWithLayout(TermsOfService)}
+              />
               <Route
                 path="/become-a-host"
                 element={renderWithLayout(BecomeAHost)}
