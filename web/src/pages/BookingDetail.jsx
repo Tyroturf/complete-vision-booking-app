@@ -38,10 +38,7 @@ const BookingDetails = () => {
       : import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
   const backPath = type ? `/bookings?type=${type}` : `/listing-bookings`;
   console.log("Paystack Public Key:", paystackPublicKey);
-  console.log(
-    "import.meta.env.NODE_ENV === production",
-    import.meta.env.NODE_ENV === "production"
-  );
+  console.log("import.meta.env.NODE_ENV ", import.meta.env);
 
   const fetchBookingDetails = async () => {
     setLoading(true);
