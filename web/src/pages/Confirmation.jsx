@@ -1,4 +1,4 @@
-import { PaystackButton } from "react-paystack";
+import PaystackPop from "@paystack/inline-js";
 import {
   saveBooking,
   saveCarBooking,
@@ -134,12 +134,29 @@ const Confirmation = ({ bookingDetails, page }) => {
     amount: totalPriceGHS * 100,
     currency: "GHS",
     publicKey: paystackPublicKey,
-    text: isLoading ? "Paying" : "Pay Now",
-    onSuccess,
+    text: onSuccess,
     onClose,
+    container: "paystack-apple-pay",
     reference: paymentReference,
     className:
       "bg-green-500 text-xs font-bold text-white px-4 py-2 rounded hover:bg-green-600 hover:scale-105 transition",
+  };
+
+  const payWithPaystack = async () => {
+    const paystack = new PaystackPop();
+
+    await paystack.checkout({
+      key: paystackPublicKey,
+      email,
+      amount: totalPriceGHS * 100,
+      currency: "GHS",
+      reference: paymentReference,
+      onSuccess,
+      onClose,
+      onCancel: () => {
+        console.log("Popup closed!");
+      },
+    });
   };
 
   return (
@@ -281,7 +298,14 @@ const Confirmation = ({ bookingDetails, page }) => {
           {isLoading ? "Processing..." : "Confirm Booking"}
         </button>
       ) : (
-        <PaystackButton {...paystackProps} />
+        <>
+          <button
+            onClick={payWithPaystack}
+            className="bg-green-500 text-xs font-bold text-white px-4 py-2 rounded hover:bg-green-600 hover:scale-105 transition"
+          >
+            {isLoading ? "Paying" : "Pay Now"}
+          </button>
+        </>
       )}
     </div>
   );
