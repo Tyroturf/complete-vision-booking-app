@@ -1,6 +1,7 @@
 const APP_ID = import.meta.env.VITE_INTERCOM_APP_ID;
 
 export const loadIntercom = () => {
+  console.log("import", import.meta.env);
   const storedUser = localStorage.getItem("user");
   const intercomSettings = { app_id: APP_ID };
 
