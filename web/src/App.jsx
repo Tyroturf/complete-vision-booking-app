@@ -52,6 +52,7 @@ const renderPrivateRoute = (Component) => (
 const App = () => {
   useEffect(() => {
     loadIntercom();
+    console.log("load");
   }, []);
 
   return (
