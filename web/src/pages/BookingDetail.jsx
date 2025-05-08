@@ -1,3 +1,4 @@
+import PaystackPop from "@paystack/inline-js";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
@@ -20,6 +21,7 @@ import { isToday } from "../utils/helpers";
 const BookingDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const paystack = new PaystackPop();
 
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -231,17 +233,19 @@ const BookingDetails = () => {
     showErrorToast("Payment process was canceled.");
   };
 
-  const paystackProps = {
-    email: booking?.Email,
-    amount: booking?.Total * 100,
-    currency: "GHS",
-    publicKey: paystackPublicKey,
-    text: "Pay Now",
-    onSuccess,
-    onClose,
-    reference: booking?.ReferenceID?.toString(),
-    className:
-      "bg-brand text-xs font-bold text-white w-full px-4 py-2 rounded-lg hover:bg-brand-4xl hover:scale-105 transition",
+  const payWithPaystack = async () => {
+    await paystack.checkout({
+      key: paystackPublicKey,
+      email,
+      amount: totalPriceGHS * 100,
+      currency: "GHS",
+      reference: paymentReference,
+      onSuccess,
+      onClose,
+      onCancel: () => {
+        console.log("Popup closed!");
+      },
+    });
   };
 
   if (loading) return <Loader />;
@@ -372,7 +376,12 @@ const BookingDetails = () => {
           type &&
           booking.Status === "pending" && (
             <div className="flex flex-col md:flex-row gap-4">
-              <PaystackButton {...paystackProps} />
+              <button
+                onClick={payWithPaystack}
+                className="bg-green-500 text-xs font-bold text-white px-4 py-2 rounded hover:bg-green-600 hover:scale-105 transition"
+              >
+                Pay Now
+              </button>
               <button
                 onClick={handleCancelBooking}
                 className="w-full bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 hover:scale-105 transition duration-300"
