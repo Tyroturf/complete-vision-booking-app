@@ -1,3 +1,4 @@
+import PaystackPop from "@paystack/inline-js";
 import {
   saveBooking,
   saveCarBooking,

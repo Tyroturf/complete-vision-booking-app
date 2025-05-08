@@ -236,10 +236,10 @@ const BookingDetails = () => {
   const payWithPaystack = async () => {
     await paystack.checkout({
       key: paystackPublicKey,
-      email,
-      amount: totalPriceGHS * 100,
+      email: booking?.Email,
+      amount: booking?.Total * 100,
       currency: "GHS",
-      reference: paymentReference,
+      reference: booking?.ReferenceID?.toString(),
       onSuccess,
       onClose,
       onCancel: () => {
