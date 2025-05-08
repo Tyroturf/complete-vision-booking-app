@@ -378,7 +378,7 @@ const BookingDetails = () => {
             <div className="flex flex-col md:flex-row gap-4">
               <button
                 onClick={payWithPaystack}
-                className="bg-green-500 text-xs font-bold text-white px-4 py-2 rounded hover:bg-green-600 hover:scale-105 transition"
+                className="bg-brand text-xs font-bold text-white w-full px-4 py-2 rounded-lg hover:bg-brand-4xl hover:scale-105 transition"
               >
                 Pay Now
               </button>
