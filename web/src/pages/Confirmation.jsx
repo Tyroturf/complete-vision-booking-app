@@ -142,9 +142,9 @@ const Confirmation = ({ bookingDetails, page }) => {
       "bg-green-500 text-xs font-bold text-white px-4 py-2 rounded hover:bg-green-600 hover:scale-105 transition",
   };
 
-  const payWithPaystack = async () => {
-    const paystack = new PaystackPop();
+  const paystack = new PaystackPop();
 
+  const payWithPaystack = async () => {
     await paystack.checkout({
       key: paystackPublicKey,
       email,
